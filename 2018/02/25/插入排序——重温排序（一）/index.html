@@ -101,23 +101,27 @@
   <meta name="keywords" content="Hexo, NexT" />
 
 
-<meta name="description" content="来跳个舞吧">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Lyman&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="在这个系列，我会逐一介绍几种常见的排序。介绍的内容包括：排序的思想、复杂度分析、代码实现等。首先来了解一下插入排序。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="插入排序——重温排序（一）">
+<meta property="og:url" content="http://yoursite.com/2018/02/25/插入排序——重温排序（一）/index.html">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="来跳个舞吧">
+<meta property="og:description" content="在这个系列，我会逐一介绍几种常见的排序。介绍的内容包括：排序的思想、复杂度分析、代码实现等。首先来了解一下插入排序。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/insert-sort.jpg">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/example-insert-sort.jpg">
+<meta property="og:updated_time" content="2018-02-26T15:12:06.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lyman&#39;s Blog">
-<meta name="twitter:description" content="来跳个舞吧">
+<meta name="twitter:title" content="插入排序——重温排序（一）">
+<meta name="twitter:description" content="在这个系列，我会逐一介绍几种常见的排序。介绍的内容包括：排序的思想、复杂度分析、代码实现等。首先来了解一下插入排序。">
+<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/insert-sort.jpg">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/02/25/插入排序——重温排序（一）/"/>
 
 
 
@@ -126,7 +130,7 @@
     sidebar: "",
   };
 </script>
-  <title>Lyman's Blog</title>
+  <title>插入排序——重温排序（一） | Lyman's Blog</title>
   
 
 
@@ -173,8 +177,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -251,9 +254,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -285,9 +288,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/25/插入排序——重温排序（一）/" itemprop="url">插入排序——重温排序（一）</a></h1>
+          <h1 class="post-title" itemprop="name headline">插入排序——重温排序（一）</h1>
         
 
         <div class="post-meta">
@@ -365,16 +366,30 @@
       
 
       
-        
-          <p><img src="http://p4pks8hkh.bkt.clouddn.com/insert-sort.jpg" alt="avatar"><br>在这个系列，我会逐一介绍几种常见的排序。介绍的内容包括：排序的思想、复杂度分析、代码实现等。首先来了解一下插入排序。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/02/25/插入排序——重温排序（一）/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+        <p><img src="http://p4pks8hkh.bkt.clouddn.com/insert-sort.jpg" alt="avatar"><br>在这个系列，我会逐一介绍几种常见的排序。介绍的内容包括：排序的思想、复杂度分析、代码实现等。首先来了解一下插入排序。<br><a id="more"></a></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>有句话说，只有能把学过的东西用自己的话讲给别人听，才能算是真正掌握了。我对此深以为然，于是下定决心开始写技术博客，提升自身技术水平。至于选择写排序的原因有三个：第一个是刚开始写东西，想选比较简单的东西来锻炼一下表达能力，为后续的写作打下基础；第二个是虽说排序比较简单，但是在面试中还是挺多被问到（我就曾经在面试生涯中被问过两次快速排序），可在实际工作中却并不怎么常用，因此时间一久难免生疏，所以刚好也做一下复习；第三个是把知识点重新整理之后，会更方便自己后续的回顾。</p>
+<h1 id="一、排序概述"><a href="#一、排序概述" class="headerlink" title="一、排序概述"></a>一、排序概述</h1><p>首先简单介绍一下一些排序中的基本概念。</p>
+<h2 id="1-分类"><a href="#1-分类" class="headerlink" title="1. 分类"></a>1. 分类</h2><p><strong>内部排序</strong>：整个排序过程都在内存中进行的排序。<br><strong>外部排序</strong>：由于数据量过多，不可能将所有数据都读入内存，因此需要借助磁盘等存储媒介来进行的排序。</p>
+<h2 id="2-基本操作"><a href="#2-基本操作" class="headerlink" title="2. 基本操作"></a>2. 基本操作</h2><p><strong>排序的两个基本操作</strong>：比较、移动。</p>
+<h2 id="3-时间复杂度"><a href="#3-时间复杂度" class="headerlink" title="3. 时间复杂度"></a>3. 时间复杂度</h2><p><strong>时间复杂度的衡量标准</strong>：比较次数、移动次数。</p>
+<h2 id="4-稳定性"><a href="#4-稳定性" class="headerlink" title="4. 稳定性"></a>4. 稳定性</h2><p><strong>稳定性判断标准</strong>：两个相等的元素，排序前后在序列中的顺序是否一致。</p>
+<h1 id="二、插入排序"><a href="#二、插入排序" class="headerlink" title="二、插入排序"></a>二、插入排序</h1><p>下面步入正题，开始介绍插入排序。插入排序的思想用一句话来描述就是，<strong>每一步将一个待排序的元素，按照其关键字的大小，插入到前面已经排好序的有序表的正确位置，直到所有元素插入结束为止</strong>。</p>
+<h2 id="1-算法描述"><a href="#1-算法描述" class="headerlink" title="1. 算法描述"></a>1. 算法描述</h2><p>插入排序的算法可以归结为下面3句话。</p>
+<ul>
+<li>当插入第<code>i(i&gt;=1)</code>个元素时，前面的<code>r[1]、r[2]、…、r[i-1]</code>已经排好序。</li>
+<li>用<code>r[i]</code>的关键字与<code>r[i-1]、r[i-2]</code>的关键字顺序进行比较，如果小于，则将<code>r[x]</code>向后移动，否则说明已经找到插入位置。</li>
+<li>找到插入位置即将<code>r[i]</code>插入。</li>
+</ul>
+<h2 id="2-简单图示"><a href="#2-简单图示" class="headerlink" title="2. 简单图示"></a>2. 简单图示</h2><p>这是一个完整的插入排序例子，其中有两个关键字为25的元素，注意观察它们在排序前后的位置关系。</p>
+<p><img src="http://p4pks8hkh.bkt.clouddn.com/example-insert-sort.jpg" alt="avatar"></p>
+<h2 id="3-算法实现"><a href="#3-算法实现" class="headerlink" title="3. 算法实现"></a>3. 算法实现</h2><p>下面是简单的C语言实现版本。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp, i, j;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; count; ++i) &#123;</span><br><span class="line">        temp = <span class="built_in">list</span>[i];</span><br><span class="line">        <span class="keyword">for</span> (j = i - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">list</span>[j] &lt;= temp) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">list</span>[j+<span class="number">1</span>] = <span class="built_in">list</span>[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">list</span>[j+<span class="number">1</span>] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="4-算法分析"><a href="#4-算法分析" class="headerlink" title="4. 算法分析"></a>4. 算法分析</h2><p>从上面的例子可以看出，如果排序前数组已经有序，则每次只需要与有序序列的最后一个元素比较，总比较次数为n-1，不需要移动。<br>而最坏的情况，每一趟每个关键字每次比较都需要移动，总的比较次数和移动次数都约为 <code>n^2 / 2</code>。<br>在平均情况下，比较次数和移动次数都约为 <code>n^2 / 4</code>，因此插入排序的时间复杂度是<code>O(n^2)</code>。<br>从上面<strong>图示的例子</strong>可以看到，带*的关键字为25的元素，排序前后都在另一个关键字为25的元素后面，因此<strong>插入排序是一种稳定的排序</strong>。</p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><ul>
+<li>插入排序的时间复杂度为<code>O(n^2)</code>。</li>
+<li>插入排序是一种稳定的排序。</li>
+</ul>
+<p>从插入排序可以看出，当待排序列为正序时，时间复杂度为<code>O(n)</code>，当基本有序的时候，排序的效率也会快很多。<br>所以有没有一种方法，可以先让序列先变得基本有序，然后再进行插入排序，以此来提高效率呢？<br>答案是肯定的，那正是下节要介绍的内容 —— 希尔排序。</p>
+
       
     </div>
 
@@ -394,12 +409,12 @@
       
 
       
+      
+      
 
       
 
       
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -409,14 +424,19 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -437,8 +457,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -502,6 +531,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、排序概述"><span class="nav-text">一、排序概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-分类"><span class="nav-text">1. 分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-基本操作"><span class="nav-text">2. 基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-时间复杂度"><span class="nav-text">3. 时间复杂度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-稳定性"><span class="nav-text">4. 稳定性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、插入排序"><span class="nav-text">二、插入排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-算法描述"><span class="nav-text">1. 算法描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-简单图示"><span class="nav-text">2. 简单图示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-算法实现"><span class="nav-text">3. 算法实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-算法分析"><span class="nav-text">4. 算法分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-总结"><span class="nav-text">5. 总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -623,6 +668,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
 
   
 
