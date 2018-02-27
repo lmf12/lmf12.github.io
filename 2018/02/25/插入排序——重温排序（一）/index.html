@@ -110,7 +110,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/insert-sort.jpg">
 <meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/example-insert-sort.jpg">
-<meta property="og:updated_time" content="2018-02-26T15:12:06.000Z">
+<meta property="og:updated_time" content="2018-02-27T03:49:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="插入排序——重温排序（一）">
 <meta name="twitter:description" content="在这个系列，我会逐一介绍几种常见的排序。介绍的内容包括：排序的思想、复杂度分析、代码实现等。首先来了解一下插入排序。">
@@ -305,7 +305,23 @@
 
             
             
+              
+                
+              
+            
 
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-02-27T11:49:27+08:00">2018-02-27</time>
             
           </span>
 
@@ -383,12 +399,14 @@
 <h2 id="2-简单图示"><a href="#2-简单图示" class="headerlink" title="2. 简单图示"></a>2. 简单图示</h2><p>这是一个完整的插入排序例子，其中有两个关键字为25的元素，注意观察它们在排序前后的位置关系。</p>
 <p><img src="http://p4pks8hkh.bkt.clouddn.com/example-insert-sort.jpg" alt="avatar"></p>
 <h2 id="3-算法实现"><a href="#3-算法实现" class="headerlink" title="3. 算法实现"></a>3. 算法实现</h2><p>下面是简单的C语言实现版本。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp, i, j;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; count; ++i) &#123;</span><br><span class="line">        temp = <span class="built_in">list</span>[i];</span><br><span class="line">        <span class="keyword">for</span> (j = i - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">list</span>[j] &lt;= temp) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">list</span>[j+<span class="number">1</span>] = <span class="built_in">list</span>[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">list</span>[j+<span class="number">1</span>] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="4-算法分析"><a href="#4-算法分析" class="headerlink" title="4. 算法分析"></a>4. 算法分析</h2><p>从上面的例子可以看出，如果排序前数组已经有序，则每次只需要与有序序列的最后一个元素比较，总比较次数为n-1，不需要移动。<br>而最坏的情况，每一趟每个关键字每次比较都需要移动，总的比较次数和移动次数都约为 <code>n^2 / 2</code>。<br>在平均情况下，比较次数和移动次数都约为 <code>n^2 / 4</code>，因此插入排序的时间复杂度是<code>O(n^2)</code>。<br>从上面<strong>图示的例子</strong>可以看到，带*的关键字为25的元素，排序前后都在另一个关键字为25的元素后面，因此<strong>插入排序是一种稳定的排序</strong>。</p>
+<h2 id="4-算法分析"><a href="#4-算法分析" class="headerlink" title="4. 算法分析"></a>4. 算法分析</h2><p>从上面的例子可以看出，如果排序前数组已经有序，则每次只需要与有序序列的最后一个元素比较，总比较次数为n-1，不需要移动。<br>而最坏的情况，每一趟每个关键字每次比较都需要移动，总的比较次数和移动次数都约为 <code>n^2 / 2</code>。<br>在平均情况下，比较次数和移动次数都约为 <code>n^2 / 4</code>，因此插入排序的时间复杂度是<code>O(n^2)</code>。</p>
+<p>从上面<strong>图示的例子</strong>可以看到，带*的关键字为25的元素，排序前后都在另一个关键字为25的元素后面，因此<strong>插入排序是一种稳定的排序</strong>。</p>
 <h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><ul>
 <li>插入排序的时间复杂度为<code>O(n^2)</code>。</li>
 <li>插入排序是一种稳定的排序。</li>
 </ul>
-<p>从插入排序可以看出，当待排序列为正序时，时间复杂度为<code>O(n)</code>，当基本有序的时候，排序的效率也会快很多。<br>所以有没有一种方法，可以先让序列先变得基本有序，然后再进行插入排序，以此来提高效率呢？<br>答案是肯定的，那正是下节要介绍的内容 —— 希尔排序。</p>
+<p>从插入排序可以看出，当待排序列为正序时，时间复杂度为<code>O(n)</code>，当基本有序的时候，排序的效率也会快很多。<br>所以有没有一种方法，可以先让序列先变得基本有序，然后再进行插入排序，以此来提高效率呢？</p>
+<p>答案是肯定的，那正是下节要介绍的内容 —— 希尔排序。</p>
 
       
     </div>
