@@ -101,18 +101,21 @@
   <meta name="keywords" content="排序, 希尔排序" />
 
 
-<meta name="description" content="先占坑，有空更新。">
+<meta name="description" content="上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。">
 <meta name="keywords" content="排序, 希尔排序">
 <meta property="og:type" content="article">
 <meta property="og:title" content="希尔排序——重温排序（二）">
 <meta property="og:url" content="http://www.lymanli.com/2018/02/27/希尔排序——重温排序（二）/index.html">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="先占坑，有空更新。">
+<meta property="og:description" content="上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-02-27T10:00:55.000Z">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/shell-sort.jpg">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/example-shell-sort.jpg">
+<meta property="og:updated_time" content="2018-03-03T04:30:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="希尔排序——重温排序（二）">
-<meta name="twitter:description" content="先占坑，有空更新。">
+<meta name="twitter:description" content="上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。">
+<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/shell-sort.jpg">
 
 
 
@@ -319,7 +322,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-02-27T18:00:55+08:00">2018-02-27</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-03-03T12:30:14+08:00">2018-03-03</time>
             
           </span>
 
@@ -380,7 +383,24 @@
       
 
       
-        <p>先占坑，有空更新。</p>
+        <p><img src="http://p4pks8hkh.bkt.clouddn.com/shell-sort.jpg" alt="avatar"><br>上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。<br><a id="more"></a></p>
+<h1 id="一、算法描述"><a href="#一、算法描述" class="headerlink" title="一、算法描述"></a>一、算法描述</h1><p>希尔排序先将待排序列进行分组，分别进行插入排序，间隔为 <code>gap</code> 的元素为一组。待各组排序完成后，逐渐缩小 <code>gap</code> 的值，重复分组排序过程，直到 <code>gap</code> 值缩小为1，即对整个序列进行一次插入排序。</p>
+<p><code>gap</code> 一般先取 <code>n / 2</code> ，然后逐步 <code>gap = gap / 2</code> ，直到 <code>gap</code> 等于1。</p>
+<h1 id="二、图示举例"><a href="#二、图示举例" class="headerlink" title="二、图示举例"></a>二、图示举例</h1><p>下面来看一个希尔排序的图示，注意观察两个的关键字为25的元素，思考一下希尔排序的稳定性。</p>
+<p><img src="http://p4pks8hkh.bkt.clouddn.com/example-shell-sort.jpg" alt="avatar"></p>
+<h1 id="三、算法实现"><a href="#三、算法实现" class="headerlink" title="三、算法实现"></a>三、算法实现</h1><p>C语言版本代码奉上。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">shellSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> gap = count / <span class="number">2</span>; gap &gt;= <span class="number">1</span>; gap /= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; gap; ++i) &#123;</span><br><span class="line">            insertSort(<span class="built_in">list</span>, count, i, gap);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count, <span class="keyword">int</span> head, <span class="keyword">int</span> gap)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp, i, j;</span><br><span class="line">    <span class="keyword">for</span> (i = head + gap; i &lt; count; i += gap) &#123;</span><br><span class="line">        temp = <span class="built_in">list</span>[i];</span><br><span class="line">        <span class="keyword">for</span> (j = i - gap; j &gt;= head; j -= gap) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">list</span>[j] &lt;= temp) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">list</span>[j+gap] = <span class="built_in">list</span>[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">list</span>[j+gap] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，希尔排序不过是一个不断进行插入排序的过程。在这个过程中，去不断地调整序列的头位置 <code>head</code> 和间隔 <code>gap</code> 的值。而这里用到的插入排序算法，跟之前相比做了一点小调整，修改了待排元素的索引，加上了对应的 <code>gap</code> 偏移。</p>
+<h1 id="四、算法分析"><a href="#四、算法分析" class="headerlink" title="四、算法分析"></a>四、算法分析</h1><ul>
+<li>开始的时候 <code>gap</code> 值较大，子序列中的元素较少，排序速度较快，而且元素一次移动的距离较大。</li>
+<li>随着排序的进行， <code>gap</code> 值逐渐缩小，子序列中元素个数逐渐变多，但由于前面的排序结果，子序列基本有序，因此排序也很快。</li>
+<li>从图示的例子中看出，两个关键字为25的元素，在排序前后，它们的相对位置已经发生变化，所以希尔排序是一种<strong>不稳定</strong>的排序。</li>
+<li>希尔排序需要比较次数和移动次数约为 <code>n ^ 1.3</code> ，当 <code>n</code> 趋于无穷时可减少到 <code>n(log2(n))^2</code> 。</li>
+</ul>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><ul>
+<li>希尔排序的时间复杂度为 <code>O( n(log2(n))^2 )</code> 。</li>
+<li>希尔排序是一种<strong>不稳定</strong>的排序</li>
+</ul>
 
       
     </div>
@@ -465,8 +485,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -528,6 +557,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、算法描述"><span class="nav-text">一、算法描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、图示举例"><span class="nav-text">二、图示举例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、算法实现"><span class="nav-text">三、算法实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、算法分析"><span class="nav-text">四、算法分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、总结"><span class="nav-text">五、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
