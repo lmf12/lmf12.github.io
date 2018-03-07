@@ -110,7 +110,7 @@
 <meta property="og:description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/kvc-kvo.jpg">
-<meta property="og:updated_time" content="2018-03-06T09:39:37.000Z">
+<meta property="og:updated_time" content="2018-03-07T13:37:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="说一下KVC和KVO">
 <meta name="twitter:description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。">
@@ -321,7 +321,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-03-06T17:39:37+08:00">2018-03-06</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-03-07T21:37:41+08:00">2018-03-07</time>
             
           </span>
 
@@ -395,6 +395,7 @@
 <li>当 <code>value</code> 的值为基本类型时，应该封装为 <code>NSNumber</code> 或 <code>NSValue</code> 。</li>
 <li><strong>KVC不会自动调用键值验证方法</strong>。当字符串中的属性值不存在时，会直接抛出异常。</li>
 <li>可以先在类中重写 <code>-validateValue: forKey: error:</code> ，制定检查规则，然后手动调用该方法来验证。</li>
+<li><strong>KVC的一个重要应用是字典转模型</strong>。</li>
 </ul>
 <h2 id="3-KVC的原理"><a href="#3-KVC的原理" class="headerlink" title="3. KVC的原理"></a>3. KVC的原理</h2><p>为了设置或者获取对象属性，KVC按顺序使用如下技术：</p>
 <ol>
