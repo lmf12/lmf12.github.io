@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="iOS, AVPlayer, 后台播放, 视频" />
+
+
+<meta name="description" content="最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。">
+<meta name="keywords" content="iOS, AVPlayer, 后台播放, 视频">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS AVPlayer 实现后台连续播放视频">
+<meta property="og:url" content="http://www.lymanli.com/2018/03/11/iOS-AVPlayer-实现后台连续播放视频/index.html">
+<meta property="og:site_name" content="Lyman&#39;s Blog">
+<meta property="og:description" content="最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-1.jpg">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-2.jpg">
+<meta property="og:updated_time" content="2018-03-11T16:11:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS AVPlayer 实现后台连续播放视频">
+<meta name="twitter:description" content="最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。">
+<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-1.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.lymanli.com/2018/03/11/iOS-AVPlayer-实现后台连续播放视频/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>iOS AVPlayer 实现后台连续播放视频 | Lyman's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lyman's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            关于</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2018/03/11/iOS-AVPlayer-实现后台连续播放视频/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lyman Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lyman's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS AVPlayer 实现后台连续播放视频</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-11T13:37:42+08:00">2018-03-11</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-03-12T00:11:40+08:00">2018-03-12</time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/人人都会iOS/" itemprop="url" rel="index"><span itemprop="name">人人都会iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/03/11/iOS-AVPlayer-实现后台连续播放视频/" class="leancloud_visitors" data-flag-title="iOS AVPlayer 实现后台连续播放视频">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。<br><a id="more"></a></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>当 App 退到后台时，会进入 <code>suspend</code> 状态，若此时在播放视频，则会自动暂停。我们需要实现的效果是，当 App 退到后台时，视频中的声音还能继续播放。另外，我们还同时实现视频的连续播放功能，和在锁屏界面控制视频播放的功能。具体怎么做，下面听我一一道来。</p>
+<blockquote>
+<p><strong>注意：</strong>由于 iOS 模拟器存在 BUG，尤其是 iOS 11 的模拟器，不能在后台播放音频，因此以下功能最好使用真机测试。</p>
+</blockquote>
+<h1 id="一、后台播放音频"><a href="#一、后台播放音频" class="headerlink" title="一、后台播放音频"></a>一、后台播放音频</h1><p>要实现后台播放视频功能，首先需要实现后台播放音频功能。实现后台播放音频很简单，只要简单配置一下就可以了。总共有三步：</p>
+<h2 id="1-修改-Info-plist"><a href="#1-修改-Info-plist" class="headerlink" title="1. 修改 Info.plist"></a>1. 修改 Info.plist</h2><p>在 <code>Info.plist</code> 中添加 <code>Required background modes</code> ，并在下面添加一项 <code>App plays audio or streams audio/video using AirPlay</code> 。如图所示：</p>
+<p><img src="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-1.jpg" alt=""></p>
+<h2 id="2-修改-Capabilities"><a href="#2-修改-Capabilities" class="headerlink" title="2. 修改 Capabilities"></a>2. 修改 Capabilities</h2><p>在 <code>Capabilities</code> 中开启 <code>Background Modes</code> 。如图所示：</p>
+<p><img src="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-2.jpg" alt=""></p>
+<h2 id="3-修改-AppDelegate"><a href="#3-修改-AppDelegate" class="headerlink" title="3. 修改 AppDelegate"></a>3. 修改 AppDelegate</h2><p>在 <code>AppDelegate</code> 的 <code>application: didFinishLaunchingWithOptions:</code> 方法中，添加以下代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 告诉app支持后台播放</span></span><br><span class="line"><span class="built_in">AVAudioSession</span> *audioSession = [<span class="built_in">AVAudioSession</span> sharedInstance];</span><br><span class="line">[audioSession setCategory:<span class="built_in">AVAudioSessionCategoryPlayback</span> error:<span class="literal">nil</span>];</span><br><span class="line">[audioSession setActive:<span class="literal">YES</span> error:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
+<p>至此就实现了后台播放音频的功能，但这不是我们的最终目的，请继续往下看。</p>
+<h1 id="二、后台播放视频"><a href="#二、后台播放视频" class="headerlink" title="二、后台播放视频"></a>二、后台播放视频</h1><p>网上讲实现后台播放视频的资料并不多（可能比较少有这么坑的需求）。我在网上找了一圈，只有 <a href="https://juejin.im/post/5a38e1a0f265da4327185a26" target="_blank" rel="noopener">这篇文章</a> 提到了，方法也很简单，分为两步：</p>
+<h2 id="1-退到后台时移除-playerLayer-上的-player"><a href="#1-退到后台时移除-playerLayer-上的-player" class="headerlink" title="1. 退到后台时移除 playerLayer 上的 player"></a>1. 退到后台时移除 playerLayer 上的 player</h2><p>在 <code>viewController</code> 中添加退到后台监听：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNotificationCenter</span> *center = [<span class="built_in">NSNotificationCenter</span> defaultCenter];</span><br><span class="line">[center addObserver:<span class="keyword">self</span></span><br><span class="line">           selector:<span class="keyword">@selector</span>(removePlayerOnPlayerLayer)</span><br><span class="line">               name:<span class="built_in">UIApplicationDidEnterBackgroundNotification</span></span><br><span class="line">             object:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
+<p>移除 <code>player</code> :</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)removePlayerOnPlayerLayer &#123;</span><br><span class="line">    </span><br><span class="line">    _playerLayer.player = <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-回到前台时重新添加-player"><a href="#2-回到前台时重新添加-player" class="headerlink" title="2. 回到前台时重新添加 player"></a>2. 回到前台时重新添加 player</h2><p>在 <code>viewController</code> 中添加回到前台监听：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNotificationCenter</span> *center = [<span class="built_in">NSNotificationCenter</span> defaultCenter];</span><br><span class="line">[center addObserver:<span class="keyword">self</span></span><br><span class="line">           selector:<span class="keyword">@selector</span>(resetPlayerToPlayerLayer)</span><br><span class="line">               name:<span class="built_in">UIApplicationWillEnterForegroundNotification</span></span><br><span class="line">             object:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
+<p>重新添加 <code>player</code> :</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)resetPlayerToPlayerLayer &#123;</span><br><span class="line">    </span><br><span class="line">    _playerLayer.player = _player;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样简单的后台播放视频就实现了。</p>
+<p>对于上面的实现后台播放视频的方法，我的理解是，iOS 是支持后台播放音频的，而 <code>AVPlayer</code> 在播放视频时，会将图像渲染在 <code>layer</code> 上，因此只要取消图像的渲染，只播放音频，就可以实现后台播放。</p>
+<h2 id="3-连续播放视频"><a href="#3-连续播放视频" class="headerlink" title="3. 连续播放视频"></a>3. 连续播放视频</h2><p>后台连续播放视频的逻辑，其实和前台连续播放的逻辑一样。可以通过监听 <code>playerItem</code> 播放结束的通知来切换歌曲，则当播放结束时，需要移除对当前 <code>playerItem</code> 的监听，然后添加下一个 <code>playerItem</code> 的监听。</p>
+<p>这里直接通过判断进度条是否完成，来切换歌曲。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 监听播放进度</span></span><br><span class="line">__<span class="keyword">weak</span> ViewController * weakSelf = <span class="keyword">self</span>;</span><br><span class="line">[<span class="keyword">self</span>.player addPeriodicTimeObserverForInterval:<span class="built_in">CMTimeMakeWithSeconds</span>(<span class="number">1</span>, <span class="built_in">NSEC_PER_SEC</span>)</span><br><span class="line">                                          queue:<span class="literal">NULL</span></span><br><span class="line">                                     usingBlock:^(<span class="built_in">CMTime</span> time) &#123;</span><br><span class="line">                                         </span><br><span class="line">                                         [weakSelf updateProgressView];</span><br><span class="line">                                     &#125;];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 更新进度条进度</span></span><br><span class="line">- (<span class="keyword">void</span>)updateProgressView &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.currentDuration = <span class="built_in">CMTimeGetSeconds</span>(_player.currentItem.duration);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGFloat</span> progress = <span class="built_in">CMTimeGetSeconds</span>(_player.currentItem.currentTime) / _currentDuration;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (progress == <span class="number">1.0</span>f) &#123;</span><br><span class="line">        [<span class="keyword">self</span> playNextVideo];  <span class="comment">// 播放下一个视频</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [_viewVideoProgress setValue:progress];   <span class="comment">// 更新进度条</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>下面插播一条 <code>CMTime</code> 的广告。可跳过。</strong></p>
+<p>上面监听播放进度的时候，用到了一个叫 <code>CMTime</code> 的东西，这里简单地讲一下我的理解。<br>一般我们用 <code>CMTime</code> 的时候，都是使用 <code>CMTimeGetSeconds(time)</code> 将它转成秒数。<br>那为何不直接使用 <code>NSTimeInterval</code> 来表示时间就好了？</p>
+<p>原因只有一个 —— <strong>精度</strong>。</p>
+<p>浮点数没有办法进行准确的加减运算，当多次加减后，可能会出现较大误差。因此在视频一般用 <code>CMTime</code> 来表示时间，因为 <code>CMTime</code> 可以规定最小的精度，从而保证累加后时间的准确性。</p>
+<p><code>CMTime</code> 的构造方法 <code>CMTimeMakeWithSeconds(seconds, timescale)</code>， <code>seconds</code> 表示秒数， <code>1 / timescale</code> 表示最小精度。<br>另一个构造方法 <code>CMTimeMake(value, timescale)</code> ，其中 <code>seconds</code> = <code>value</code> / <code>timescale</code>。<br>即 <code>CMTimeMakeWithSeconds(1, 1000)</code> 等价于 <code>CMTimeMake(1000, 1000)</code> ，都表示 1 秒，最小精度为 0.001 。</p>
+<p><strong>注意：</strong>需要满足 <code>seconds</code> &gt;=  <code>1 / timescale</code> ，即 <code>value</code> &gt; 1，这也是精度存在的意义。</p>
+</blockquote>
+<h1 id="三、添加远程控制"><a href="#三、添加远程控制" class="headerlink" title="三、添加远程控制"></a>三、添加远程控制</h1><h2 id="1-用-MPNowPlayingInfoCenter-显示歌曲信息"><a href="#1-用-MPNowPlayingInfoCenter-显示歌曲信息" class="headerlink" title="1. 用 MPNowPlayingInfoCenter 显示歌曲信息"></a>1. 用 MPNowPlayingInfoCenter 显示歌曲信息</h2><p>先上代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 更新锁屏界面信息</span></span><br><span class="line">- (<span class="keyword">void</span>)updateLockScreenInfo &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!_player) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 1.获取锁屏中心</span></span><br><span class="line">    <span class="built_in">MPNowPlayingInfoCenter</span> *playingInfoCenter = [<span class="built_in">MPNowPlayingInfoCenter</span> defaultCenter];</span><br><span class="line">    <span class="comment">// 初始化一个存放音乐信息的字典</span></span><br><span class="line">    <span class="built_in">NSMutableDictionary</span> *playingInfoDict = [<span class="built_in">NSMutableDictionary</span> dictionary];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 2、设置歌曲名</span></span><br><span class="line">    [playingInfoDict setObject:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"歌曲%ld"</span>, (<span class="keyword">long</span>)_currentIndex + <span class="number">1</span>]</span><br><span class="line">                        forKey:<span class="built_in">MPMediaItemPropertyTitle</span>];</span><br><span class="line">    [playingInfoDict setObject:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"专辑%ld"</span>, (<span class="keyword">long</span>)_currentIndex + <span class="number">1</span>]</span><br><span class="line">                        forKey:<span class="built_in">MPMediaItemPropertyAlbumTitle</span>];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 3、设置封面的图片</span></span><br><span class="line">    <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"cover%ld.jpg"</span>, (<span class="keyword">long</span>)_currentIndex + <span class="number">1</span>]];</span><br><span class="line">    <span class="keyword">if</span> (image) &#123;</span><br><span class="line">        <span class="built_in">MPMediaItemArtwork</span> *artwork = [[<span class="built_in">MPMediaItemArtwork</span> alloc] initWithImage:image];</span><br><span class="line">        [playingInfoDict setObject:artwork forKey:<span class="built_in">MPMediaItemPropertyArtwork</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 4、设置歌曲的时长和已经消耗的时间</span></span><br><span class="line">    <span class="built_in">NSNumber</span> *playbackDuration = @(<span class="built_in">CMTimeGetSeconds</span>(_player.currentItem.duration));</span><br><span class="line">    <span class="built_in">NSNumber</span> *elapsedPlaybackTime = @(<span class="built_in">CMTimeGetSeconds</span>(_player.currentItem.currentTime));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!playbackDuration || !elapsedPlaybackTime) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    [playingInfoDict setObject:playbackDuration</span><br><span class="line">                        forKey:<span class="built_in">MPMediaItemPropertyPlaybackDuration</span>];</span><br><span class="line">    [playingInfoDict setObject:elapsedPlaybackTime</span><br><span class="line">                        forKey:<span class="built_in">MPNowPlayingInfoPropertyElapsedPlaybackTime</span>];</span><br><span class="line">    [playingInfoDict setObject:@(_player.rate) forKey:<span class="built_in">MPNowPlayingInfoPropertyPlaybackRate</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//音乐信息赋值给获取锁屏中心的nowPlayingInfo属性</span></span><br><span class="line">    playingInfoCenter.nowPlayingInfo = playingInfoDict;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意：</strong> <code>updateLockScreenInfo</code> 不需要频繁调用，锁屏界面的进度条会自己计时，只需要在关键的时刻去同步这个已播放时长。一般需要调用的时刻有，<strong>切换歌曲、暂停、播放、拖动进度条</strong>等。</p>
+</blockquote>
+<blockquote>
+<p><strong>这里有个坑</strong>。我们知道 <code>player</code> 有个 <code>rate</code> 属性，为 0 的时候表示暂停，为 1.0 的时候表示播放。相应的， <code>nowPlayingInfo</code> 也有个 <code>MPNowPlayingInfoPropertyPlaybackRate</code> 属性。前面说到，「锁屏界面的进度条会自己计时」，它是否在计时就是取决于这个属性。坑的地方在于，这个属性和 <code>player</code> 的 <code>rate</code> 并不同步。也就是说，单纯地在锁屏界面点暂停后， <code>player</code> 会暂停， <code>rate</code> 也会变成 0 ，但是 <code>MPNowPlayingInfoPropertyPlaybackRate</code> 却不为 0 。导致的结果是，在锁屏界面点击了暂停按钮，这个时候进度条表面看起来停止了走动，但是其实还是在计时，所以再点击播放的时候，锁屏界面进度条的光标会发生位置闪动。</p>
+</blockquote>
+<blockquote>
+<p> <strong>解决方法：</strong>在视频暂停和播放的时候，同步视频的已播放时长 <code>_player.currentItem.currentTime</code> 和 <code>MPNowPlayingInfoPropertyElapsedPlaybackTime</code> 、视频的当前播放速率  <code>_player.rate</code> 和 <code>MPNowPlayingInfoPropertyPlaybackRate</code> 。</p>
+</blockquote>
+<h2 id="2-用-MPRemoteCommandCenter-实现播放控制"><a href="#2-用-MPRemoteCommandCenter-实现播放控制" class="headerlink" title="2. 用 MPRemoteCommandCenter 实现播放控制"></a>2. 用 MPRemoteCommandCenter 实现播放控制</h2><p>先上代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加远程控制</span></span><br><span class="line">- (<span class="keyword">void</span>)createRemoteCommandCenter &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">MPRemoteCommandCenter</span> *commandCenter = [<span class="built_in">MPRemoteCommandCenter</span> sharedCommandCenter];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">MPRemoteCommand</span> *pauseCommand = [commandCenter pauseCommand];</span><br><span class="line">    [pauseCommand setEnabled:<span class="literal">YES</span>];</span><br><span class="line">    [pauseCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(remotePauseEvent)];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">MPRemoteCommand</span> *playCommand = [commandCenter playCommand];</span><br><span class="line">    [playCommand setEnabled:<span class="literal">YES</span>];</span><br><span class="line">    [playCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(remotePlayEvent)];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">MPRemoteCommand</span> *nextCommand = [commandCenter nextTrackCommand];</span><br><span class="line">    [nextCommand setEnabled:<span class="literal">YES</span>];</span><br><span class="line">    [nextCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(remoteNextEvent)];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">MPRemoteCommand</span> *previousCommand = [commandCenter previousTrackCommand];</span><br><span class="line">    [previousCommand setEnabled:<span class="literal">YES</span>];</span><br><span class="line">    [previousCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(remotePreviousEvent)];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (@available(iOS <span class="number">9.1</span>, *)) &#123;</span><br><span class="line">        <span class="built_in">MPRemoteCommand</span> *changePlaybackPositionCommand = [commandCenter changePlaybackPositionCommand];</span><br><span class="line">        [changePlaybackPositionCommand setEnabled:<span class="literal">YES</span>];</span><br><span class="line">        [changePlaybackPositionCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(remoteChangePlaybackPosition:)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 iOS 7.1 之后，可以通过 <code>MPRemoteCommandCenter</code> 来控制音频播放。每个控制操作都封装为一个 <code>MPRemoteCommand</code> 对象，给 <code>MPRemoteCommand</code> 添加响应事件有两种方式：</p>
+<p>一种是通过 <code>addTargetWithHandler:</code>，以 <code>Block</code> 的方式传入响应事件，需要返回 <code>MPRemoteCommandHandlerStatusSuccess</code> 来告知响应成功。</p>
+<p>另一种是通过 <code>addTarget: action:</code>，因为 <code>MPRemoteCommandCenter</code> 是个单例，所以在 <code>target</code> 的 <code>dealloc</code> 中要记得调用 <code>removeTarget:</code> 。如下所示：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)dealloc &#123;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> removeCommandCenterTargets];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)removeCommandCenterTargets &#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">MPRemoteCommandCenter</span> *commandCenter = [<span class="built_in">MPRemoteCommandCenter</span> sharedCommandCenter];</span><br><span class="line">    [[commandCenter playCommand] removeTarget:<span class="keyword">self</span>];</span><br><span class="line">    [[commandCenter pauseCommand] removeTarget:<span class="keyword">self</span>];</span><br><span class="line">    [[commandCenter nextTrackCommand] removeTarget:<span class="keyword">self</span>];</span><br><span class="line">    [[commandCenter previousTrackCommand] removeTarget:<span class="keyword">self</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (@available(iOS <span class="number">9.1</span>, *)) &#123;</span><br><span class="line">        [commandCenter.changePlaybackPositionCommand removeTarget:<span class="keyword">self</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意：</strong>因为 <code>changePlaybackPositionCommand</code> 在 iOS 9.1 以后才可用，所以这里加了系统判断。</p>
+</blockquote>
+<p>到这里就实现了锁屏界面的播放控制。</p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/blog-demo/tree/master/testPlayer" target="_blank" rel="noopener">GitHub</a> 上查看完整例子。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://juejin.im/post/5a38e1a0f265da4327185a26" target="_blank" rel="noopener">iOS AVPlayer之后台连续播放视频</a><br><a href="http://www.cnblogs.com/sunjianfei/p/5903647.html" target="_blank" rel="noopener">AVPlayer 音乐播放后台播放，以及锁屏主题设置</a><br><a href="https://www.jianshu.com/p/f02aad2e7ff5" target="_blank" rel="noopener">这可能是最详细的CMTime教程</a></p></div>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/05/说一下KVC和KVO/" rel="next" title="说一下KVC和KVO">
+                <i class="fa fa-chevron-left"></i> 说一下KVC和KVO
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Lyman Li" />
+            
+              <p class="site-author-name" itemprop="name">Lyman Li</p>
+              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、后台播放音频"><span class="nav-text">一、后台播放音频</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-修改-Info-plist"><span class="nav-text">1. 修改 Info.plist</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-修改-Capabilities"><span class="nav-text">2. 修改 Capabilities</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-修改-AppDelegate"><span class="nav-text">3. 修改 AppDelegate</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、后台播放视频"><span class="nav-text">二、后台播放视频</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-退到后台时移除-playerLayer-上的-player"><span class="nav-text">1. 退到后台时移除 playerLayer 上的 player</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-回到前台时重新添加-player"><span class="nav-text">2. 回到前台时重新添加 player</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-连续播放视频"><span class="nav-text">3. 连续播放视频</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、添加远程控制"><span class="nav-text">三、添加远程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-用-MPNowPlayingInfoCenter-显示歌曲信息"><span class="nav-text">1. 用 MPNowPlayingInfoCenter 显示歌曲信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-用-MPRemoteCommandCenter-实现播放控制"><span class="nav-text">2. 用 MPRemoteCommandCenter 实现播放控制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+
+  &nbsp;
+
+  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
