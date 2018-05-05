@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="UIScrollView, 嵌套, iOS, 手势冲突" />
+
+
+<meta name="description" content="本文实现了一种多级 UIScrollView 嵌套的交互，主要解决事件传递和手势冲突问题。">
+<meta name="keywords" content="UIScrollView, 嵌套, iOS, 手势冲突">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 多级 UIScrollView 嵌套的实现方案">
+<meta property="og:url" content="http://www.lymanli.com/2018/05/05/nest-tableview/index.html">
+<meta property="og:site_name" content="Lyman&#39;s Blog">
+<meta property="og:description" content="本文实现了一种多级 UIScrollView 嵌套的交互，主要解决事件传递和手势冲突问题。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image1.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image2.jpg">
+<meta property="og:updated_time" content="2018-05-05T17:40:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 多级 UIScrollView 嵌套的实现方案">
+<meta name="twitter:description" content="本文实现了一种多级 UIScrollView 嵌套的交互，主要解决事件传递和手势冲突问题。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image1.gif">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.lymanli.com/2018/05/05/nest-tableview/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>iOS 多级 UIScrollView 嵌套的实现方案 | Lyman's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lyman's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            关于</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2018/05/05/nest-tableview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lyman Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lyman's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 多级 UIScrollView 嵌套的实现方案</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-05T23:20:38+08:00">2018-05-05</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-05-06T01:40:15+08:00">2018-05-06</time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/人人都会iOS/" itemprop="url" rel="index"><span itemprop="name">人人都会iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/05/nest-tableview/" class="leancloud_visitors" data-flag-title="iOS 多级 UIScrollView 嵌套的实现方案">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文实现了一种多级 <code>UIScrollView</code> 嵌套的交互，主要解决事件传递和手势冲突问题。<br><a id="more"></a></p>
+<h1 id="一、效果展示"><a href="#一、效果展示" class="headerlink" title="一、效果展示"></a>一、效果展示</h1><p>首先来直观地看一下要实现的效果。在实现过程中，代码做到了尽可能的解耦，将页面的各个部分拆离，单独封装成控件。</p>
+<p><img src="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image1.gif" alt=""></p>
+<h1 id="二、布局方式"><a href="#二、布局方式" class="headerlink" title="二、布局方式"></a>二、布局方式</h1><p>首先来参照下面的图片，看看页面的每个部分对应哪个控件。</p>
+<p><img src="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image2.jpg" alt=""></p>
+<p>结合上面的动画，可以看到，<code>MFNestTableView</code> 部分可以上下滑动， <code>MFPageView</code> 部分可以左右滑动， 当 <code>MFSegmentView</code> 固定到顶部后， <code>MFPageView</code> 的内容部分可以单独上下滑动。</p>
+<h1 id="三、实现原理"><a href="#三、实现原理" class="headerlink" title="三、实现原理"></a>三、实现原理</h1><h2 id="1-MFNestTableView"><a href="#1-MFNestTableView" class="headerlink" title="1. MFNestTableView"></a>1. MFNestTableView</h2><p>基于 <code>UITableView</code> 来实现。</p>
+<blockquote>
+<p><strong>注意：</strong> <code>UITableView</code> 也是一种 <code>UIScrollView</code> ，下面用 <code>UIScrollView</code> 来统称。</p>
+</blockquote>
+<p><strong>关键点一：</strong>允许两个嵌套的 <code>UIScrollView</code> 同时响应触摸事件，即两个 <code>UIScrollView</code> 可以同时滚动。 </p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回YES表示可以继续传递触摸事件，这样两个嵌套的scrollView才能同时滚动</span></span><br><span class="line">- (<span class="built_in">BOOL</span>) gestureRecognizer:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(<span class="built_in">UIGestureRecognizer</span> *)otherGestureRecognizer &#123;</span><br><span class="line">    <span class="keyword">id</span> view = otherGestureRecognizer.view;</span><br><span class="line">    <span class="keyword">if</span> ([[view superview] isKindOfClass:[<span class="built_in">UIWebView</span> <span class="keyword">class</span>]]) &#123;</span><br><span class="line">        view = [view superview];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (_allowGestureEventPassViews &amp;&amp; [_allowGestureEventPassViews containsObject:view]) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NO</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里判断是允许同时响应的 <code>View</code> ，才返回 <code>YES</code> 。</p>
+</blockquote>
+<p><strong>关键点二：</strong>在同一时间只允许一个 <code>UIScrollView</code> 产生偏移，另一个通过 <code>contentOffset</code> 来固定位置。然后在合适的时候进行切换，这样实现的效果是，即使两层 <code>UIScrollView</code> 都能响应触摸事件，但不会发生同时滚动。</p>
+<p>父级的 <code>UIScrollView</code> ：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)scrollViewDidScroll:(<span class="built_in">UIScrollView</span> *)scrollView &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGFloat</span> contentOffset = [<span class="keyword">self</span> heightForContainerCanScroll];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!_canScroll) &#123;</span><br><span class="line">        <span class="comment">// 这里通过固定contentOffset的值，来实现不滚动</span></span><br><span class="line">        scrollView.contentOffset = <span class="built_in">CGPointMake</span>(<span class="number">0</span>, contentOffset);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (scrollView.contentOffset.y &gt;= contentOffset) &#123;</span><br><span class="line">        scrollView.contentOffset = <span class="built_in">CGPointMake</span>(<span class="number">0</span>, contentOffset);</span><br><span class="line">        <span class="keyword">self</span>.canScroll = <span class="literal">NO</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 通知delegate内容开始可以滚动</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.delegate &amp;&amp; [<span class="keyword">self</span>.delegate respondsToSelector:<span class="keyword">@selector</span>(nestTableViewContentCanScroll:)]) &#123;</span><br><span class="line">            [<span class="keyword">self</span>.delegate nestTableViewContentCanScroll:<span class="keyword">self</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    scrollView.showsVerticalScrollIndicator = _canScroll;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.delegate &amp;&amp; [<span class="keyword">self</span>.delegate respondsToSelector:<span class="keyword">@selector</span>(nestTableViewDidScroll:)]) &#123;</span><br><span class="line">        [<span class="keyword">self</span>.delegate nestTableViewDidScroll:_tableView];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>子级的 <code>UIScrollView</code> ：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)scrollViewDidScroll:(<span class="built_in">UIScrollView</span> *)scrollView &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!_canContentScroll) &#123;</span><br><span class="line">        <span class="comment">// 这里通过固定contentOffset，来实现不滚动</span></span><br><span class="line">        scrollView.contentOffset = <span class="built_in">CGPointZero</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (scrollView.contentOffset.y &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        _canContentScroll = <span class="literal">NO</span>;</span><br><span class="line">        <span class="comment">// 通知容器可以开始滚动</span></span><br><span class="line">        _nestTableView.canScroll = <span class="literal">YES</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    scrollView.showsVerticalScrollIndicator = _canContentScroll;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里滚动条的显示隐藏也做了切换，即谁当前可以滚动，就显示谁的滚动条。</p>
+</blockquote>
+<h2 id="2-MFSegmentView"><a href="#2-MFSegmentView" class="headerlink" title="2. MFSegmentView"></a>2. MFSegmentView</h2><p>基于 <code>UICollectionView</code> 实现，通过 <code>scrollToItemAtIndexPath:atScrollPosition:animated:</code> 来实现点击后滑动到对应位置的效果。</p>
+<h2 id="3-MFPageView"><a href="#3-MFPageView" class="headerlink" title="3. MFPageView"></a>3. MFPageView</h2><p>基于 <code>UICollectionView</code> 实现， <code>MFPageView</code> 中 <code>View</code> 可以是 <code>UITableView</code> 、 <code>UIScrollView</code> 、 <code>UICollectionView</code> 和 <code>UIWebView</code> 。总之只要能响应 <code>scrollViewDidScroll:</code> 就可以。</p>
+<p>其中对于 <code>UIScrollView</code> ，注意设置 <code>scrollView.alwaysBounceVertical = YES;</code> ，这样当 <code>contentSize</code> 小于 <code>frame.size</code> 时， <code>scrollView</code> 也可以滚动。</p>
+<h1 id="四、适配"><a href="#四、适配" class="headerlink" title="四、适配"></a>四、适配</h1><p>因为当前哪个 <code>UIScrollView</code> 可以滚动，是根据 <code>contentOffset</code> 计算后决定的，而 <code>UIScrollView</code> 初始化后的 <code>contentOffset</code> 却有多种情况，会受到 <code>navigationBar.translucent</code> 这个值的影响。</p>
+<p><code>MFNestTableView</code> 控件默认采取的方案是 <code>navigationBar</code> 不透明的情况，此时初始化后的 <code>contentOffset</code> 为 0。而 Demo 采取的是 <code>navigationBar.translucent == YES</code> 的情况， 在这种情况下， iPhone X 和其他机型的初始 <code>contentOffset</code> 值也不一样，因为 <code>navigationBar</code> 的高度不一样。这个时候需要实现 <code>MFNestTableViewDataSource</code> 的 <code>nestTableViewContentInsetTop:</code> 方法。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">CGFloat</span>)nestTableViewContentInsetTop:(MFNestTableView *)nestTableView &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 因为这里navigationBar.translucent == YES，所以实现这个方法，返回下面的值</span></span><br><span class="line">    <span class="keyword">if</span> (IS_IPHONE_X) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">88</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">64</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/MFNestTableView" target="_blank" rel="noopener">GitHub</a> 上查看完整例子。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://www.jianshu.com/p/8bf6c2953da3" target="_blank" rel="noopener">iOS scrollView嵌套tableView的手势冲突解决方案</a></p></div>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/15/新手也看得懂的-iOS-Runtime-教程/" rel="next" title="新手也看得懂的 iOS Runtime 教程">
+                <i class="fa fa-chevron-left"></i> 新手也看得懂的 iOS Runtime 教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Lyman Li" />
+            
+              <p class="site-author-name" itemprop="name">Lyman Li</p>
+              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、效果展示"><span class="nav-text">一、效果展示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、布局方式"><span class="nav-text">二、布局方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、实现原理"><span class="nav-text">三、实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-MFNestTableView"><span class="nav-text">1. MFNestTableView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-MFSegmentView"><span class="nav-text">2. MFSegmentView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-MFPageView"><span class="nav-text">3. MFPageView</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、适配"><span class="nav-text">四、适配</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+
+  &nbsp;
+
+  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
