@@ -1695,6 +1695,9 @@ pre .javascript .function {
   overflow-y: auto;
   overflow-x: hidden;
 }
+.links-of-author-item a {
+  border-bottom: none;
+}
 .sidebar-toggle {
   position: fixed;
   right: 30px;
@@ -1826,17 +1829,6 @@ pre .javascript .function {
   margin-bottom: 10px;
   border-bottom-color: #555;
   font-size: 13px;
-}
-.links-of-author a:before,
-.links-of-author .exturl:before {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 3px;
-  content: " ";
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #9c0d93;
 }
 .links-of-blogroll {
   font-size: 13px;
