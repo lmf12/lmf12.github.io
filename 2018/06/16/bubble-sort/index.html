@@ -98,27 +98,31 @@
 
 
   
-  <meta name="keywords" content="Lyman, Blog" />
+  <meta name="keywords" content="排序, 冒泡排序" />
 
 
-<meta name="description" content="来跳个舞吧">
-<meta property="og:type" content="website">
-<meta property="og:title" content="分类">
-<meta property="og:url" content="http://www.lymanli.com/categories/index.html">
+<meta name="description" content="大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。">
+<meta name="keywords" content="排序, 冒泡排序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="冒泡排序——重温排序（三）">
+<meta property="og:url" content="http://www.lymanli.com/2018/06/16/bubble-sort/index.html">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="来跳个舞吧">
+<meta property="og:description" content="大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-02-23T10:06:08.000Z">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/bubble-sort.jpg">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/example-bubble-sort.jpg">
+<meta property="og:updated_time" content="2018-06-16T04:54:05.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="分类">
-<meta name="twitter:description" content="来跳个舞吧">
+<meta name="twitter:title" content="冒泡排序——重温排序（三）">
+<meta name="twitter:description" content="大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。">
+<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/bubble-sort.jpg">
 
 
 
 
 
 
-  <link rel="canonical" href="http://www.lymanli.com/categories/"/>
+  <link rel="canonical" href="http://www.lymanli.com/2018/06/16/bubble-sort/"/>
 
 
 
@@ -127,7 +131,7 @@
     sidebar: "",
   };
 </script>
-  <title>分类 | Lyman's Blog</title>
+  <title>冒泡排序——重温排序（三） | Lyman's Blog</title>
   
 
 
@@ -254,60 +258,204 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2018/06/16/bubble-sort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lyman Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lyman's Blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">分类</h1>
-
-<div class="post-meta">
-  
-  
-
-
-
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
-                
-                
-                  
-                    
-                  
-                
-                  
-                    
-                  
-                
-                目前共计 2 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/人人都会iOS/">人人都会iOS</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/重温排序/">重温排序</a><span class="category-list-count">3</span></li></ul>
-            </div>
-          </div>
+          <h1 class="post-title" itemprop="name headline">冒泡排序——重温排序（三）</h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-16T10:32:22+08:00">2018-06-16</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-06-16T12:54:05+08:00">2018-06-16</time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/重温排序/" itemprop="url" rel="index"><span itemprop="name">重温排序</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/06/16/bubble-sort/" class="leancloud_visitors" data-flag-title="冒泡排序——重温排序（三）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <p><img src="http://p4pks8hkh.bkt.clouddn.com/bubble-sort.jpg" alt=""><br>大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。<br><a id="more"></a></p>
+<h1 id="一、算法描述"><a href="#一、算法描述" class="headerlink" title="一、算法描述"></a>一、算法描述</h1><p>设待排序列中有 <code>n</code> 个记录。则排序过程一般需要经历 <code>n-1</code> 次冒泡。每次冒泡，会将本次待排序列中关键字最大的记录下沉，即移动到序列的末尾。移动的过程，是通过依次比较相邻记录的关键字大小，如果发生逆序，则交换。在进行第 <code>i</code> 趟冒泡时，对应的待排序列为 <code>0 ... n-i-1</code> 。</p>
+<h1 id="二、图示举例"><a href="#二、图示举例" class="headerlink" title="二、图示举例"></a>二、图示举例</h1><p>先来直观地看下排序的过程，同样注意观察排序的「稳定性」。</p>
+<p><img src="http://p4pks8hkh.bkt.clouddn.com/example-bubble-sort.jpg" alt=""></p>
+<h1 id="三、算法实现"><a href="#三、算法实现" class="headerlink" title="三、算法实现"></a>三、算法实现</h1><p>「冒泡排序」的代码实现也非常简单。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; count - i - <span class="number">1</span>; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">list</span>[j] &gt; <span class="built_in">list</span>[j+<span class="number">1</span>]) &#123;</span><br><span class="line">                <span class="keyword">int</span> tmp = <span class="built_in">list</span>[j];</span><br><span class="line">                <span class="built_in">list</span>[j] = <span class="built_in">list</span>[j+<span class="number">1</span>];</span><br><span class="line">                <span class="built_in">list</span>[j+<span class="number">1</span>] = tmp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意：</strong>上面的代码，对于已经排好序的序列，也会进行 <code>n-1</code> 次冒泡。但其实只要上一轮冒泡没有发生记录的交换，就说明此时序列已经有序，可以直接返回。此处可以通过添加一个 <code>flag</code> 变量，用来记录上一轮有没有发生记录交换，没有则可以直接 <code>return</code> ，这样可以提高排序的效率。</p>
+</blockquote>
+<h1 id="四、算法分析"><a href="#四、算法分析" class="headerlink" title="四、算法分析"></a>四、算法分析</h1><ul>
+<li>最好情况：若初始序列已经排好序，则只需要进行 <code>n-1</code> 次比较，而不需要发生交换。</li>
+<li>最坏情况：需要执行 <code>n-1</code> 次冒泡，并且每次都需要进行 <code>n-i-1</code> 次交换。</li>
+<li>可以看到，「冒泡排序」在序列基本有序的情况下，效率会好一些。平均来看，「冒泡排序」的时间复杂度是 <code>O(n^2)</code> 。</li>
+</ul>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><ul>
+<li>冒泡排序的时间复杂度为 <code>O(n^2)</code> 。</li>
+<li>冒泡排序是一种<strong>稳定</strong>的排序。</li>
+</ul>
+
       
     </div>
+
     
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/05/nest-tableview/" rel="next" title="iOS 多级 UIScrollView 嵌套的实现方案">
+                <i class="fa fa-chevron-left"></i> iOS 多级 UIScrollView 嵌套的实现方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
 
 
 
-    
-    
-    
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -337,8 +485,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -416,6 +573,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、算法描述"><span class="nav-text">一、算法描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、图示举例"><span class="nav-text">二、图示举例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、算法实现"><span class="nav-text">三、算法实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、算法分析"><span class="nav-text">四、算法分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、总结"><span class="nav-text">五、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
