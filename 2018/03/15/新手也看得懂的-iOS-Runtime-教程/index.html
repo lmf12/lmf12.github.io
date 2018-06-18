@@ -113,7 +113,7 @@
 <meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime-image-1.jpg">
 <meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime-image-2.jpg">
 <meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime-image-3.jpg">
-<meta property="og:updated_time" content="2018-05-19T06:42:47.000Z">
+<meta property="og:updated_time" content="2018-06-18T04:15:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="新手也看得懂的 iOS Runtime 教程">
 <meta name="twitter:description" content="关于 Runtime ，网上已经有很多很好的文章，写得很详尽。本篇主要是从新手的角度出发，逐步介绍 Runtime 的原理、常用方法、应用场景等。">
@@ -324,7 +324,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-05-19T14:42:47+08:00">2018-05-19</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-06-18T12:15:22+08:00">2018-06-18</time>
             
           </span>
 
@@ -442,7 +442,7 @@
 <p>由于一个 <code>Method</code> 只保存了方法的方法名，并最终要根据方法名来查找方法的实现，因此在 <code>Objective-C</code> 中不支持下面这种定义。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setWidth:(<span class="keyword">int</span>)width;</span><br><span class="line">- (<span class="keyword">void</span>)setWidth:(<span class="keyword">double</span>)width;</span><br></pre></td></tr></table></figure>
 <p><strong>2、</strong>再来说 <code>IMP</code> 。可以看到它是一个「函数指针」。简单来说，「函数指针」就是用来找到函数地址，然后执行函数。（<a href="http://blog.csdn.net/candyliuxj/article/details/6339414" target="_blank" rel="noopener">「函数指针」了解一下</a>）</p>
-<p>这里要注意， <code>IMP</code> 指向的函数的前两个参数是默认参数， <code>id</code> 和 <code>SEL</code> 。这里的 <code>SEL</code> 好理解，就是函数名。而 <code>id</code> 是拥有这个 <code>Method</code> 的对象。即对于实例方法，这里会传入指向 <code>self</code> 的指针；对于类方法，这里会传入指向对应类的指针。后面的省略号即是参数列表。</p>
+<p>这里要注意， <code>IMP</code> 指向的函数的前两个参数是默认参数， <code>id</code> 和 <code>SEL</code> 。这里的 <code>SEL</code> 好理解，就是函数名。而 <code>id</code> ，对于实例方法来说， <code>self</code> 保存了当前对象的地址；对于类方法来说， <code>self</code> 保存了当前对应类对象的地址。后面的省略号即是参数列表。</p>
 <p><strong>3、</strong>到这里， <code>Method</code> 的结构就很明了了。 <code>Method</code> 建立了 <code>SEL</code> 和 <code>IMP</code> 的关联，当对一个对象发送消息时，会通过给出的 <code>SEL</code> 去找到  <code>IMP</code> ，然后执行。</p>
 <p>在 <code>Objective-C</code> 中，所有的方法调用，都会转化成向对象发送消息。发送消息主要是使用 <code>objc_msgSend</code> 函数。看一下头文件定义：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span> objc_msgSend(<span class="keyword">id</span> <span class="keyword">self</span>, SEL op, ...);</span><br></pre></td></tr></table></figure>
