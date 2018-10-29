@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.lymanli.com/2018/10/28/javascript-puzzle/</loc>
+    
+    <lastmod>2018-10-29T16:59:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.lymanli.com/2018/05/05/nest-tableview/</loc>
+    
+    <lastmod>2018-10-29T16:34:48.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.lymanli.com/2018/03/15/%E6%96%B0%E6%89%8B%E4%B9%9F%E7%9C%8B%E5%BE%97%E6%87%82%E7%9A%84-iOS-Runtime-%E6%95%99%E7%A8%8B/</loc>
     
     <lastmod>2018-06-18T04:15:22.000Z</lastmod>
@@ -12,13 +26,6 @@
     <loc>http://www.lymanli.com/2018/06/16/bubble-sort/</loc>
     
     <lastmod>2018-06-16T04:54:05.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.lymanli.com/2018/05/05/nest-tableview/</loc>
-    
-    <lastmod>2018-05-05T17:40:15.000Z</lastmod>
     
   </url>
   

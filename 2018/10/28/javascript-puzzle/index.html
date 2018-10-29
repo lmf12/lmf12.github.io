@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="JavaScript, 拼图, 游戏" />
+
+
+<meta name="description" content="本篇主要讲解，如何利用原生的 JavaScript 来实现一个简单的拼图小游戏。">
+<meta name="keywords" content="JavaScript, 拼图, 游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 JavaScript 实现简单拼图游戏">
+<meta property="og:url" content="http://www.lymanli.com/2018/10/28/javascript-puzzle/index.html">
+<meta property="og:site_name" content="Lyman&#39;s Blog">
+<meta property="og:description" content="本篇主要讲解，如何利用原生的 JavaScript 来实现一个简单的拼图小游戏。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/javascript-puzzle.jpg">
+<meta property="og:updated_time" content="2018-10-29T16:59:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用 JavaScript 实现简单拼图游戏">
+<meta name="twitter:description" content="本篇主要讲解，如何利用原生的 JavaScript 来实现一个简单的拼图小游戏。">
+<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/javascript-puzzle.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.lymanli.com/2018/10/28/javascript-puzzle/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>用 JavaScript 实现简单拼图游戏 | Lyman's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lyman's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            关于</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2018/10/28/javascript-puzzle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lyman Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lyman's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">用 JavaScript 实现简单拼图游戏</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-28T16:22:22+08:00">2018-10-28</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-10-30T00:59:16+08:00">2018-10-30</time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/JavaScript-从放弃到入门/" itemprop="url" rel="index"><span itemprop="name">JavaScript 从放弃到入门</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/10/28/javascript-puzzle/" class="leancloud_visitors" data-flag-title="用 JavaScript 实现简单拼图游戏">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://p4pks8hkh.bkt.clouddn.com/javascript-puzzle.jpg" alt=""><br>本篇主要讲解，如何利用原生的 <code>JavaScript</code> 来实现一个简单的拼图小游戏。<br><a id="more"></a></p>
+<p>线上体验地址：<a href="http://www.lymanli.com/game/puzzle/">拼图</a></p>
+<h1 id="一、游戏的基础逻辑"><a href="#一、游戏的基础逻辑" class="headerlink" title="一、游戏的基础逻辑"></a>一、游戏的基础逻辑</h1><p>想用一门语言来开发游戏，必须先了解如何使用这门语言来实现一些基础逻辑，比如图像的绘制、交互的处理、定时器等。</p>
+<h3 id="1、图形绘制"><a href="#1、图形绘制" class="headerlink" title="1、图形绘制"></a>1、图形绘制</h3><p>图形绘制是一切的基础，这里使用 <code>JavaScript</code> 在 <code>canvas</code> 上进行绘制。即先在 <code>html</code> 中创建 <code>canvas</code> 元素，然后在 <code>JavaScript</code> 中，通过 id 拿到这个元素，并且通过 <code>canvas</code> 拿到对应的上下文环境 <code>context</code>，为后续的绘图做好准备。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">"background"</span> <span class="attr">width</span>=<span class="string">"450px"</span> <span class="attr">height</span>=<span class="string">"450px"</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> background = <span class="built_in">document</span>.getElementById(<span class="string">"background"</span>);</span><br><span class="line"><span class="keyword">var</span> context = background.getContext(<span class="string">'2d'</span>);</span><br></pre></td></tr></table></figure>
+<p>通过 <code>context</code> 的 <code>drawImage</code> 方法可以绘制图片，这里进行了相应的封装：</p>
+<blockquote>
+<p><strong>注：</strong>这里要等图片加载完毕后再进行绘制，即在 <code>onload</code> 中去调用 <code>drawImage</code> 方法，否则会绘制失败。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> drawImageItem = <span class="function"><span class="keyword">function</span>(<span class="params">index, position</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">    img.src = <span class="string">'./image/dog_0'</span> + <span class="built_in">String</span>(index+<span class="number">1</span>) + <span class="string">'.jpg'</span>;</span><br><span class="line">    img.onload = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> rect = rectForPosition(position);</span><br><span class="line">        context.drawImage(img, rect[<span class="number">0</span>], rect[<span class="number">1</span>], rect[<span class="number">2</span>], rect[<span class="number">3</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在绘制图片之后，我们还需要去动态刷新视图，否则 <code>canvas</code> 就只是一张静态的图片。如果是简单的图形刷新，只需在原来的位置重新绘制，进行覆盖即可。但有时候我们只需要将原来已存在的图形清除掉，而不需要绘制新图案。比如在拼图游戏中，将一个方块移动到另一个位置后，需要清空原来的位置。</p>
+<p>通过 <code>context</code> 的 <code>clearRect</code> 方法可以达到清除的目的。以下是清除 <code>canvas</code> 的某个区域的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> originRect = rectForPosition(origin);</span><br><span class="line">context.clearRect(originRect[<span class="number">0</span>], originRect[<span class="number">1</span>], originRect[<span class="number">2</span>], originRect[<span class="number">3</span>]);</span><br></pre></td></tr></table></figure>
+<h3 id="2、事件处理"><a href="#2、事件处理" class="headerlink" title="2、事件处理"></a>2、事件处理</h3><p>有了图形的绘制后，我们还需要处理玩家的输入事件，然后根据输入事件，来决定什么时候刷新视图。输入事件可以分为 3 种：在手机上有触屏事件；在 PC 上，有鼠标和键盘事件。</p>
+<p><code>JavaScript</code> 中对触屏和鼠标点击的监听是一样的，都是通过 <code>canvas</code> 的 <code>onclick</code> 事件进行回调，具体如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 屏幕点击</span></span><br><span class="line">background.onclick = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>我们可以通过 <code>e.offsetX</code>、<code>e.offsetY</code> 来获取触控点在 <code>canvas</code> 中的位置。</p>
+<blockquote>
+<p><strong>注：</strong> <code>canvas</code> 的坐标原点在左上角，即左上角的坐标是 <code>(0, 0)</code>。</p>
+</blockquote>
+<p>键盘的按键点击则是通过 <code>document</code> 的 <code>onkeyup</code>、<code>onkeydown</code> 等事件进行回调。<code>onkeyup</code> 是指按键的抬起事件，<code>onkeydown</code> 是指按键的按下事件。我们可以通过 <code>keyCode</code> 知道当前具体是哪一个按键，然后根据不同的按键去处理不同的逻辑，如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (event.keyCode == <span class="string">'37'</span>) &#123;  <span class="comment">// 左</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.keyCode == <span class="string">'38'</span>) &#123; <span class="comment">// 上</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.keyCode == <span class="string">'39'</span>) &#123; <span class="comment">// 右</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.keyCode == <span class="string">'40'</span>) &#123; <span class="comment">// 下</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3、定时器"><a href="#3、定时器" class="headerlink" title="3、定时器"></a>3、定时器</h3><p>有时候，除了在玩家输入的时候需要去刷新视图，还需要每隔一段时间定时去刷新视图。比如在一个贪吃蛇游戏中，就需要每隔一段时间就去刷新蛇的位置。</p>
+<p>这个时候我们就需要一个定时器，让它每隔一段时间去执行一段刷新视图的代码。我们通过 <code>setInterval</code> 方法来实现定时器功能：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setInterval(<span class="string">"run()"</span>, <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+<p>上面这段代码表示每隔 100 毫秒，去执行一次 <code>run</code> 方法。</p>
+<h1 id="二、拼图的基础逻辑"><a href="#二、拼图的基础逻辑" class="headerlink" title="二、拼图的基础逻辑"></a>二、拼图的基础逻辑</h1><p>有了游戏的基础逻辑，下面来看一下如何实现拼图的逻辑。</p>
+<h3 id="1、生成随机序列"><a href="#1、生成随机序列" class="headerlink" title="1、生成随机序列"></a>1、生成随机序列</h3><p>因为不是任意序列都可以通过平移的方式来还原，所以我们不能简单地生成一个随机序列。比如 <code>1、0、2、3、4、5、6、7、8</code> 这个序列，无论怎么平移，都不可能还原。</p>
+<p>这里采取的做法是：预先设置了 4 个可还原的序列，先从这 4 个序列中随机选取一个，然后再对序列进行模拟平移若干步骤。以此来尽可能地保证初始序列的多样性，也保证了序列的可还原性。具体代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> setupRandomPosition = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> list1 = [<span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">var</span> list2 = [<span class="number">2</span>, <span class="number">0</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>];</span><br><span class="line">    <span class="keyword">var</span> list3 = [<span class="number">3</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">5</span>];</span><br><span class="line">    <span class="keyword">var</span> list4 = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">8</span>];</span><br><span class="line">    <span class="keyword">var</span> lists = [list1, list2, list3, list4];</span><br><span class="line"></span><br><span class="line">    imageIndexForPosition = lists[<span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random() * <span class="number">4</span>)];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取空位位置</span></span><br><span class="line">    <span class="keyword">var</span> emptyPosition = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = imageIndexForPosition.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (imageIndexForPosition[i] == lastIndex()) &#123;</span><br><span class="line">            emptyPosition = i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    background.emptyPosition = emptyPosition;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 随机移动次数</span></span><br><span class="line">    <span class="keyword">var</span> times = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">while</span> (times--) &#123;</span><br><span class="line">        <span class="comment">// 获取随机数，决定空位哪个位置进行移动</span></span><br><span class="line">        <span class="keyword">var</span> direction = <span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random() * <span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> target = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">if</span> (direction == <span class="number">0</span>) &#123;</span><br><span class="line">            target = topOfPosition(emptyPosition);  <span class="comment">// 上</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (direction == <span class="number">1</span>) &#123;</span><br><span class="line">            target = leftOfPosition(emptyPosition);  <span class="comment">// 左 </span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (direction == <span class="number">2</span>) &#123;</span><br><span class="line">            target = rightOfPosition(emptyPosition);  <span class="comment">// 右</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (direction == <span class="number">3</span>) &#123;</span><br><span class="line">            target = bottomOfPosition(emptyPosition);  <span class="comment">// 下</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (target &lt; <span class="number">0</span> || target &gt; lastIndex()) &#123;  <span class="comment">// 位置不合法，继续下一次循环</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> result = moveImageIfCanAtPosition(target);</span><br><span class="line">        <span class="keyword">if</span> (result &gt;= <span class="number">0</span>) &#123; <span class="comment">// 如果移动成功，更新空位的位置</span></span><br><span class="line">            emptyPosition = target;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2、判断是否可以移动方块"><a href="#2、判断是否可以移动方块" class="headerlink" title="2、判断是否可以移动方块"></a>2、判断是否可以移动方块</h3><p>在保存顺序的时候，是用 0～8 这 9 个数字来保存，而空白的方块是数字 8 的位置。所以判断可以移动的唯一条件是，目标位置的值是否为 8。代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> isPositionEmpty = <span class="function"><span class="keyword">function</span>(<span class="params">position</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (position &lt; <span class="number">0</span> || position &gt; lastIndex()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">if</span> (imageIndexForPosition[position] == lastIndex()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面 <code>lastIndex()</code> 的值为 8。</p>
+<h3 id="3、实现方块移动"><a href="#3、实现方块移动" class="headerlink" title="3、实现方块移动"></a>3、实现方块移动</h3><p>方块移动的实现很简单，先将旧位置的图形清除，然后在新的位置绘制。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> refreshImagePositions = <span class="function"><span class="keyword">function</span>(<span class="params">origin, target</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> originRect = rectForPosition(origin);</span><br><span class="line">    context.clearRect(originRect[<span class="number">0</span>], originRect[<span class="number">1</span>], originRect[<span class="number">2</span>], originRect[<span class="number">3</span>]);</span><br><span class="line">    drawImageItem(imageIndexForPosition[target], target);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4、检查是否完成"><a href="#4、检查是否完成" class="headerlink" title="4、检查是否完成"></a>4、检查是否完成</h3><p>检查图案是否已经还原，只需要对数组进行一次遍历，看是否有序即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> checkIfFinish = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> index = <span class="number">0</span>; index &lt; imageIndexForPosition.length; index++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (index != imageIndexForPosition[index]) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5、交互事件屏蔽"><a href="#5、交互事件屏蔽" class="headerlink" title="5、交互事件屏蔽"></a>5、交互事件屏蔽</h3><p>当图案还原之后，我们不希望玩家还能通过键盘或鼠标来移动方块，这个时候就需要对交互事件进行屏蔽。</p>
+<p>只需要一个标志位就可以达到这个目的:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 屏幕点击</span></span><br><span class="line">background.onclick = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isFinish) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 键盘按钮事件</span></span><br><span class="line"><span class="built_in">document</span>.onkeyup = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isFinish) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当图案还原之后，标志位 <code>isFinish</code> 会被置为 <code>true</code>，然后在屏幕点击和键盘按钮响应事件的开始处添加判断，如果已经结束，则不继续走方块移动的逻辑。</p>
+<h1 id="三、源码"><a href="#三、源码" class="headerlink" title="三、源码"></a>三、源码</h1><p>请到 <a href="https://github.com/lmf12/javascript-games/tree/master/puzzle" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="http://www.runoob.com/js/js-tutorial.html" target="_blank" rel="noopener">JavaScript 教程</a></p></div>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/16/bubble-sort/" rel="next" title="冒泡排序——重温排序（三）">
+                <i class="fa fa-chevron-left"></i> 冒泡排序——重温排序（三）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Lyman Li" />
+            
+              <p class="site-author-name" itemprop="name">Lyman Li</p>
+              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/e43d2bdec533" target="_blank" title="简书"><i class="fa fa-fw fa-book"></i>简书</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、游戏的基础逻辑"><span class="nav-text">一、游戏的基础逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、图形绘制"><span class="nav-text">1、图形绘制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、事件处理"><span class="nav-text">2、事件处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、定时器"><span class="nav-text">3、定时器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、拼图的基础逻辑"><span class="nav-text">二、拼图的基础逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、生成随机序列"><span class="nav-text">1、生成随机序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、判断是否可以移动方块"><span class="nav-text">2、判断是否可以移动方块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、实现方块移动"><span class="nav-text">3、实现方块移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、检查是否完成"><span class="nav-text">4、检查是否完成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、交互事件屏蔽"><span class="nav-text">5、交互事件屏蔽</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、源码"><span class="nav-text">三、源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+
+  &nbsp;
+
+  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
