@@ -109,12 +109,12 @@
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/kvc-kvo.jpg">
-<meta property="og:updated_time" content="2018-03-07T13:37:41.000Z">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/kvc-kvo.jpg">
+<meta property="og:updated_time" content="2018-11-08T14:30:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="说一下KVC和KVO">
 <meta name="twitter:description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。">
-<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/kvc-kvo.jpg">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/kvc-kvo.jpg">
 
 
 
@@ -321,7 +321,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-03-07T21:37:41+08:00">2018-03-07</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-11-08T22:30:18+08:00">2018-11-08</time>
             
           </span>
 
@@ -382,7 +382,7 @@
       
 
       
-        <p><img src="http://p4pks8hkh.bkt.clouddn.com/kvc-kvo.jpg" alt="avatar"><br>本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。<br><a id="more"></a></p>
+        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/kvc-kvo.jpg" alt="avatar"><br>本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。<br><a id="more"></a></p>
 <h1 id="一、KVC"><a href="#一、KVC" class="headerlink" title="一、KVC"></a>一、KVC</h1><h2 id="1-KVC是什么"><a href="#1-KVC是什么" class="headerlink" title="1. KVC是什么"></a>1. KVC是什么</h2><p>KVC 即 Key-Value Coding，翻译成键值编码。它是一种不通过存取方法，而通过属性名称字符串间接访问属性的机制。</p>
 <h2 id="2-KVC的用法"><a href="#2-KVC的用法" class="headerlink" title="2. KVC的用法"></a>2. KVC的用法</h2><p>KVC 常用到的方法有下面几个：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)valueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">- (<span class="keyword">void</span>)setValue:(<span class="keyword">nullable</span> <span class="keyword">id</span>)value forKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">nullable</span> <span class="keyword">id</span>)valueForKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br><span class="line">- (<span class="keyword">void</span>)setValue:(<span class="keyword">nullable</span> <span class="keyword">id</span>)value forKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br></pre></td></tr></table></figure>

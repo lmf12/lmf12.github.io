@@ -4,8 +4,26 @@
 
     
   <url>
+    <loc>http://www.lymanli.com/2018/06/16/bubble-sort/</loc>
+    <lastmod>2018-11-08T14:30:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>冒泡排序——重温排序（三）</title>
+        <pubTime>2018-06-16T02:32:22.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.lymanli.com/2018/10/28/javascript-puzzle/</loc>
-    <lastmod>2018-10-29T16:59:16.000Z</lastmod>
+    <lastmod>2018-11-08T14:30:18.000Z</lastmod>
     <data>
         <display>
         <title>用 JavaScript 实现简单拼图游戏</title>
@@ -15,6 +33,96 @@
            
              
               <breadCrumb title="JavaScript 从放弃到入门" url="http://www.lymanli.com/categories/JavaScript-%E4%BB%8E%E6%94%BE%E5%BC%83%E5%88%B0%E5%85%A5%E9%97%A8/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/</loc>
+    <lastmod>2018-11-08T14:30:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS AVPlayer 实现后台连续播放视频</title>
+        <pubTime>2018-03-11T05:37:42.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lymanli.com/2018/02/27/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E2%80%94%E2%80%94%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
+    <lastmod>2018-11-08T14:30:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>希尔排序——重温排序（二）</title>
+        <pubTime>2018-02-27T09:58:41.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lymanli.com/2018/02/25/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E2%80%94%E2%80%94%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    <lastmod>2018-11-08T14:30:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>插入排序——重温排序（一）</title>
+        <pubTime>2018-02-25T02:41:40.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lymanli.com/2018/03/15/%E6%96%B0%E6%89%8B%E4%B9%9F%E7%9C%8B%E5%BE%97%E6%87%82%E7%9A%84-iOS-Runtime-%E6%95%99%E7%A8%8B/</loc>
+    <lastmod>2018-11-08T14:30:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>新手也看得懂的 iOS Runtime 教程</title>
+        <pubTime>2018-03-15T15:37:48.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lymanli.com/2018/03/05/%E8%AF%B4%E4%B8%80%E4%B8%8BKVC%E5%92%8CKVO/</loc>
+    <lastmod>2018-11-08T14:30:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>说一下KVC和KVO</title>
+        <pubTime>2018-03-05T11:13:18.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
           
         </display>
     </data>
@@ -39,113 +147,5 @@
     </url>
 
     
-  <url>
-    <loc>http://www.lymanli.com/2018/03/15/%E6%96%B0%E6%89%8B%E4%B9%9F%E7%9C%8B%E5%BE%97%E6%87%82%E7%9A%84-iOS-Runtime-%E6%95%99%E7%A8%8B/</loc>
-    <lastmod>2018-06-18T04:15:22.000Z</lastmod>
-    <data>
-        <display>
-        <title>新手也看得懂的 iOS Runtime 教程</title>
-        <pubTime>2018-03-15T15:37:48.000Z</pubTime>
-        
-         
-           
-             
-              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.lymanli.com/2018/06/16/bubble-sort/</loc>
-    <lastmod>2018-06-16T04:54:05.000Z</lastmod>
-    <data>
-        <display>
-        <title>冒泡排序——重温排序（三）</title>
-        <pubTime>2018-06-16T02:32:22.000Z</pubTime>
-        
-         
-           
-             
-              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/</loc>
-    <lastmod>2018-03-11T16:11:40.000Z</lastmod>
-    <data>
-        <display>
-        <title>iOS AVPlayer 实现后台连续播放视频</title>
-        <pubTime>2018-03-11T05:37:42.000Z</pubTime>
-        
-         
-           
-             
-              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.lymanli.com/2018/03/05/%E8%AF%B4%E4%B8%80%E4%B8%8BKVC%E5%92%8CKVO/</loc>
-    <lastmod>2018-03-07T13:37:41.000Z</lastmod>
-    <data>
-        <display>
-        <title>说一下KVC和KVO</title>
-        <pubTime>2018-03-05T11:13:18.000Z</pubTime>
-        
-         
-           
-             
-              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.lymanli.com/2018/02/27/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E2%80%94%E2%80%94%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
-    <lastmod>2018-03-03T04:35:33.000Z</lastmod>
-    <data>
-        <display>
-        <title>希尔排序——重温排序（二）</title>
-        <pubTime>2018-02-27T09:58:41.000Z</pubTime>
-        
-         
-           
-             
-              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-    
-  <url>
-    <loc>http://www.lymanli.com/2018/02/25/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E2%80%94%E2%80%94%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
-    <lastmod>2018-02-27T10:03:08.000Z</lastmod>
-    <data>
-        <display>
-        <title>插入排序——重温排序（一）</title>
-        <pubTime>2018-02-25T02:41:40.000Z</pubTime>
-        
-         
-           
-             
-              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
-          
-        </display>
-    </data>
-    </url>
-
     
 </urlset>

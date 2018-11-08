@@ -109,13 +109,13 @@
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/shell-sort.jpg">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/example-shell-sort.jpg">
-<meta property="og:updated_time" content="2018-03-03T04:35:33.000Z">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/shell-sort.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/example-shell-sort.jpg">
+<meta property="og:updated_time" content="2018-11-08T14:30:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="希尔排序——重温排序（二）">
 <meta name="twitter:description" content="上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。">
-<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/shell-sort.jpg">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/shell-sort.jpg">
 
 
 
@@ -322,7 +322,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-03-03T12:35:33+08:00">2018-03-03</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-11-08T22:30:18+08:00">2018-11-08</time>
             
           </span>
 
@@ -383,11 +383,11 @@
       
 
       
-        <p><img src="http://p4pks8hkh.bkt.clouddn.com/shell-sort.jpg" alt="avatar"><br>上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。<br><a id="more"></a></p>
+        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/shell-sort.jpg" alt="avatar"><br>上篇文章提到，插入排序在待排序列基本有序的时候，效率会好很多。这篇文章介绍的希尔排序，其基本思想就是先让序列基本有序，然后再进行插入排序。<br><a id="more"></a></p>
 <h1 id="一、算法描述"><a href="#一、算法描述" class="headerlink" title="一、算法描述"></a>一、算法描述</h1><p>希尔排序先将待排序列进行分组，分别进行插入排序，间隔为 <code>gap</code> 的元素为一组。待各组排序完成后，逐渐缩小 <code>gap</code> 的值，重复分组排序过程，直到 <code>gap</code> 值缩小为1，即对整个序列进行一次插入排序。</p>
 <p><code>gap</code> 一般先取 <code>n / 2</code> ，然后逐步 <code>gap = gap / 2</code> ，直到 <code>gap</code> 等于1。</p>
 <h1 id="二、图示举例"><a href="#二、图示举例" class="headerlink" title="二、图示举例"></a>二、图示举例</h1><p>下面来看一个希尔排序的图示，注意观察两个的关键字为25的元素，思考一下希尔排序的稳定性。</p>
-<p><img src="http://p4pks8hkh.bkt.clouddn.com/example-shell-sort.jpg" alt="avatar"></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/example-shell-sort.jpg" alt="avatar"></p>
 <h1 id="三、算法实现"><a href="#三、算法实现" class="headerlink" title="三、算法实现"></a>三、算法实现</h1><p>C语言版本代码奉上。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">shellSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> gap = count / <span class="number">2</span>; gap &gt;= <span class="number">1</span>; gap /= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; gap; ++i) &#123;</span><br><span class="line">            insertSort(<span class="built_in">list</span>, count, i, gap);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count, <span class="keyword">int</span> head, <span class="keyword">int</span> gap)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp, i, j;</span><br><span class="line">    <span class="keyword">for</span> (i = head + gap; i &lt; count; i += gap) &#123;</span><br><span class="line">        temp = <span class="built_in">list</span>[i];</span><br><span class="line">        <span class="keyword">for</span> (j = i - gap; j &gt;= head; j -= gap) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">list</span>[j] &lt;= temp) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">list</span>[j+gap] = <span class="built_in">list</span>[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">list</span>[j+gap] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>可以看到，希尔排序不过是一个不断进行插入排序的过程。在这个过程中，去不断地调整序列的头位置 <code>head</code> 和间隔 <code>gap</code> 的值。而这里用到的插入排序算法，跟之前相比做了一点小调整，修改了待排元素的索引，加上了对应的 <code>gap</code> 偏移。</p>

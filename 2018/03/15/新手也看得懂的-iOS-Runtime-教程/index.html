@@ -109,15 +109,15 @@
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="关于 Runtime ，网上已经有很多很好的文章，写得很详尽。本篇主要是从新手的角度出发，逐步介绍 Runtime 的原理、常用方法、应用场景等。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime.jpg">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime-image-1.jpg">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime-image-2.jpg">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime-image-3.jpg">
-<meta property="og:updated_time" content="2018-06-18T04:15:22.000Z">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime-image-1.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime-image-2.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime-image-3.jpg">
+<meta property="og:updated_time" content="2018-11-08T14:30:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="新手也看得懂的 iOS Runtime 教程">
 <meta name="twitter:description" content="关于 Runtime ，网上已经有很多很好的文章，写得很详尽。本篇主要是从新手的角度出发，逐步介绍 Runtime 的原理、常用方法、应用场景等。">
-<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/runtime.jpg">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime.jpg">
 
 
 
@@ -324,7 +324,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-06-18T12:15:22+08:00">2018-06-18</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-11-08T22:30:18+08:00">2018-11-08</time>
             
           </span>
 
@@ -385,7 +385,7 @@
       
 
       
-        <p><img src="http://p4pks8hkh.bkt.clouddn.com/runtime.jpg" alt=""></p>
+        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime.jpg" alt=""></p>
 <p>关于 <code>Runtime</code> ，网上已经有很多很好的文章，写得很详尽。本篇主要是从新手的角度出发，逐步介绍 <code>Runtime</code> 的原理、常用方法、应用场景等。</p>
 <a id="more"></a>
 <h1 id="一、Runtime-是什么"><a href="#一、Runtime-是什么" class="headerlink" title="一、Runtime 是什么"></a>一、Runtime 是什么</h1><p>在 <code>C</code> 语言中，将代码转换为可执行程序，一般要经历三个步骤，即编译、链接、运行。在链接的时候，对象的类型、方法的实现就已经确定好了。</p>
@@ -428,7 +428,7 @@
 </blockquote>
 <p>这么说来元类也有一个 <code>isa</code> 指针，元类也应该是一个对象。的确是这样。那么元类的 <code>isa</code> 指向哪里呢？为了不让这种结构无限延伸下去， <code>Objective-C</code> 的设计者让所有的元类的 <code>isa</code> 指向基类（比如 <code>NSObject</code> ）的元类。而基类的元类的 <code>isa</code> 指向自己。这样就形成了一个完美的闭环。</p>
 <p>下面这张图可以清晰地表示出这种关系。</p>
-<p><img src="http://p4pks8hkh.bkt.clouddn.com/runtime-image-1.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime-image-1.jpg" alt=""></p>
 <p>同时注意 <code>super_class</code> 的指向，基类的 <code>super_class</code> 指向 <code>nil</code> 。</p>
 <h2 id="3-Method"><a href="#3-Method" class="headerlink" title="3. Method"></a>3. Method</h2><p>上面讲到，「找到对应的方法，然后执行」，那么这个「执行」是怎样进行的呢？下面就来介绍一下 <code>Objective-C</code> 中的方法调用。</p>
 <p>先来看一下 <code>Method</code> 在头文件中的定义：</p>
@@ -457,9 +457,9 @@
 <p><strong>5、</strong>上面已经介绍了方法调用的大致过程，下面来讨论类之间继承的情况。重新回去看 <code>objc_class</code> 结构体的定义，当中包含一个指向父类的指针 <code>super_class</code> 。</p>
 <p>即<strong>当向一个对象发送消息时，会去这个类的 <code>methodLists</code> 中查找相应的 <code>SEL</code> ，如果查不到，则通过 <code>super_class</code> 指针找到父类，再去父类的 <code>methodLists</code> 中查找，层层递进。</strong>最后仍然找不到，才走抛异常流程。</p>
 <p>下面的图演示了一个基本的消息发送框架：</p>
-<p><img src="http://p4pks8hkh.bkt.clouddn.com/runtime-image-2.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime-image-2.jpg" alt=""></p>
 <p><strong>6、</strong>当一个方法找不到的时候，会走拦截调用和消息转发流程。我们可以重写 <code>+resolveClassMethod:</code> 和 <code>+resolveInstanceMethod:</code> 方法，在程序崩溃前做一些处理。通常的做法是动态添加一个方法，并返回 <code>YES</code> 告诉程序已经成功处理消息。如果这两个方法返回 <code>NO</code> ，这个流程会继续往下走，完整的流程如下图所示：</p>
-<p><img src="http://p4pks8hkh.bkt.clouddn.com/runtime-image-3.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/runtime-image-3.jpg" alt=""></p>
 <h2 id="4-Category"><a href="#4-Category" class="headerlink" title="4. Category"></a>4. Category</h2><p>我们来看一下 <code>Category</code> 在头文件中的定义：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_category *Category;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> objc_category &#123;</span><br><span class="line">    <span class="keyword">char</span> * category_name;</span><br><span class="line">    <span class="keyword">char</span> * class_name;</span><br><span class="line">    <span class="keyword">struct</span> objc_method_list * instance_methods;</span><br><span class="line">    <span class="keyword">struct</span> objc_method_list * class_methods;</span><br><span class="line">    <span class="keyword">struct</span> objc_protocol_list * protocols;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p> <code>Category</code> 是一个指向 <code>objc_category</code> 结构体的指针，在 <code>objc_category</code> 中包含对象方法列表、类方法列表、协议列表。从这里我们也可以看出， <code>Category</code> 支持添加对象方法、类方法、协议，但不能保存成员变量。</p>

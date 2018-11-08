@@ -109,13 +109,13 @@
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/bubble-sort.jpg">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/example-bubble-sort.jpg">
-<meta property="og:updated_time" content="2018-06-16T04:54:05.000Z">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/bubble-sort.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/example-bubble-sort.jpg">
+<meta property="og:updated_time" content="2018-11-08T14:30:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="冒泡排序——重温排序（三）">
 <meta name="twitter:description" content="大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。">
-<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/bubble-sort.jpg">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/bubble-sort.jpg">
 
 
 
@@ -322,7 +322,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-06-16T12:54:05+08:00">2018-06-16</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-11-08T22:30:18+08:00">2018-11-08</time>
             
           </span>
 
@@ -383,10 +383,10 @@
       
 
       
-        <p><img src="http://p4pks8hkh.bkt.clouddn.com/bubble-sort.jpg" alt=""><br>大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。<br><a id="more"></a></p>
+        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/bubble-sort.jpg" alt=""><br>大家好，欢迎来到「没人看系列」。距离这个系列的上一篇文章「希尔排序」，已经过去了3个月之久。最近开始休假，总算有点时间来补上点进度。今天来说一下「冒泡排序」。<br><a id="more"></a></p>
 <h1 id="一、算法描述"><a href="#一、算法描述" class="headerlink" title="一、算法描述"></a>一、算法描述</h1><p>设待排序列中有 <code>n</code> 个记录。则排序过程一般需要经历 <code>n-1</code> 次冒泡。每次冒泡，会将本次待排序列中关键字最大的记录下沉，即移动到序列的末尾。移动的过程，是通过依次比较相邻记录的关键字大小，如果发生逆序，则交换。在进行第 <code>i</code> 趟冒泡时，对应的待排序列为 <code>0 ... n-i-1</code> 。</p>
 <h1 id="二、图示举例"><a href="#二、图示举例" class="headerlink" title="二、图示举例"></a>二、图示举例</h1><p>先来直观地看下排序的过程，同样注意观察排序的「稳定性」。</p>
-<p><img src="http://p4pks8hkh.bkt.clouddn.com/example-bubble-sort.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/example-bubble-sort.jpg" alt=""></p>
 <h1 id="三、算法实现"><a href="#三、算法实现" class="headerlink" title="三、算法实现"></a>三、算法实现</h1><p>「冒泡排序」的代码实现也非常简单。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span> <span class="built_in">list</span>[], <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; count - i - <span class="number">1</span>; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">list</span>[j] &gt; <span class="built_in">list</span>[j+<span class="number">1</span>]) &#123;</span><br><span class="line">                <span class="keyword">int</span> tmp = <span class="built_in">list</span>[j];</span><br><span class="line">                <span class="built_in">list</span>[j] = <span class="built_in">list</span>[j+<span class="number">1</span>];</span><br><span class="line">                <span class="built_in">list</span>[j+<span class="number">1</span>] = tmp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>

@@ -109,13 +109,13 @@
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-1.jpg">
-<meta property="og:image" content="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-2.jpg">
-<meta property="og:updated_time" content="2018-03-11T16:11:40.000Z">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/avplayer-image-1.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/avplayer-image-2.jpg">
+<meta property="og:updated_time" content="2018-11-08T14:30:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS AVPlayer 实现后台连续播放视频">
 <meta name="twitter:description" content="最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。">
-<meta name="twitter:image" content="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-1.jpg">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/avplayer-image-1.jpg">
 
 
 
@@ -322,7 +322,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-03-12T00:11:40+08:00">2018-03-12</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-11-08T22:30:18+08:00">2018-11-08</time>
             
           </span>
 
@@ -390,9 +390,9 @@
 </blockquote>
 <h1 id="一、后台播放音频"><a href="#一、后台播放音频" class="headerlink" title="一、后台播放音频"></a>一、后台播放音频</h1><p>要实现后台播放视频功能，首先需要实现后台播放音频功能。实现后台播放音频很简单，只要简单配置一下就可以了。总共有三步：</p>
 <h2 id="1-修改-Info-plist"><a href="#1-修改-Info-plist" class="headerlink" title="1. 修改 Info.plist"></a>1. 修改 Info.plist</h2><p>在 <code>Info.plist</code> 中添加 <code>Required background modes</code> ，并在下面添加一项 <code>App plays audio or streams audio/video using AirPlay</code> 。如图所示：</p>
-<p><img src="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-1.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/avplayer-image-1.jpg" alt=""></p>
 <h2 id="2-修改-Capabilities"><a href="#2-修改-Capabilities" class="headerlink" title="2. 修改 Capabilities"></a>2. 修改 Capabilities</h2><p>在 <code>Capabilities</code> 中开启 <code>Background Modes</code> 。如图所示：</p>
-<p><img src="http://p4pks8hkh.bkt.clouddn.com/avplayer-image-2.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/avplayer-image-2.jpg" alt=""></p>
 <h2 id="3-修改-AppDelegate"><a href="#3-修改-AppDelegate" class="headerlink" title="3. 修改 AppDelegate"></a>3. 修改 AppDelegate</h2><p>在 <code>AppDelegate</code> 的 <code>application: didFinishLaunchingWithOptions:</code> 方法中，添加以下代码：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 告诉app支持后台播放</span></span><br><span class="line"><span class="built_in">AVAudioSession</span> *audioSession = [<span class="built_in">AVAudioSession</span> sharedInstance];</span><br><span class="line">[audioSession setCategory:<span class="built_in">AVAudioSessionCategoryPlayback</span> error:<span class="literal">nil</span>];</span><br><span class="line">[audioSession setActive:<span class="literal">YES</span> error:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
 <p>至此就实现了后台播放音频的功能，但这不是我们的最终目的，请继续往下看。</p>
