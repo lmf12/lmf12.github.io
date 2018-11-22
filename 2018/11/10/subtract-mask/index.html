@@ -116,7 +116,7 @@
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/subtract-mask-image-2.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/subtract-mask-image-3.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/subtract-mask-image-4.jpg">
-<meta property="og:updated_time" content="2018-11-11T10:07:19.000Z">
+<meta property="og:updated_time" content="2018-11-22T16:27:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一行代码实现 UIView 镂空效果">
 <meta name="twitter:description" content="这是一种实现 UIView 镂空效果的方案，可以快速实现任意形状的镂空、文字的镂空、带镂空的毛玻璃效果等。本质上是 UIView 的 maskView 效果的「取反」。">
@@ -327,7 +327,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-11-11T18:07:19+08:00">2018-11-11</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-11-23T00:27:33+08:00">2018-11-23</time>
             
           </span>
 
@@ -432,8 +432,8 @@
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIView</span> (<span class="title">MFSubtractMask</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)setSubtractMaskView:(<span class="built_in">UIView</span> *)view;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">UIView</span> *)subtractMaskView;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <p>这样调用起来就十分方便了，一行代码搞定：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">view.subtractMaskView = maskView;</span><br></pre></td></tr></table></figure>
-<h1 id="四、局限性"><a href="#四、局限性" class="headerlink" title="四、局限性"></a>四、局限性</h1><h4 id="1-subtractMaskView-不会自动刷新"><a href="#1-subtractMaskView-不会自动刷新" class="headerlink" title="1. subtractMaskView 不会自动刷新"></a>1. <code>subtractMaskView</code> 不会自动刷新</h4><p>我们知道，当 <code>UIView</code> 的 <code>maskView</code> 的内容动态修改时，会实时反映到 <code>UIView</code> 中。但在本项目中， <code>subtractMaskView</code> 属性会生成一张全新的图片来作为遮罩图，因为不会根据 <code>subtractMaskView</code> 的内容实时来刷新视图。如果需要更新，必须手动调用 <code>setSubtractMaskView:</code> 方法来重新生成遮罩图。</p>
-<h4 id="2-setSubtractMaskView-不宜被频繁调用"><a href="#2-setSubtractMaskView-不宜被频繁调用" class="headerlink" title="2. setSubtractMaskView: 不宜被频繁调用"></a>2. <code>setSubtractMaskView:</code> 不宜被频繁调用</h4><p> <code>setSubtractMaskView:</code> 本质上是生成一个新的遮罩图的过程，该过程涉及图片像素的遍历转换，较为耗时，不宜频繁调用。</p>
+<h1 id="四、局限性"><a href="#四、局限性" class="headerlink" title="四、局限性"></a>四、局限性</h1><h2 id="1-subtractMaskView-不会自动刷新"><a href="#1-subtractMaskView-不会自动刷新" class="headerlink" title="1. subtractMaskView 不会自动刷新"></a>1. <code>subtractMaskView</code> 不会自动刷新</h2><p>我们知道，当 <code>UIView</code> 的 <code>maskView</code> 的内容动态修改时，会实时反映到 <code>UIView</code> 中。但在本项目中， <code>subtractMaskView</code> 属性会生成一张全新的图片来作为遮罩图，因为不会根据 <code>subtractMaskView</code> 的内容实时来刷新视图。如果需要更新，必须手动调用 <code>setSubtractMaskView:</code> 方法来重新生成遮罩图。</p>
+<h2 id="2-setSubtractMaskView-不宜被频繁调用"><a href="#2-setSubtractMaskView-不宜被频繁调用" class="headerlink" title="2. setSubtractMaskView: 不宜被频繁调用"></a>2. <code>setSubtractMaskView:</code> 不宜被频繁调用</h2><p> <code>setSubtractMaskView:</code> 本质上是生成一个新的遮罩图的过程，该过程涉及图片像素的遍历转换，较为耗时，不宜频繁调用。</p>
 <p><strong>综上所述，这种方案适合只生成一次遮罩图的场景。</strong></p>
 <h1 id="五、源码"><a href="#五、源码" class="headerlink" title="五、源码"></a>五、源码</h1><p>请到 <a href="https://github.com/lmf12/MFSubtractMask" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="http://southpeak.github.io/2015/01/05/quartz2d-11/" target="_blank" rel="noopener">Quartz 2D编程指南之十一：位图与图像遮罩</a><br><a href="https://stackoverflow.com/questions/8126276/how-to-convert-uiimage-cgimagerefs-alpha-channel-to-mask" target="_blank" rel="noopener">How to convert UIImage/CGImageRef’s alpha channel to mask?</a></p></div>
@@ -621,7 +621,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、思路"><span class="nav-text">一、思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、实现"><span class="nav-text">二、实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、使用"><span class="nav-text">三、使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、局限性"><span class="nav-text">四、局限性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-subtractMaskView-不会自动刷新"><span class="nav-text">1. subtractMaskView 不会自动刷新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-setSubtractMaskView-不宜被频繁调用"><span class="nav-text">2. setSubtractMaskView: 不宜被频繁调用</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、源码"><span class="nav-text">五、源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、思路"><span class="nav-text">一、思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、实现"><span class="nav-text">二、实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、使用"><span class="nav-text">三、使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、局限性"><span class="nav-text">四、局限性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-subtractMaskView-不会自动刷新"><span class="nav-text">1. subtractMaskView 不会自动刷新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-setSubtractMaskView-不宜被频繁调用"><span class="nav-text">2. setSubtractMaskView: 不宜被频繁调用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、源码"><span class="nav-text">五、源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
