@@ -334,7 +334,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-02-26T01:44:00+08:00">2019-02-26</time>
+              <time title="更新于" itemprop="dateModified" datetime="2019-03-01T12:34:59+08:00">2019-03-01</time>
             
           </span>
 
@@ -401,7 +401,7 @@
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><strong>OpenGL（Open Graphics Library）</strong>是 Khronos Group （一个图形软硬件行业协会，该协会主要关注图形和多媒体方面的开放标准）开发维护的一个<strong>规范</strong>，它是硬件无关的。它主要为我们定义了用来操作图形和图片的一系列函数的 API，OpenGL 本身并非 API。</p>
 <p><strong>OpenGL ES（OpenGL for Embedded Systems）</strong>是 OpenGL 的子集，针对手机、PDA 和游戏主机等嵌入式设备而设计。该规范也是由 Khronos Group 开发维护。</p>
 <p>OpenGL ES 去除了<strong>四边形（GL_QUADS）</strong>、<strong>多边形（GL_POLYGONS）</strong>等复杂图元，以及许多非绝对必要的特性，剩下最核心有用的部分。可以理解成是一个在移动平台上<strong>能够支持 OpenGL 最基本功能的精简规范</strong>。</p>
-<p>目前 iOS 平台支持的有 OpenGL ES 1.0，2.0，3.0。OpenGL ES 3.0 加入了一些新的特性，但是它除了需要 iOS 7.0 以上之外，还需要 iPhone 5S 之后的设备才能支持。出于现有主流设备的考虑，我们主要使用 OpenGL ES 2.0。</p>
+<p>目前 iOS 平台支持的有 OpenGL ES 1.0，2.0，3.0。OpenGL ES 3.0 加入了一些新的特性，但是它除了需要 iOS 7.0 以上之外，还需要 iPhone 5S 之后的设备才能支持。出于现有设备的考虑，我们主要使用 OpenGL ES 2.0。</p>
 <blockquote>
 <p><strong>注：</strong>下文中的 OpenGL ES 均指代 OpenGL ES 2.0。</p>
 </blockquote>
@@ -454,9 +454,9 @@
 <p>在顶点着色器程序输出顶点坐标之后，各个顶点按照绘制命令中的图元类型参数，以及顶点索引数组被组装成一个个图元。</p>
 <p>通过这一步，模型中 3D 的图元已经被转化为屏幕上 2D 的图元。</p>
 <p><strong>4、几何着色器</strong></p>
-<p>在顶点和片段着色器之间有一个可选的着色器，叫做<strong>几何着色器（Geometry Shader）</strong>。</p>
+<p>在「OpenGL」的版本中，顶点着色器和片段着色器之间有一个<strong>可选的</strong>着色器，叫做<strong>几何着色器（Geometry Shader）</strong>。</p>
 <p>几何着色器把图元形式的一系列顶点的集合作为输入，它可以通过产生新顶点构造出新的图元来生成其他形状。</p>
-<p><strong>这个部分我们暂时还用不到，可以先不关注。</strong></p>
+<p><strong>OpenGL ES 目前还不支持几何着色器，这个部分我们可以先不关注。</strong></p>
 <p><strong>5、光栅化</strong></p>
 <p>在光栅化阶段，基本图元被转换为供片段着色器使用的片段。片段表示可以被渲染到屏幕上的像素，它包含位置、颜色、纹理坐标等信息，这些值是由图元的顶点信息进行插值计算得到的。</p>
 <p>在片段着色器运行之前会执行裁切，处于视图以外的所有像素会被裁切掉，用来提升执行效率。</p>
