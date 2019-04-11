@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/render-texture-image-4.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/render-texture-image-5.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/render-texture-image-6.jpg">
-<meta property="og:updated_time" content="2019-03-02T02:33:46.000Z">
+<meta property="og:updated_time" content="2019-04-11T15:51:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从零讲解 iOS 中 OpenGL ES 的纹理渲染">
 <meta name="twitter:description" content="本文主要介绍，如何使用 OpenGL ES 来渲染一张图片。内容包括：基础概念的讲解，如何使用 GLKit 来渲染纹理，如何使用 GLSL 编写的着色器来渲染纹理。">
@@ -334,7 +334,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-03-02T10:33:46+08:00">2019-03-02</time>
+              <time title="更新于" itemprop="dateModified" datetime="2019-04-11T23:51:48+08:00">2019-04-11</time>
             
           </span>
 
@@ -414,7 +414,7 @@
 <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/render-texture-image-2.jpg" alt=""></p>
 <p><strong>纹理坐标系</strong>的范围是 0 ~ 1，是一个二维坐标系，横轴称为 S 轴，纵轴称为 T 轴。在坐标系中，点的横坐标一般用 U 表示，点的纵坐标一般用 V 表示。左下角为 (0, 0)，右上角为 (1, 1)。</p>
 <blockquote>
-<p><strong>注：</strong>纹理坐标系和 UIKit 坐标系的方向刚好相反。</p>
+<p><strong>注：</strong> UIKit 坐标系的 (0, 0) 点在左上角，其纵轴的方向和纹理坐标系纵轴的方向刚好相反。</p>
 </blockquote>
 <h2 id="4、纹理相关的概念"><a href="#4、纹理相关的概念" class="headerlink" title="4、纹理相关的概念"></a>4、纹理相关的概念</h2><ul>
 <li><strong>纹素（Texel）：</strong>一个图像初始化为一个纹理缓存后，每个像素会变成一个纹素。纹理的坐标是范围是 0 ~ 1，在这个单位长度内，可能包含任意多个纹素。</li>
@@ -491,7 +491,7 @@
 <h2 id="2、初始化-GLKView-并设置上下文"><a href="#2、初始化-GLKView-并设置上下文" class="headerlink" title="2、初始化 GLKView 并设置上下文"></a>2、初始化 GLKView 并设置上下文</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建上下文，使用 2.0 版本</span></span><br><span class="line">EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 初始化 GLKView</span></span><br><span class="line"><span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="keyword">self</span>.view.frame.size.width, <span class="keyword">self</span>.view.frame.size.width);</span><br><span class="line"><span class="keyword">self</span>.glkView = [[GLKView alloc] initWithFrame:frame context:context];</span><br><span class="line"><span class="keyword">self</span>.glkView.backgroundColor = [<span class="built_in">UIColor</span> clearColor];</span><br><span class="line"><span class="keyword">self</span>.glkView.delegate = <span class="keyword">self</span>;</span><br><span class="line">    </span><br><span class="line">[<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.glkView];</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 设置 glkView 的上下文为当前上下文</span></span><br><span class="line">[EAGLContext setCurrentContext:<span class="keyword">self</span>.glkView.context];</span><br></pre></td></tr></table></figure>
 <h2 id="3、加载纹理"><a href="#3、加载纹理" class="headerlink" title="3、加载纹理"></a>3、加载纹理</h2><p>使用 <code>GLKTextureLoader</code> 来加载纹理，并用 <code>GLKBaseEffect</code> 保存纹理的 ID ，为后面渲染做准备。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *imagePath = [[[<span class="built_in">NSBundle</span> mainBundle] resourcePath] stringByAppendingPathComponent:<span class="string">@"sample.jpg"</span>];</span><br><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithContentsOfFile:imagePath]; </span><br><span class="line"></span><br><span class="line"><span class="built_in">NSDictionary</span> *options = @&#123;GLKTextureLoaderOriginBottomLeft : @(<span class="literal">YES</span>)&#125;;</span><br><span class="line">GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithCGImage:[image <span class="built_in">CGImage</span>]</span><br><span class="line">                                                           options:options</span><br><span class="line">                                                             error:<span class="literal">NULL</span>];</span><br><span class="line"><span class="keyword">self</span>.baseEffect = [[GLKBaseEffect alloc] init];</span><br><span class="line"><span class="keyword">self</span>.baseEffect.texture2d0.name = textureInfo.name;</span><br><span class="line"><span class="keyword">self</span>.baseEffect.texture2d0.target = textureInfo.target;</span><br></pre></td></tr></table></figure>
-<p>因为 OpenGL ES 和 UIKit 的坐标是相反的，所以将 <code>GLKTextureLoaderOriginBottomLeft</code> 设置为 <code>YES</code>，用来消除两个坐标系之间的差异。</p>
+<p>因为<strong>纹理坐标系</strong>和 <strong>UIKit 坐标系</strong>的纵轴方向是相反的，所以将 <code>GLKTextureLoaderOriginBottomLeft</code> 设置为 <code>YES</code>，用来消除两个坐标系之间的差异。</p>
 <blockquote>
 <p><strong>注：</strong>这里如果用 <code>imageNamed:</code> 来读取图片，在反复加载相同纹理的时候，会出现上下颠倒的错误。</p>
 </blockquote>
