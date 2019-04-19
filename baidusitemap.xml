@@ -4,6 +4,24 @@
 
     
   <url>
+    <loc>http://www.lymanli.com/2018/11/10/subtract-mask/</loc>
+    <lastmod>2019-04-19T14:04:29.000Z</lastmod>
+    <data>
+        <display>
+        <title>一行代码实现 UIView 镂空效果</title>
+        <pubTime>2018-11-10T02:54:08.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.lymanli.com/2019/02/17/ios-opengles-render-texture/</loc>
     <lastmod>2019-04-11T15:51:48.000Z</lastmod>
     <data>
@@ -87,24 +105,6 @@
            
              
               <breadCrumb title="记忆碎片" url="http://www.lymanli.com/categories/%E8%AE%B0%E5%BF%86%E7%A2%8E%E7%89%87/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.lymanli.com/2018/11/10/subtract-mask/</loc>
-    <lastmod>2018-11-22T16:27:33.000Z</lastmod>
-    <data>
-        <display>
-        <title>一行代码实现 UIView 镂空效果</title>
-        <pubTime>2018-11-10T02:54:08.000Z</pubTime>
-        
-         
-           
-             
-              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
           
         </display>
     </data>
