@@ -4,6 +4,24 @@
 
     
   <url>
+    <loc>http://www.lymanli.com/2019/09/29/ios-gpuimage-face-detect/</loc>
+    <lastmod>2019-09-30T07:54:34.000Z</lastmod>
+    <data>
+        <display>
+        <title>在 GPUImage 中检测人脸关键点</title>
+        <pubTime>2019-09-29T06:03:29.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="GPUImage 实操手册" url="http://www.lymanli.com/categories/GPUImage-%E5%AE%9E%E6%93%8D%E6%89%8B%E5%86%8C/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.lymanli.com/2019/06/15/ios-gpuimage-camera/</loc>
     <lastmod>2019-06-17T16:50:32.000Z</lastmod>
     <data>
@@ -166,17 +184,17 @@
 
     
   <url>
-    <loc>http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/</loc>
+    <loc>http://www.lymanli.com/2018/02/27/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E2%80%94%E2%80%94%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
     <lastmod>2018-11-08T14:30:18.000Z</lastmod>
     <data>
         <display>
-        <title>iOS AVPlayer 实现后台连续播放视频</title>
-        <pubTime>2018-03-11T05:37:42.000Z</pubTime>
+        <title>希尔排序——重温排序（二）</title>
+        <pubTime>2018-02-27T09:58:41.000Z</pubTime>
         
          
            
              
-              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
+              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
           
         </display>
     </data>
@@ -184,12 +202,12 @@
 
     
   <url>
-    <loc>http://www.lymanli.com/2018/02/27/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E2%80%94%E2%80%94%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
+    <loc>http://www.lymanli.com/2018/06/16/bubble-sort/</loc>
     <lastmod>2018-11-08T14:30:18.000Z</lastmod>
     <data>
         <display>
-        <title>希尔排序——重温排序（二）</title>
-        <pubTime>2018-02-27T09:58:41.000Z</pubTime>
+        <title>冒泡排序——重温排序（三）</title>
+        <pubTime>2018-06-16T02:32:22.000Z</pubTime>
         
          
            
@@ -220,17 +238,17 @@
 
     
   <url>
-    <loc>http://www.lymanli.com/2018/06/16/bubble-sort/</loc>
+    <loc>http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/</loc>
     <lastmod>2018-11-08T14:30:18.000Z</lastmod>
     <data>
         <display>
-        <title>冒泡排序——重温排序（三）</title>
-        <pubTime>2018-06-16T02:32:22.000Z</pubTime>
+        <title>iOS AVPlayer 实现后台连续播放视频</title>
+        <pubTime>2018-03-11T05:37:42.000Z</pubTime>
         
          
            
              
-              <breadCrumb title="重温排序" url="http://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/"/>
+              <breadCrumb title="人人都会iOS" url="http://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/"/>
           
         </display>
     </data>
