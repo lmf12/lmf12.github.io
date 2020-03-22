@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="iOS, OpenGL, 全景播放器, player, panorama" />
+
+
+<meta name="description" content="全景视频在播放的时候，可以自由地旋转视角。如果结合手机的陀螺仪，全景视频在移动端可以具备更好的浏览体验。本文主要介绍如何基于 AVPlayer 实现一个全景播放器。">
+<meta name="keywords" content="iOS, OpenGL, 全景播放器, player, panorama">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 OpenGL ES 实现全景播放器">
+<meta property="og:url" content="http://www.lymanli.com/2020/03/21/ios-opengles-panorama/index.html">
+<meta property="og:site_name" content="Lyman&#39;s Blog">
+<meta property="og:description" content="全景视频在播放的时候，可以自由地旋转视角。如果结合手机的陀螺仪，全景视频在移动端可以具备更好的浏览体验。本文主要介绍如何基于 AVPlayer 实现一个全景播放器。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-gif-1.gif">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-image-1.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-image-2.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-gif-2.gif">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-image-3.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-gif-3.gif">
+<meta property="og:updated_time" content="2020-03-22T08:39:59.775Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 OpenGL ES 实现全景播放器">
+<meta name="twitter:description" content="全景视频在播放的时候，可以自由地旋转视角。如果结合手机的陀螺仪，全景视频在移动端可以具备更好的浏览体验。本文主要介绍如何基于 AVPlayer 实现一个全景播放器。">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.lymanli.com/2020/03/21/ios-opengles-panorama/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>使用 OpenGL ES 实现全景播放器 | Lyman's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-129740170-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lyman's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            关于</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2020/03/21/ios-opengles-panorama/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lyman Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lyman's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用 OpenGL ES 实现全景播放器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-21T17:25:11+08:00">2020-03-21</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-03-22T16:39:59+08:00">2020-03-22</time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenGL-ES/" itemprop="url" rel="index"><span itemprop="name">OpenGL ES</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/03/21/ios-opengles-panorama/" class="leancloud_visitors" data-flag-title="使用 OpenGL ES 实现全景播放器">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama.jpg" alt=""></p>
+<p>全景视频在播放的时候，可以自由地旋转视角。如果结合手机的陀螺仪，全景视频在移动端可以具备更好的浏览体验。本文主要介绍如何基于 <code>AVPlayer</code> 实现一个全景播放器。</p>
+<a id="more"></a>
+<p>首先看一下最终的效果：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-gif-1.gif" alt=""></p>
+<p>在上一篇文章中，我们了解了如何对视频进行图形处理。（如果还不了解的话，建议先阅读一下。<a href="http://www.lymanli.com/2020/03/15/ios-video-filter/">传送门</a>）</p>
+<p>一般全景视频的编码格式与普通视频并无区别，只不过它的每一帧都记录了 360 度的图像信息。全景播放器需要做的事情是，可以通过参数的设置，播放指定区域的图像。</p>
+<p>所以，我们需要<strong>实现一个滤镜，这个滤镜可以接收一些角度相关的参数，渲染指定区域的图像。然后我们再将这个滤镜，通过上一篇文章的方式，应用到视频上，就可以实现全景播放器的效果。</strong></p>
+<h1 id="一、构造球面"><a href="#一、构造球面" class="headerlink" title="一、构造球面"></a>一、构造球面</h1><p>全景视频的每一帧图像，其实是一个球面纹理。所以，我们第一步要做的是先构造球面，然后把纹理贴上去。</p>
+<p>首先来看一段代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 生成球体数据</span></span><br><span class="line"><span class="comment">/// @param slices 分割数，越多越平滑</span></span><br><span class="line"><span class="comment">/// @param radius 球半径</span></span><br><span class="line"><span class="comment">/// @param vertices 顶点数组</span></span><br><span class="line"><span class="comment">/// @param indices 索引数组</span></span><br><span class="line"><span class="comment">/// @param verticesCount 顶点数组长度</span></span><br><span class="line"><span class="comment">/// @param indicesCount 索引数组长度</span></span><br><span class="line">- (<span class="keyword">void</span>)genSphereWithSlices:(<span class="keyword">int</span>)slices</span><br><span class="line">                     radius:(<span class="keyword">float</span>)radius</span><br><span class="line">                   vertices:(<span class="keyword">float</span> **)vertices</span><br><span class="line">                    indices:(uint16_t **)indices</span><br><span class="line">              verticesCount:(<span class="keyword">int</span> *)verticesCount</span><br><span class="line">               indicesCount:(<span class="keyword">int</span> *)indicesCount &#123;</span><br><span class="line">    <span class="comment">// (1)</span></span><br><span class="line">    <span class="keyword">int</span> numParallels = slices / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> numVertices = (numParallels + <span class="number">1</span>) * (slices + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> numIndices = numParallels * slices * <span class="number">6</span>;</span><br><span class="line">    <span class="keyword">float</span> angleStep = (<span class="number">2.0</span>f * M_PI) / ((<span class="keyword">float</span>) slices);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// (2)</span></span><br><span class="line">    <span class="keyword">if</span> (vertices != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *vertices = malloc(<span class="keyword">sizeof</span>(<span class="keyword">float</span>) * <span class="number">5</span> * numVertices);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (indices != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *indices = malloc(<span class="keyword">sizeof</span>(uint16_t) * numIndices);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// (3)</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numParallels + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; slices + <span class="number">1</span>; j++) &#123;</span><br><span class="line">            <span class="keyword">int</span> vertex = (i * (slices + <span class="number">1</span>) + j) * <span class="number">5</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (vertices) &#123;</span><br><span class="line">                (*vertices)[vertex + <span class="number">0</span>] = radius * sinf(angleStep * (<span class="keyword">float</span>)i) * sinf(angleStep * (<span class="keyword">float</span>)j);</span><br><span class="line">                (*vertices)[vertex + <span class="number">1</span>] = radius * cosf(angleStep * (<span class="keyword">float</span>)i);</span><br><span class="line">                (*vertices)[vertex + <span class="number">2</span>] = radius * sinf(angleStep * (<span class="keyword">float</span>)i) * cosf(angleStep * (<span class="keyword">float</span>)j);</span><br><span class="line">                (*vertices)[vertex + <span class="number">3</span>] = (<span class="keyword">float</span>)j / (<span class="keyword">float</span>)slices;</span><br><span class="line">                (*vertices)[vertex + <span class="number">4</span>] = <span class="number">1.0</span>f - ((<span class="keyword">float</span>)i / (<span class="keyword">float</span>)numParallels);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// (4)</span></span><br><span class="line">    <span class="keyword">if</span> (indices != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        uint16_t *indexBuf = (*indices);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numParallels ; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; slices; j++) &#123;</span><br><span class="line">                *indexBuf++ = i * (slices + <span class="number">1</span>) + j;</span><br><span class="line">                *indexBuf++ = (i + <span class="number">1</span>) * (slices + <span class="number">1</span>) + j;</span><br><span class="line">                *indexBuf++ = (i + <span class="number">1</span>) * (slices + <span class="number">1</span>) + (j + <span class="number">1</span>);</span><br><span class="line">                </span><br><span class="line">                *indexBuf++ = i * (slices + <span class="number">1</span>) + j;</span><br><span class="line">                *indexBuf++ = (i + <span class="number">1</span>) * (slices + <span class="number">1</span>) + (j + <span class="number">1</span>);</span><br><span class="line">                *indexBuf++ = i * (slices + <span class="number">1</span>) + (j + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// (5)</span></span><br><span class="line">    <span class="keyword">if</span> (verticesCount) &#123;</span><br><span class="line">        *verticesCount = numVertices * <span class="number">5</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (indicesCount) &#123;</span><br><span class="line">        *indicesCount = numIndices;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码参考自 <a href="https://github.com/bestswifter/BSPanoramaView" target="_blank" rel="noopener">bestswifter/BSPanoramaView</a> 这个库。它通过<strong>分割数</strong>和<strong>球半径</strong>，生成了<strong>顶点数组</strong>和<strong>索引数组</strong>。</p>
+<p>现在来逐行解释代码的含义：</p>
+<p><strong>(1)</strong> 这部分代码是对原始图像进行分割。下面以 <code>slices = 10</code> 为例进行讲解：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-image-1.jpg" alt=""></p>
+<p>如图，<code>slices</code> 表示分割的份数，横向被分割成了 10 份。<code>numParallels</code> 表示层数，纵向分割成 5 份。因为纹理贴到球面时，横向需要覆盖 360 度，纵向只需要覆盖 180 度，所以纵向分割数是横向分割数的一半。<strong>可以把它们想象成经纬度来帮助理解。</strong></p>
+<p><code>numVertices</code> 表示顶点数，如图中蓝色点的个数。<code>numIndices</code> 表示索引数，当使用 <code>EBO</code> 绘制矩形的时候，一个矩形需要 6 个索引值，所以这里需要用矩形的个数乘以 6 。</p>
+<p><code>angleStep</code> 表示纹理贴到球面后，每一份分割对应的角度增量。</p>
+<p><strong>(2)</strong> 根据<strong>顶点数</strong>和<strong>索引数</strong>申请<strong>顶点数组</strong>和<strong>索引数组</strong>的内存空间。</p>
+<p><strong>(3)</strong> 开始创建顶点数据。这里遍历每一个顶点，计算每一个顶点的顶点坐标和对应的纹理坐标。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-image-2.jpg" alt=""></p>
+<blockquote>
+<p>为了方便表示，将<strong>角 AOB</strong> 记为 α ，将<strong>角 COD</strong> 记为 β ，半径记为 r 。</p>
+</blockquote>
+<p>当 <code>i</code> 和 <code>j</code> 都为 <code>0</code> 的时候，表示的是图中的 G 点。实际上，第一行的 11 个点都会和 G 点重合。</p>
+<p>对于图中的 A 点，它的坐标为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = r * sin α * sin β</span><br><span class="line">y = r * cos α</span><br><span class="line">z = r * sin α * cos β</span><br></pre></td></tr></table></figure>
+<p>由此易得出顶点坐标的计算公式。</p>
+<p>而纹理坐标只需要根据分割数等比增长。值得注意的是，由于纹理坐标的原点在左下角，所以纹理坐标的 y 值要取反，即 G 点对应的纹理坐标是 <code>(0, 1)</code> 。</p>
+<p><strong>(4)</strong> 计算每个索引的值。其实很好理解，比如第一个矩形，它需要用到第一行的前两个顶点和第二行的前两个顶点，然后将这四个顶点拆成两个三角形来组合。</p>
+<p><strong>(5)</strong> 返回生成的顶点数组和索引数组的长度，在实际渲染的时候需要用到。因为每一个顶点有 5 个变量，所以需要乘上 5 。</p>
+<p>将上面生成的数据进行绘制，可以看到球面已经生成：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-gif-2.gif" alt=""></p>
+<h1 id="二、透视投影"><a href="#二、透视投影" class="headerlink" title="二、透视投影"></a>二、透视投影</h1><p>OpenGL ES 默认使用的是<strong>正射投影</strong>，正射投影的特点是远近图像的大小是一样的。</p>
+<p>在这个例子中，我们需要使用<strong>透视投影</strong>。透视投影定义了可视空间的<strong>平截头体</strong>，处于平截头体内的物体才会被以<strong>近大远小</strong>的方式渲染。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-image-3.jpg" alt=""></p>
+<p>如图，我们需要使用 <code>GLKMatrix4MakePerspective(float fovyRadians, float aspect, float nearZ, float farZ)</code> 来构造透视投影的变换矩阵。</p>
+<p><code>fovyRadians</code> 表示视野，<code>fovyRadians</code> 越大，视野越大。<code>aspect</code> 表示视窗的比例，<code>nearZ</code> 表示近平面，<code>farZ</code> 表示远平面。</p>
+<p>在实际使用中，<code>nearZ</code> 一般设置为 <code>0.1</code>，<code>farZ</code> 一般设置为 <code>100</code> 。</p>
+<p>具体代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GLfloat aspect = [<span class="keyword">self</span> outputSize].width / [<span class="keyword">self</span> outputSize].height;</span><br><span class="line"><span class="built_in">CGFloat</span> perspective = MIN(MAX(<span class="keyword">self</span>.perspective, kMinPerspective), kMaxPerspective);</span><br><span class="line">GLKMatrix4 matrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(perspective), aspect, <span class="number">0.1</span>, <span class="number">100.</span>f);</span><br></pre></td></tr></table></figure>
+<p>因为摄像机的默认坐标是 <code>(0, 0, 0)</code>，而球面的半径是 <code>1</code>，处于 <code>0.1 ~ 100</code> 这个范围内。所以通过透视投影的矩阵变换后，看到的是从球面的内部，由<strong>平截头体</strong>截出来的图像。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-panorama-gif-3.gif" alt=""></p>
+<p>因为是球面内部的图像，所以是镜像的（这个问题后面一起解决）。</p>
+<h1 id="三、视角移动"><a href="#三、视角移动" class="headerlink" title="三、视角移动"></a>三、视角移动</h1><p>手机设备内置有陀螺仪，可以实时获取到设备的 <code>roll</code> 、<code>pitch</code>、<code>yaw</code> 信息，它们被称为<strong>欧拉角</strong>。</p>
+<p>但凡使用过欧拉角，都会遇到一个<strong>万向节死锁</strong>问题，它可以用<strong>四元数</strong>来解决。所以我们这里不直接读取设备的欧拉角，而是使用四元数，再把四元数转成旋转矩阵。</p>
+<p>幸运的是，系统也提供四元数的直接访问接口：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CMQuaternion</span> quaternion = <span class="keyword">self</span>.motionManager.deviceMotion.attitude.quaternion;</span><br></pre></td></tr></table></figure>
+<p>但是得到的四元数还不能直接使用，需要做<strong>三步</strong>变换：</p>
+<p><strong>第一步： Y 轴取反</strong></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">matrix = GLKMatrix4Scale(matrix, <span class="number">1.0</span>f, <span class="number">-1.0</span>f, <span class="number">1.0</span>f);</span><br></pre></td></tr></table></figure>
+<p>考虑到前面 X 轴镜像的问题，所以这一步实际上是：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">matrix = GLKMatrix4Scale(matrix, <span class="number">-1.0</span>f, <span class="number">-1.0</span>f, <span class="number">1.0</span>f);</span><br></pre></td></tr></table></figure>
+<p><strong>第二步： 顶点着色器 y 分量取反</strong></p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Panorama.vsh</span></span><br><span class="line"><span class="built_in">gl_Position</span> = matrix * <span class="type">vec4</span>(position.x, -position.y, position.z, <span class="number">1.0</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>第三步： 四元数 x 分量取反</strong></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CMQuaternion</span> quaternion = <span class="keyword">self</span>.motionManager.deviceMotion.attitude.quaternion;</span><br><span class="line"><span class="keyword">double</span> w = quaternion.w;</span><br><span class="line"><span class="keyword">double</span> wx = quaternion.x;</span><br><span class="line"><span class="keyword">double</span> wy = quaternion.y;</span><br><span class="line"><span class="keyword">double</span> wz = quaternion.z;</span><br><span class="line"><span class="keyword">self</span>.desQuaternion = GLKQuaternionMake(-wx, wy, wz, w);</span><br></pre></td></tr></table></figure>
+<p>然后通过 <code>self.desQuaternion</code> 才能计算出正确的旋转矩阵。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GLKMatrix4 rotation = GLKMatrix4MakeWithQuaternion(<span class="keyword">self</span>.desQuaternion);</span><br><span class="line">matrix = GLKMatrix4Multiply(matrix, rotation);</span><br></pre></td></tr></table></figure>
+<h1 id="四、镜头平滑移动"><a href="#四、镜头平滑移动" class="headerlink" title="四、镜头平滑移动"></a>四、镜头平滑移动</h1><p>我们在不断地移动手机时，<code>self.desQuaternion</code> 会不断地变化。由于移动手机的速度是变化的，所以 <code>self.desQuaternion</code> 的增量是不固定的。这样导致的结果是画面卡顿。</p>
+<p>所以需要做平滑处理，在<strong>当前四元数</strong>和<strong>目标四元数</strong>之间，根据一定的增量进行<strong>线性插值</strong>。这样能保证镜头的移动不会发生突变。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> distance = <span class="number">0.35</span>;   <span class="comment">// 数字越小越平滑，同时移动也更慢</span></span><br><span class="line"><span class="keyword">self</span>.srcQuaternion = GLKQuaternionNormalize(GLKQuaternionSlerp(<span class="keyword">self</span>.srcQuaternion, <span class="keyword">self</span>.desQuaternion, distance));</span><br></pre></td></tr></table></figure>
+<h1 id="五、渲染参数传递"><a href="#五、渲染参数传递" class="headerlink" title="五、渲染参数传递"></a>五、渲染参数传递</h1><p>在实际的渲染过程中，外部可以进行渲染参数的调整，来修改渲染的结果。</p>
+<p>比如以 <code>perspective</code> 为例，看一下在修改视野大小的时候，具体的参数是怎么传递的。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MFPanoramaPlayerItem.m</span></span><br><span class="line">- (<span class="keyword">void</span>)setPerspective:(<span class="built_in">CGFloat</span>)perspective &#123;</span><br><span class="line">    _perspective = perspective;</span><br><span class="line">    <span class="built_in">NSArray</span> *instructions = <span class="keyword">self</span>.videoComposition.instructions;</span><br><span class="line">    <span class="keyword">for</span> (MFPanoramaVideoCompositionInstruction *instruction <span class="keyword">in</span> instructions) &#123;</span><br><span class="line">        instruction.perspective = perspective;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>MFPanoramaPlayerItem</code> 中，当 <code>perspective</code> 修改时，会从当前的 <code>videoComposition</code> 中获取到 <code>MFPanoramaVideoCompositionInstruction</code> 数组，再遍历赋值。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MFPanoramaVideoCompositionInstruction.m</span></span><br><span class="line">- (<span class="keyword">void</span>)setPerspective:(<span class="built_in">CGFloat</span>)perspective &#123;</span><br><span class="line">    _perspective = perspective;</span><br><span class="line">    <span class="keyword">self</span>.panoramaFilter.perspective = perspective;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>MFPanoramaVideoCompositionInstruction</code> 中，修改 <code>perspective</code> 会给 <code>panoramaFilter</code> 赋值。然后 <code>MFPanoramaFilter</code> 开始渲染的时候，在 <code>startRendering</code> 方法中，会根据 <code>perspective</code> 属性，生成新的变换矩阵。</p>
+<h1 id="六、避免后台渲染"><a href="#六、避免后台渲染" class="headerlink" title="六、避免后台渲染"></a>六、避免后台渲染</h1><p>由于 OpenGL ES 不支持后台渲染，所以要注意，在 APP 切换到后台前，应该暂停播放。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSNotificationCenter</span> *center = [<span class="built_in">NSNotificationCenter</span> defaultCenter];</span><br><span class="line">[center addObserver:<span class="keyword">self</span></span><br><span class="line">           selector:<span class="keyword">@selector</span>(willResignActive:)</span><br><span class="line">               name:<span class="built_in">UIApplicationWillResignActiveNotification</span></span><br><span class="line">             object:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)willResignActive:(<span class="built_in">NSNotification</span> *)notification &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.state == MFPanoramaPlayerStatePlaying) &#123;</span><br><span class="line">        [<span class="keyword">self</span> pause];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/MFPanoramaPlayer" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://github.com/bestswifter/BSPanoramaView" target="_blank" rel="noopener">【GitHub】bestswifter/BSPanoramaView</a><br><a href="https://www.jianshu.com/p/7f2a3f8470a8" target="_blank" rel="noopener">OpenGL ES学习实战(360全景视频播放器)</a></p></div>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/15/ios-video-filter/" rel="next" title="在 iOS 中给视频添加滤镜">
+                <i class="fa fa-chevron-left"></i> 在 iOS 中给视频添加滤镜
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Lyman Li" />
+            
+              <p class="site-author-name" itemprop="name">Lyman Li</p>
+              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://juejin.im/user/5b141339f265da6e326c4883" target="_blank" title="掘金"><i class="fa fa-fw fa-wrench"></i>掘金</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/e43d2bdec533" target="_blank" title="简书"><i class="fa fa-fw fa-book"></i>简书</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、构造球面"><span class="nav-text">一、构造球面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、透视投影"><span class="nav-text">二、透视投影</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、视角移动"><span class="nav-text">三、视角移动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、镜头平滑移动"><span class="nav-text">四、镜头平滑移动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、渲染参数传递"><span class="nav-text">五、渲染参数传递</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、避免后台渲染"><span class="nav-text">六、避免后台渲染</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+
+  &nbsp;
+
+  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

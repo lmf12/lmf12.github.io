@@ -4,6 +4,24 @@
 
     
   <url>
+    <loc>http://www.lymanli.com/2020/03/21/ios-opengles-panorama/</loc>
+    <lastmod>2020-03-22T08:39:59.775Z</lastmod>
+    <data>
+        <display>
+        <title>使用 OpenGL ES 实现全景播放器</title>
+        <pubTime>2020-03-21T09:25:11.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="OpenGL ES" url="http://www.lymanli.com/categories/OpenGL-ES/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.lymanli.com/2020/03/15/ios-video-filter/</loc>
     <lastmod>2020-03-15T13:32:14.263Z</lastmod>
     <data>
@@ -310,12 +328,12 @@
 
     
   <url>
-    <loc>http://www.lymanli.com/2018/03/15/%E6%96%B0%E6%89%8B%E4%B9%9F%E7%9C%8B%E5%BE%97%E6%87%82%E7%9A%84-iOS-Runtime-%E6%95%99%E7%A8%8B/</loc>
+    <loc>http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/</loc>
     <lastmod>2018-11-08T14:30:18.000Z</lastmod>
     <data>
         <display>
-        <title>新手也看得懂的 iOS Runtime 教程</title>
-        <pubTime>2018-03-15T15:37:48.000Z</pubTime>
+        <title>iOS AVPlayer 实现后台连续播放视频</title>
+        <pubTime>2018-03-11T05:37:42.000Z</pubTime>
         
          
            
@@ -328,12 +346,12 @@
 
     
   <url>
-    <loc>http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/</loc>
+    <loc>http://www.lymanli.com/2018/03/15/%E6%96%B0%E6%89%8B%E4%B9%9F%E7%9C%8B%E5%BE%97%E6%87%82%E7%9A%84-iOS-Runtime-%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2018-11-08T14:30:18.000Z</lastmod>
     <data>
         <display>
-        <title>iOS AVPlayer 实现后台连续播放视频</title>
-        <pubTime>2018-03-11T05:37:42.000Z</pubTime>
+        <title>新手也看得懂的 iOS Runtime 教程</title>
+        <pubTime>2018-03-15T15:37:48.000Z</pubTime>
         
          
            
