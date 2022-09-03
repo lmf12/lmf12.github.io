@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="iOS, GPUImage, 染发, hair, segmentation" />
+
+
+<meta name="description" content="本文介绍了拍摄场景中染发效果的实现。主要涉及头发分割能力的接入，Metal 与 OpenGL 之间的纹理转换。">
+<meta name="keywords" content="iOS, GPUImage, 染发, hair, segmentation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 GPUImage 中实现染发效果">
+<meta property="og:url" content="http://www.lymanli.com/2022/08/27/ios-gpuimage-hair-segmentation/index.html">
+<meta property="og:site_name" content="Lyman&#39;s Blog">
+<meta property="og:description" content="本文介绍了拍摄场景中染发效果的实现。主要涉及头发分割能力的接入，Metal 与 OpenGL 之间的纹理转换。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-hair-segmentation.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-hair-segmentation-image-1.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-hair-segmentation-image-2.jpg">
+<meta property="og:updated_time" content="2022-09-03T10:33:59.723Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在 GPUImage 中实现染发效果">
+<meta name="twitter:description" content="本文介绍了拍摄场景中染发效果的实现。主要涉及头发分割能力的接入，Metal 与 OpenGL 之间的纹理转换。">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-hair-segmentation.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.lymanli.com/2022/08/27/ios-gpuimage-hair-segmentation/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>在 GPUImage 中实现染发效果 | Lyman's Blog</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-129740170-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lyman's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            关于</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2022/08/27/ios-gpuimage-hair-segmentation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lyman Li">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lyman's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">在 GPUImage 中实现染发效果</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-08-27T10:06:34+08:00">2022-08-27</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2022-09-03T18:33:59+08:00">2022-09-03</time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/GPUImage-实操手册/" itemprop="url" rel="index"><span itemprop="name">GPUImage 实操手册</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2022/08/27/ios-gpuimage-hair-segmentation/" class="leancloud_visitors" data-flag-title="在 GPUImage 中实现染发效果">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-hair-segmentation.jpg" alt=""></p>
+<p>本文介绍了拍摄场景中染发效果的实现。主要涉及头发分割能力的接入，Metal 与 OpenGL 之间的纹理转换。</p>
+<a id="more"></a>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>实现染发效果首先需要依赖<strong>头发分割能力</strong>识别头发区域，然后在 Shader 中对头发区域做染色处理。</p>
+<h1 id="一、头发分割能力"><a href="#一、头发分割能力" class="headerlink" title="一、头发分割能力"></a>一、头发分割能力</h1><p>之前我们有介绍过推理框架 <a href="https://github.com/Tencent/TNN" target="_blank" rel="noopener">TNN</a> 的使用。TNN 不仅开源了代码，而且还提供了一些<a href="https://github.com/darrenyao87/tnn-models" target="_blank" rel="noopener">算法模型</a>，其中就有我们需要的<strong>头发分割能力</strong>。</p>
+<p>在项目中使用 TNN 头发分割能力分为三步：</p>
+<p><strong>第一步：SDK 集成</strong></p>
+<p>TNN 的集成步骤在<a href="http://www.lymanli.com/2020/10/08/tnn-tutorial-ios/">之前的文章</a>已经介绍过了，不再赘述。</p>
+<p>算法模型的执行流程也类似，主要分为<strong>预处理、执行网络、后处理</strong>三步。</p>
+<p>不同的是算法模型的预处理和后处理参数（MatConvertParam），这个也可以在 TNN 的附带 Demo 里找到。</p>
+<p>预处理参数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MatConvertParam HairSegmentation::GetConvertParamForInput(<span class="built_in">std</span>::<span class="built_in">string</span> tag) &#123;</span><br><span class="line">    MatConvertParam input_convert_param;</span><br><span class="line">    input_convert_param.scale = &#123;<span class="number">1.0</span> / (<span class="number">255</span> * <span class="number">0.229</span>), <span class="number">1.0</span> / (<span class="number">255</span> * <span class="number">0.224</span>), <span class="number">1.0</span> / (<span class="number">255</span> * <span class="number">0.225</span>), <span class="number">0.0</span>&#125;;</span><br><span class="line">    input_convert_param.bias  = &#123;<span class="number">-0.485</span> / <span class="number">0.229</span>, <span class="number">-0.456</span> / <span class="number">0.224</span>, <span class="number">-0.406</span> / <span class="number">0.225</span>, <span class="number">0.0</span>&#125;;</span><br><span class="line">    <span class="keyword">return</span> input_convert_param;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>后处理参数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TNN_NS::MatConvertParam TNNSDKSample::GetConvertParamForOutput(<span class="built_in">std</span>::<span class="built_in">string</span> name) &#123;</span><br><span class="line">    <span class="keyword">return</span> TNN_NS::MatConvertParam();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>第二步：原始帧获取</strong></p>
+<p>这里的「原始帧」是指用于跑算法模型的原始数据。</p>
+<p>在 GPUImage 的渲染链中，每个滤镜传递给下个滤镜的帧数据类型是 <code>GPUImageFramebuffer</code>，<code>GPUImageFilter</code> 在完成单次渲染后，渲染结果保存在 <code>GPUImageFramebuffer</code> 的 <code>renderTarget</code> 中，<code>renderTarget</code> 是 <code>CVPixelbufferRef</code> 类型。</p>
+<p>我们知道，iOS 平台的 TNN 框架是基于 Metal 运行的，数据输入类型为 <code>MTLTexture</code> 或者 <code>MTLBuffer</code>。</p>
+<p>所以在我们这个例子中，在执行染发滤镜前，需要把上一个滤镜的渲染结果转成 <code>MTLTexture</code>，也就是把 <code>CVPixelbufferRef</code> 转成 <code>MTLTexture</code>。</p>
+<p><code>CVPixelbufferRef</code> 是一种支持缓冲区共享的图像格式，在使用 <code>IOSurface</code> 的情况下，可以将缓冲区扩展成 OpenGL 或 Metal 的纹理。</p>
+<p>也就是说，在渲染过程中，<code>CVPixelbufferRef</code> 允许 OpenGL 和 Metal 使用同一个纹理，而不用做额外的数据拷贝。这无疑能极大提高渲染的性能。</p>
+<p>我们来看一下 <code>GPUImageFramebuffer</code> 中创建 <code>renderTarget</code> 的代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CFDictionaryRef</span> empty;</span><br><span class="line"><span class="built_in">CFMutableDictionaryRef</span> attrs;</span><br><span class="line">empty = <span class="built_in">CFDictionaryCreate</span>(kCFAllocatorDefault, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="number">0</span>, &amp;kCFTypeDictionaryKeyCallBacks, &amp;kCFTypeDictionaryValueCallBacks);</span><br><span class="line">attrs = <span class="built_in">CFDictionaryCreateMutable</span>(kCFAllocatorDefault, <span class="number">1</span>, &amp;kCFTypeDictionaryKeyCallBacks, &amp;kCFTypeDictionaryValueCallBacks);</span><br><span class="line"><span class="built_in">CFDictionarySetValue</span>(attrs, kCVPixelBufferIOSurfacePropertiesKey, empty);</span><br><span class="line"></span><br><span class="line">CVReturn err = CVPixelBufferCreate(kCFAllocatorDefault, (<span class="keyword">int</span>)_size.width, (<span class="keyword">int</span>)_size.height, kCVPixelFormatType_32BGRA, attrs, &amp;renderTarget);</span><br></pre></td></tr></table></figure>
+<p>可以看到 <code>renderTarget</code> 的创建确实使用了 <code>IOSurface</code>，也就是说 <code>renderTarget</code> 可以直接转成 <code>MTLTexture</code>。</p>
+<p><code>CVPixelbufferRef</code> 转 <code>MTLTexture</code> 的核心代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">- (id&lt;MTLTexture&gt;)textureWithPixelBuffer:(CVPixelBufferRef)pixelBuffer &#123;</span><br><span class="line">    <span class="keyword">if</span> (!pixelBuffer) &#123;</span><br><span class="line">        <span class="keyword">return</span> nil;</span><br><span class="line">    &#125;</span><br><span class="line">    CVPixelBufferRetain(pixelBuffer);</span><br><span class="line">    CVMetalTextureRef texture = nil;</span><br><span class="line">    CVReturn status = CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault,</span><br><span class="line">                                                                self.textureCache,</span><br><span class="line">                                                                pixelBuffer,</span><br><span class="line">                                                                nil,</span><br><span class="line">                                                                MTLPixelFormatBGRA8Unorm,</span><br><span class="line">                                                                CVPixelBufferGetWidth(pixelBuffer),</span><br><span class="line">                                                                CVPixelBufferGetHeight(pixelBuffer),</span><br><span class="line">                                                                <span class="number">0</span>,</span><br><span class="line">                                                                &amp;texture);</span><br><span class="line">    <span class="keyword">if</span> (status != kCVReturnSuccess) &#123;</span><br><span class="line">        NSLog(@<span class="string">"texture create fail"</span>);</span><br><span class="line">        CVPixelBufferRelease(pixelBuffer);</span><br><span class="line">        <span class="keyword">return</span> nil;</span><br><span class="line">    &#125;</span><br><span class="line">    id&lt;MTLTexture&gt; result = CVMetalTextureGetTexture(texture);</span><br><span class="line">    </span><br><span class="line">    CFRelease(texture);</span><br><span class="line">    CVPixelBufferRelease(pixelBuffer);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>得到 <code>MTLTexture</code> 后，还需要 <code>resize</code> 成算法模型的输入大小，然后就可以丢给模型处理。</p>
+<p><strong>注意：</strong>这里的 <code>resize</code> 也是一次 <code>Metal</code> 渲染，整个过程需要保证所有的 <code>Metal</code> 渲染在同一个 <code>MTLCommandQueue</code> 上执行，否则会有同步或性能问题。</p>
+<p><strong>第三步：识别结果应用</strong></p>
+<p>算法模型处理完成后，会输出 <code>MTLTexture</code> 格式的头发 Mask 图，我们需要把 Mask 图转回 OpenGL 纹理才能使用。</p>
+<p>与上面 <code>CVPixelbufferRef</code> 转 <code>MTLTexture</code> 类似，为了渲染的高性能，纹理转换过程需要避免额外的数据拷贝。</p>
+<p>这里正确的做法是创建一个 OpenGL 和 Metal 可以共享缓冲区的 <code>CVPixelbufferRef</code>，把它扩展成 OpenGL 纹理和 Metal 纹理。</p>
+<p>然后将 Metal 纹理作为算法模型的渲染目标，则渲染完成后，OpenGL 纹理也能得到头发 Mask 图。</p>
+<p>因为 <code>GPUImageFramebuffer</code> 在创建的时候，就附带了 <code>CVPixelbufferRef</code> 格式的 <code>renderTarget</code>，所以我们直接创建 <code>GPUImageFramebuffer</code> 就可以：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)newFrameReadyAtTime:(<span class="built_in">CMTime</span>)frameTime atIndex:(<span class="built_in">NSInteger</span>)textureIndex &#123;</span><br><span class="line">    CVPixelBufferRef inputPixelBuffer = firstInputFramebuffer.renderTarget;</span><br><span class="line">    <span class="keyword">if</span> (inputPixelBuffer) &#123;</span><br><span class="line">        [[SCAIManager shareManager] hairSegmentationWithSrcPixelBuffer:inputPixelBuffer dstTexture:<span class="keyword">self</span>.hairTexture];</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="keyword">super</span> newFrameReadyAtTime:frameTime atIndex:textureIndex];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (GPUImageFramebuffer *)hairFramebuffer &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_hairFramebuffer) &#123;</span><br><span class="line">        _hairFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:<span class="built_in">CGSizeMake</span>(firstInputFramebuffer.size.width, firstInputFramebuffer.size.height) onlyTexture:<span class="literal">NO</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _hairFramebuffer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">id</span>&lt;<span class="built_in">MTLTexture</span>&gt;)hairTexture &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_hairTexture) &#123;</span><br><span class="line">        _hairTexture = [<span class="keyword">self</span>.textureConverter textureWithPixelBuffer:<span class="keyword">self</span>.hairFramebuffer.renderTarget];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _hairTexture;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里主要看第 4 行，在创建了 <code>hairFramebuffer</code> 后，将 <code>renderTarget</code> 转成 <code>hairTexture</code>，然后将 <code>hairTexture</code> 作为算法模型的最终输出，则算法模型执行完成后，会将结果写到 <code>hairTexture</code> 上。</p>
+<p> 在 <code>hairTexture</code> 写入完成后，就可以拿到 OpenGL 纹理开始做下一步渲染：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GLint maskUniform = [filterProgram uniformIndex:<span class="string">@"hairMask"</span>];</span><br><span class="line">glActiveTexture(GL_TEXTURE3);</span><br><span class="line">glBindTexture(GL_TEXTURE_2D, <span class="keyword">self</span>.hairFramebuffer.texture);</span><br><span class="line">glUniform1i(maskUniform, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>这里我们拿到了 <code>hairFramebuffer</code> 对应的纹理 ID，将它传入 OpenGL 的 Shader 中做后续处理。</p>
+<p><strong>注意：</strong> <code>CVPixelbufferRef</code> 在共享缓冲区时，需要确保渲染命令被提交后才能同步。而 <code>GPUImageFilter</code> 在执行 <code>glDrawArrays</code> 后，并没有调用 <code>glFlush</code>。这样可能会导致在 <code>CVPixelbufferRef</code> 转 <code>MTLTexture</code> 时，读取到无效数据，造成闪屏。因此在 <code>GPUImageFilter+BugFix.m</code> 里补充了 <code>glFlush</code> 调用。</p>
+<h1 id="二、染发效果"><a href="#二、染发效果" class="headerlink" title="二、染发效果"></a>二、染发效果</h1><p>在上面的步骤中，我们已经将头发的 Mask 图纹理传到 Shader 中，下面开始染发效果的实现。</p>
+<p>实现自然的染发效果需要多个处理步骤，比如 Mask 图边缘模糊处理、LUT 滤镜叠加等。</p>
+<p>今天我们只做最简单的染发效果实现：<strong>颜色通道叠加</strong>。</p>
+<p>我们知道，在 RGB 色彩空间中，颜色分为 R、G、B 三个通道。那么只要把 R 通道的数值提高，就能让头发的颜色偏红。</p>
+<p>Shader 关键代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span> <span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">   vec4 mask = texture2D(hairMask, textureCoordinate);</span><br><span class="line">   vec4 color = texture2D(inputImageTexture, textureCoordinate);</span><br><span class="line">     </span><br><span class="line">   color.r = color.r + <span class="number">0.3</span> * mask.g;</span><br><span class="line">    </span><br><span class="line">   gl_FragColor = color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>mask</code> 是头发的 Mask 图，由于结果保存在 G 通道里，所以通过 <code>mask.g</code> 读取结果。</p>
+<p>原图和效果图对比：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-hair-segmentation-image-1.jpg" alt=""></p>
+<p>可以看到头发区域 R 通道数值提高后，颜色确实变红了。但同时也导致了头发区域亮度提升，整体不太自然。</p>
+<p>在 HSL 空间中，可以由 RGB 算出亮度：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">M = max(R, G, B)</span><br><span class="line">m = min(R, G, B)</span><br><span class="line">L = (M + m) / <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>其中 L 就表示颜色的亮度。</p>
+<p>由上面的公式可以看出，颜色通道的数值提高，确实会影响颜色的亮度。</p>
+<p>因此在单通道数值修改后，需要做一下亮度修正。</p>
+<p>具体做法是算出颜色修改前后的亮度值，然后根据前后亮度比，对最终颜色的三个通道数值做等比缩放，保证前后亮度一致。</p>
+<p>关键代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span> <span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">   vec4 mask = texture2D(hairMask, textureCoordinate);</span><br><span class="line">   vec4 color = texture2D(inputImageTexture, textureCoordinate);</span><br><span class="line">    </span><br><span class="line">   <span class="keyword">float</span> originLightness = lightness(color.rgb);</span><br><span class="line"></span><br><span class="line">   color.r = color.r + <span class="number">0.3</span> * mask.g;</span><br><span class="line">    </span><br><span class="line">   <span class="keyword">float</span> resultLightness = lightness(color.rgb);</span><br><span class="line"></span><br><span class="line">   gl_FragColor = vec4(color.rgb * (originLightness / resultLightness), <span class="number">1.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>亮度修正前后对比：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-hair-segmentation-image-2.jpg" alt=""></p>
+<p>可以看到亮度修正后效果更加自然。</p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/SimpleCam" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://www.zhihu.com/question/265265004" target="_blank" rel="noopener">怎样用 rgb 三元组理解色相、亮度和饱和度？</a></p></div>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/05/04/UE4-face-editor/" rel="next" title="UE4 中使用 Control Rig 实现捏脸系统">
+                <i class="fa fa-chevron-left"></i> UE4 中使用 Control Rig 实现捏脸系统
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Lyman Li" />
+            
+              <p class="site-author-name" itemprop="name">Lyman Li</p>
+              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、头发分割能力"><span class="nav-text">一、头发分割能力</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、染发效果"><span class="nav-text">二、染发效果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+
+  &nbsp;
+
+  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="http://www.lymanli.com/av-core-mini.js"></script>
+  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
