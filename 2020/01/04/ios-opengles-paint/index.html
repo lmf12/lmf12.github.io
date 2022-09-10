@@ -108,14 +108,14 @@
 <meta property="og:description" content="今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/lmf12/GLPaintView/master/image/image.gif">
+<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/GLPaintView/image.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-1.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-2.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-5.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-3.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-gif-1.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-4.jpg">
-<meta property="og:updated_time" content="2020-01-04T14:09:03.302Z">
+<meta property="og:updated_time" content="2022-09-10T03:46:06.150Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在 iOS 中使用 OpenGL ES 实现绘画板">
 <meta name="twitter:description" content="今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。">
@@ -335,7 +335,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-01-04T22:09:03+08:00">2020-01-04</time>
+              <time title="更新于" itemprop="dateModified" datetime="2022-09-10T11:46:06+08:00">2022-09-10</time>
             
           </span>
 
@@ -400,7 +400,7 @@
 <p>今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。</p>
 <a id="more"></a>
 <p><strong>首先看一下最终效果：</strong></p>
-<p><img src="https://raw.githubusercontent.com/lmf12/GLPaintView/master/image/image.gif" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/GLPaintView/image.gif" alt=""></p>
 <p>在 iOS 中，有很多种方式可以实现一个绘画板，比如我的另外一个项目 <a href="https://github.com/lmf12/MFPaintView" target="_blank" rel="noopener">MFPaintView</a> 就是基于 CoreGraphics 实现的。</p>
 <p>然而，使用 OpenGL ES 来实现可以获得更多的灵活性，比如我们可以自定义笔触的形状，这是其他实现方式做不到的。</p>
 <p>我们知道，OpenGL ES 中只有 <strong>点、直线、三角形</strong> 这三种图元。因此，<strong>怎么在 OpenGL ES 中绘制曲线</strong>，是我们第一个要解决的问题，也是最复杂的问题。</p>

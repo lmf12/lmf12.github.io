@@ -107,13 +107,13 @@
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="本文实现了一种多级 UIScrollView 嵌套的交互，主要解决事件传递和手势冲突问题。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image1.gif">
-<meta property="og:image" content="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image2.jpg">
-<meta property="og:updated_time" content="2018-10-29T16:34:48.000Z">
+<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFNestTableView/image1.gif">
+<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFNestTableView/image2.jpg">
+<meta property="og:updated_time" content="2022-09-10T03:47:56.505Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 多级 UIScrollView 嵌套的实现方案">
 <meta name="twitter:description" content="本文实现了一种多级 UIScrollView 嵌套的交互，主要解决事件传递和手势冲突问题。">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image1.gif">
+<meta name="twitter:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFNestTableView/image1.gif">
 
 
 
@@ -329,7 +329,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-10-30T00:34:48+08:00">2018-10-30</time>
+              <time title="更新于" itemprop="dateModified" datetime="2022-09-10T11:47:56+08:00">2022-09-10</time>
             
           </span>
 
@@ -392,9 +392,9 @@
       
         <p>本文实现了一种多级 <code>UIScrollView</code> 嵌套的交互，主要解决事件传递和手势冲突问题。<br><a id="more"></a></p>
 <h1 id="一、效果展示"><a href="#一、效果展示" class="headerlink" title="一、效果展示"></a>一、效果展示</h1><p>首先来直观地看一下要实现的效果。在实现过程中，代码做到了尽可能的解耦，将页面的各个部分拆离，单独封装成控件。</p>
-<p><img src="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image1.gif" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFNestTableView/image1.gif" alt=""></p>
 <h1 id="二、布局方式"><a href="#二、布局方式" class="headerlink" title="二、布局方式"></a>二、布局方式</h1><p>首先来参照下面的图片，看看页面的每个部分对应哪个控件。</p>
-<p><img src="https://raw.githubusercontent.com/lmf12/MFNestTableView/master/image2.jpg" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFNestTableView/image2.jpg" alt=""></p>
 <p>结合上面的动画，可以看到，<code>MFNestTableView</code> 部分可以上下滑动， <code>MFPageView</code> 部分可以左右滑动， 当 <code>MFSegmentView</code> 固定到顶部后， <code>MFPageView</code> 的内容部分可以单独上下滑动。</p>
 <h1 id="三、实现原理"><a href="#三、实现原理" class="headerlink" title="三、实现原理"></a>三、实现原理</h1><h2 id="1-MFNestTableView"><a href="#1-MFNestTableView" class="headerlink" title="1. MFNestTableView"></a>1. MFNestTableView</h2><p>基于 <code>UITableView</code> 来实现。</p>
 <blockquote>
