@@ -109,9 +109,9 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter-image-1.jpg">
-<meta property="og:image" content="hhttps://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/mage-4.gif">
+<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/mage-4.gif">
 <meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-5.gif">
-<meta property="og:updated_time" content="2022-09-15T18:28:30.009Z">
+<meta property="og:updated_time" content="2022-09-15T18:35:58.168Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何优雅地实现一个分屏滤镜">
 <meta name="twitter:description" content="本文通过编写一个通用的片段着色器，实现了抖音中的各种分屏滤镜。另外，还讲解了延时动态分屏滤镜的实现。">
@@ -331,7 +331,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2022-09-16T02:28:30+08:00">2022-09-16</time>
+              <time title="更新于" itemprop="dateModified" datetime="2022-09-16T02:35:58+08:00">2022-09-16</time>
             
           </span>
 
@@ -433,7 +433,7 @@
 <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter-image-1.jpg" alt=""></p>
 <p><strong>(6)</strong> 通过新的计算出来的纹理坐标，从纹理中读出相应的颜色值输出。</p>
 <h2 id="效果展示"><a href="#效果展示" class="headerlink" title="效果展示"></a>效果展示</h2><p>现在，我们得到了一个通用的分屏着色器，像三屏、六屏、九屏这些效果，只需要修改两个参数就可以实现。另外，上面的实现逻辑，甚至可以支持 1.5 : 2.5 这种非整数的分屏操作。</p>
-<p><img src="hhttps://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/mage-4.gif" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/mage-4.gif" alt=""></p>
 <h1 id="二、动态分屏"><a href="#二、动态分屏" class="headerlink" title="二、动态分屏"></a>二、动态分屏</h1><p><strong>动态分屏指的是，每个屏的图像都不一样，每间隔一段时间，会主动捕获一个新的图像。</strong></p>
 <p>由于每个屏的图像都不一样，因此在渲染过程中，需要捕获多个不同的纹理。比如我们想要实现一个四屏的滤镜，就需要捕获 4 个不同的纹理。</p>
 <h2 id="预备知识-1"><a href="#预备知识-1" class="headerlink" title="预备知识"></a>预备知识</h2><p>我们知道，在 GPUImage 框架中，滤镜效果的渲染发生在 <code>GPUImageFilter</code> 中。</p>
