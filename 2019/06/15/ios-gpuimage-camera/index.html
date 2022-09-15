@@ -109,9 +109,9 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-camera.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-camera-image-1.jpg">
-<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/SimpleCam/master/Images/image-1.gif">
-<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/SimpleCam/master/Images/image-2.gif">
-<meta property="og:updated_time" content="2022-08-17T17:11:47.294Z">
+<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-1.gif">
+<meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-2.gif">
+<meta property="og:updated_time" content="2022-09-15T18:28:30.007Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 GPUImage 实现一个简单相机">
 <meta name="twitter:description" content="本文介绍了如何使用 GPUImage 来实现一个简单的相机。具体功能包括拍照、录制视频、多段视频合成、实时美颜、自定义滤镜实现等。">
@@ -331,7 +331,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2022-08-18T01:11:47+08:00">2022-08-18</time>
+              <time title="更新于" itemprop="dateModified" datetime="2022-09-16T02:28:30+08:00">2022-09-16</time>
             
           </span>
 
@@ -479,7 +479,7 @@
 <p>美颜效果本质上是对图片做模糊，想要达到比较好的效果，需要结合人脸识别，只对人脸的部分进行模糊处理。这里并不去探究美颜算法的实现，直接找开源的美颜滤镜来用。</p>
 <p>目前找到的实现效果比较好的是 <a href="https://github.com/LaiFengiOS/LFLiveKit/tree/master/LFLiveKit/filter" target="_blank" rel="noopener">LFGPUImageBeautyFilter</a> ，虽然它的效果肯定比不上现在市面上的美颜类 APP，但是作为学习级别的 Demo 已经足够了。</p>
 <p>效果展示：</p>
-<p><img src="https://media.githubusercontent.com/media/lmf12/SimpleCam/master/Images/image-1.gif" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-1.gif" alt=""></p>
 <h3 id="3、自定义滤镜"><a href="#3、自定义滤镜" class="headerlink" title="3、自定义滤镜"></a>3、自定义滤镜</h3><p>打开 <code>GPUImageFilter</code> 的头文件，可以看到有下面这个方法：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)initWithVertexShaderFromString:(<span class="built_in">NSString</span> *)vertexShaderString </span><br><span class="line">            fragmentShaderFromString:(<span class="built_in">NSString</span> *)fragmentShaderString;</span><br></pre></td></tr></table></figure>
 <p>很容易理解，通过一个顶点着色器和一个片段着色器来初始化，并且可以看到是字符串类型。</p>
@@ -491,7 +491,7 @@
 <p>我们之前都是为着色器代码单独创建两个文件，而在 <code>GPUImageFilter</code> 中直接以字符串的形式，写死在代码中，两种方式本质上没什么区别。</p>
 <p>当我们想自定义一个滤镜的时候，只需要继承 <code>GPUImageFilter</code> 来定义一个子类，然后用相同的方式来定义两个保存着色器代码的字符串，并且用这两个字符串来初始化子类就可以了。</p>
 <p>作为示例，我把之前实现的 <a href="http://www.lymanli.com/2019/04/05/ios-opengles-filter/">抖音滤镜</a> 也添加到这个工程里，来看一下效果：</p>
-<p><img src="https://media.githubusercontent.com/media/lmf12/SimpleCam/master/Images/image-2.gif" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-2.gif" alt=""></p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过上面的步骤，我们实现了一个具备基础功能的相机。之后会在这个相机的基础上，继续做一些有趣的尝试，欢迎持续关注～</p>
 <h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/SimpleCam" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://www.jianshu.com/p/690d83f9c052" target="_blank" rel="noopener">GPUImage（五）：五种类型输入源</a><br><a href="https://www.jianshu.com/p/8b4263d13cf0" target="_blank" rel="noopener">GPUImage源码阅读（六）</a><br><a href="https://www.jianshu.com/p/91044a81ec85" target="_blank" rel="noopener">GPUImage详细解析（九）图像的输入输出和滤镜通道</a><br><a href="https://objccn.io/issue-21-3/" target="_blank" rel="noopener">iOS 上的相机捕捉</a><br><a href="https://www.cnblogs.com/Anker/p/3418792.html" target="_blank" rel="noopener">C语言宏高级用法 [总结]</a><br><a href="http://www.saberismywife.com/2016/10/26/iOS%E7%BE%8E%E9%A2%9C%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">iOS美颜实现</a></p></div>
