@@ -1,402 +1,174 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, KVC, KVO, 原理, 用法" />
-
-
-<meta name="description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。">
-<meta name="keywords" content="iOS, KVC, KVO, 原理, 用法">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。 一、KVC1. KVC是什么KVC 即 Key-Value Coding，翻译成键值编码。它是一种不通过存取方法，而通过属性名称字符串间接访问属性的机制。 2. KVC的用法KVC 常用到的方法有下面几个： 12345- (id)valueForKey:(NSString *)key;- (void)setValue">
 <meta property="og:type" content="article">
 <meta property="og:title" content="说一下KVC和KVO">
-<meta property="og:url" content="http://www.lymanli.com/2018/03/05/说一下KVC和KVO/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2018/03/05/%E8%AF%B4%E4%B8%80%E4%B8%8BKVC%E5%92%8CKVO/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。 一、KVC1. KVC是什么KVC 即 Key-Value Coding，翻译成键值编码。它是一种不通过存取方法，而通过属性名称字符串间接访问属性的机制。 2. KVC的用法KVC 常用到的方法有下面几个： 12345- (id)valueForKey:(NSString *)key;- (void)setValue">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/kvc-kvo.jpg">
-<meta property="og:updated_time" content="2019-02-24T07:53:15.000Z">
+<meta property="article:published_time" content="2018-03-05T11:13:18.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.007Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="说一下KVC和KVO">
-<meta name="twitter:description" content="本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/kvc-kvo.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2018/03/05/说一下KVC和KVO/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>说一下KVC和KVO | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>说一下KVC和KVO</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2018/02/27/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E2%80%94%E2%80%94%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81KVC"><span class="toc-number">1.</span> <span class="toc-text">一、KVC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-KVC%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">1. KVC是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-KVC%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">2. KVC的用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-KVC%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">3. KVC的原理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81KVO"><span class="toc-number">2.</span> <span class="toc-text">二、KVO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-KVO%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.1.</span> <span class="toc-text">1. KVO是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-KVO%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">2. KVO的用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-KVO%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">3. KVO的原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%87%8D%E5%86%99setter"><span class="toc-number">2.3.1.</span> <span class="toc-text">1. 重写setter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%87%8D%E5%86%99class"><span class="toc-number">2.3.2.</span> <span class="toc-text">2. 重写class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%87%8D%E5%86%99dealloc"><span class="toc-number">2.3.3.</span> <span class="toc-text">3. 重写dealloc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%87%8D%E5%86%99-isKVOA"><span class="toc-number">2.3.4.</span> <span class="toc-text">4. 重写_isKVOA</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        说一下KVC和KVO
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2018-03-05T11:13:18.000Z" class="dt-published" itemprop="datePublished">2018-03-05</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/">人人都会iOS</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2018/03/05/说一下KVC和KVO/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">说一下KVC和KVO</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-05T19:13:18+08:00">2018-03-05</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2019-02-24T15:53:15+08:00">2019-02-24</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/人人都会iOS/" itemprop="url" rel="index"><span itemprop="name">人人都会iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/03/05/说一下KVC和KVO/" class="leancloud_visitors" data-flag-title="说一下KVC和KVO">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/kvc-kvo.jpg" alt="avatar"><br>本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。<br><a id="more"></a></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/kvc-kvo.jpg" alt="avatar"><br>本篇采用简单的例子，来介绍 iOS 中的 KVC 和 KVO 的用法和实现原理。</p>
 <h1 id="一、KVC"><a href="#一、KVC" class="headerlink" title="一、KVC"></a>一、KVC</h1><h2 id="1-KVC是什么"><a href="#1-KVC是什么" class="headerlink" title="1. KVC是什么"></a>1. KVC是什么</h2><p>KVC 即 Key-Value Coding，翻译成键值编码。它是一种不通过存取方法，而通过属性名称字符串间接访问属性的机制。</p>
 <h2 id="2-KVC的用法"><a href="#2-KVC的用法" class="headerlink" title="2. KVC的用法"></a>2. KVC的用法</h2><p>KVC 常用到的方法有下面几个：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)valueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">- (<span class="keyword">void</span>)setValue:(<span class="keyword">nullable</span> <span class="keyword">id</span>)value forKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">nullable</span> <span class="keyword">id</span>)valueForKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br><span class="line">- (<span class="keyword">void</span>)setValue:(<span class="keyword">nullable</span> <span class="keyword">id</span>)value forKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br></pre></td></tr></table></figure>
-<p>前面的两个方法，以字符串的形式传入对象属性即可调用。<strong>私有属性也可以调用</strong>。如下代码所示：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先声明一个对象ObjectA，同时具备私有属性和公有属性</span></span><br><span class="line"><span class="comment">// ObjectA.h</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectA</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *publicPropertyString;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// ObjectA.m</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectA</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSInteger</span> privatePropertyInteger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ObjectA</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.publicPropertyString = <span class="string">@"publicPropertyString"</span>;</span><br><span class="line">        <span class="keyword">self</span>.privatePropertyInteger = <span class="number">2000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 尝试调用</span></span><br><span class="line">ObjectA *objectA = [[ObjectA alloc] init];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：publicPropertyString     </span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, [objectA valueForKey:<span class="string">@"publicPropertyString"</span>]); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：2000       </span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, [objectA valueForKey:<span class="string">@"privatePropertyInteger"</span>]);    </span><br><span class="line">    </span><br><span class="line"><span class="comment">// 将999赋值给privatePropertyInteger</span></span><br><span class="line">[objectA setValue:@(<span class="number">999</span>) forKey:<span class="string">@"privatePropertyInteger"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：999</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, [objectA valueForKey:<span class="string">@"privatePropertyInteger"</span>]);</span><br></pre></td></tr></table></figure>
-<p>后面两个方法支持传入用 <code>.</code> 连接的多层级属性，比如 <code>school.schoolmaster.name</code> 。<strong>同样支持私有属性</strong>。如下代码所示：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 再声明一个对象ObjectB，具备私有属性ObjectA</span></span><br><span class="line"><span class="comment">// ObjectB.m</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectB</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ObjectA *objectA;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ObjectB</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.objectA = [[ObjectA alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 尝试调用</span></span><br><span class="line">ObjectB *objectB = [[ObjectB alloc] init];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将999赋值给objectA的属性privatePropertyInteger</span></span><br><span class="line">[objectB setValue:@(<span class="number">999</span>) forKeyPath:<span class="string">@"objectA.privatePropertyInteger"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：999</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, [objectB valueForKeyPath:<span class="string">@"objectA.privatePropertyInteger"</span>]);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">id</span>)valueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">- (<span class="type">void</span>)setValue:(<span class="keyword">nullable</span> <span class="type">id</span>)value forKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">nullable</span> <span class="type">id</span>)valueForKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br><span class="line">- (<span class="type">void</span>)setValue:(<span class="keyword">nullable</span> <span class="type">id</span>)value forKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br></pre></td></tr></table></figure>
+
+<p>前面的两个方法，以字符串的形式传入对象属性即可调用。<strong>私有属性也可以调用</strong>。如下代码所示：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先声明一个对象ObjectA，同时具备私有属性和公有属性</span></span><br><span class="line"><span class="comment">// ObjectA.h</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectA</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *publicPropertyString;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// ObjectA.m</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectA</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSInteger</span> privatePropertyInteger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ObjectA</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span> = [<span class="variable language_">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.publicPropertyString = <span class="string">@&quot;publicPropertyString&quot;</span>;</span><br><span class="line">        <span class="keyword">self</span>.privatePropertyInteger = <span class="number">2000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 尝试调用</span></span><br><span class="line">ObjectA *objectA = [[ObjectA alloc] init];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：publicPropertyString     </span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, [objectA valueForKey:<span class="string">@&quot;publicPropertyString&quot;</span>]); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：2000       </span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, [objectA valueForKey:<span class="string">@&quot;privatePropertyInteger&quot;</span>]);    </span><br><span class="line">    </span><br><span class="line"><span class="comment">// 将999赋值给privatePropertyInteger</span></span><br><span class="line">[objectA setValue:@(<span class="number">999</span>) forKey:<span class="string">@&quot;privatePropertyInteger&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：999</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, [objectA valueForKey:<span class="string">@&quot;privatePropertyInteger&quot;</span>]);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>后面两个方法支持传入用 <code>.</code> 连接的多层级属性，比如 <code>school.schoolmaster.name</code> 。<strong>同样支持私有属性</strong>。如下代码所示：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 再声明一个对象ObjectB，具备私有属性ObjectA</span></span><br><span class="line"><span class="comment">// ObjectB.m</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectB</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ObjectA *objectA;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ObjectB</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span> = [<span class="variable language_">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.objectA = [[ObjectA alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 尝试调用</span></span><br><span class="line">ObjectB *objectB = [[ObjectB alloc] init];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将999赋值给objectA的属性privatePropertyInteger</span></span><br><span class="line">[objectB setValue:@(<span class="number">999</span>) forKeyPath:<span class="string">@&quot;objectA.privatePropertyInteger&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下输出：999</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, [objectB valueForKeyPath:<span class="string">@&quot;objectA.privatePropertyInteger&quot;</span>]);</span><br></pre></td></tr></table></figure>
+
 <p><strong>需要注意</strong>：</p>
 <ul>
 <li>当 <code>value</code> 的值为基本类型时，应该封装为 <code>NSNumber</code> 或 <code>NSValue</code> 。</li>
@@ -406,17 +178,23 @@
 </ul>
 <h2 id="3-KVC的原理"><a href="#3-KVC的原理" class="headerlink" title="3. KVC的原理"></a>3. KVC的原理</h2><p>为了设置或者获取对象属性，KVC按顺序使用如下技术：</p>
 <ol>
-<li>获取对象属性时，检查是否存在 <code>-&lt;key></code> 、 <code>-is&lt;key></code>（只针对布尔值有效）或者 <code>-get&lt;key></code> 的访问器方法，如果找到，就用这些方法来返回属性值；设置对象属性时，检查是否存在名为 <code>-set&lt;key>:</code> 的方法，并使用它来设置属性值。对于 <code>-get&lt;key></code> 和 <code>-set&lt;key>:</code> 方法，将大写Key字符串的第一个字母，并与Cocoa的方法命名保持一致。</li>
-<li>如果上述方法找不到，则检查名为 <code>-_&lt;key></code> 、 <code>-_is&lt;key></code>（只针对布尔值有效）、 <code>-_get&lt;key></code> 和 <code>-_set&lt;key>:</code> 方法。</li>
-<li>如果没有找到访问器方法，则尝试直接访问实例变量。实例变量可以是名为： <code>&lt;key></code> 或 <code>_&lt;key></code> 。</li>
+<li>获取对象属性时，检查是否存在 <code>-&lt;key&gt;</code> 、 <code>-is&lt;key&gt;</code>（只针对布尔值有效）或者 <code>-get&lt;key&gt;</code> 的访问器方法，如果找到，就用这些方法来返回属性值；设置对象属性时，检查是否存在名为 <code>-set&lt;key&gt;:</code> 的方法，并使用它来设置属性值。对于 <code>-get&lt;key&gt;</code> 和 <code>-set&lt;key&gt;:</code> 方法，将大写Key字符串的第一个字母，并与Cocoa的方法命名保持一致。</li>
+<li>如果上述方法找不到，则检查名为 <code>-_&lt;key&gt;</code> 、 <code>-_is&lt;key&gt;</code>（只针对布尔值有效）、 <code>-_get&lt;key&gt;</code> 和 <code>-_set&lt;key&gt;:</code> 方法。</li>
+<li>如果没有找到访问器方法，则尝试直接访问实例变量。实例变量可以是名为： <code>&lt;key&gt;</code> 或 <code>_&lt;key&gt;</code> 。</li>
 <li>如果仍未找到，则调用 <code>valueForUndefinedKey:</code> 和 <code>setValue:forUndefinedKey:</code> 方法。这些方法的默认实现都是抛出异常，可以根据需要重写它们。</li>
 </ol>
 <p>可以看到，<strong>KVC会优先使用访问器方法来访问对象属性</strong>。</p>
 <h1 id="二、KVO"><a href="#二、KVO" class="headerlink" title="二、KVO"></a>二、KVO</h1><h2 id="1-KVO是什么"><a href="#1-KVO是什么" class="headerlink" title="1. KVO是什么"></a>1. KVO是什么</h2><p>KVO 即 Key-Value Observing，翻译成键值观察。它是一种观察者模式的衍生。其基本思想是，对目标对象的某属性添加观察，当该属性发生变化时，通过触发观察者对象实现的KVO接口方法，来自动的通知观察者。</p>
 <h2 id="2-KVO的用法"><a href="#2-KVO的用法" class="headerlink" title="2. KVO的用法"></a>2. KVO的用法</h2><p>KVO的使用主要分为三步：</p>
-<p><strong>第一步，将目标对象添加为观察者。</strong>（注意这里用到了KVC，即通过字符串的方式去访问属性值。）<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)addObserver:(<span class="built_in">NSObject</span> *)observer</span><br><span class="line">         forKeyPath:(<span class="built_in">NSString</span> *)keyPath</span><br><span class="line">            options:(<span class="built_in">NSKeyValueObservingOptions</span>)options</span><br><span class="line">            context:(<span class="keyword">nullable</span> <span class="keyword">void</span> *)context;</span><br></pre></td></tr></table></figure></p>
-<p><strong>第二步，实现接收通知的接口方法。</strong><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="keyword">nullable</span> <span class="built_in">NSString</span> *)keyPath</span><br><span class="line">                      ofObject:(<span class="keyword">nullable</span> <span class="keyword">id</span>)object</span><br><span class="line">                        change:(<span class="keyword">nullable</span> <span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>, <span class="keyword">id</span>&gt; *)change</span><br><span class="line">                       context:(<span class="keyword">nullable</span> <span class="keyword">void</span> *)context;</span><br></pre></td></tr></table></figure></p>
-<p><strong>第三步，移除观察者。</strong><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)removeObserver:(<span class="built_in">NSObject</span> *)observer</span><br><span class="line">            forKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br></pre></td></tr></table></figure></p>
+<p><strong>第一步，将目标对象添加为观察者。</strong>（注意这里用到了KVC，即通过字符串的方式去访问属性值。）</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)addObserver:(<span class="built_in">NSObject</span> *)observer</span><br><span class="line">         forKeyPath:(<span class="built_in">NSString</span> *)keyPath</span><br><span class="line">            options:(<span class="built_in">NSKeyValueObservingOptions</span>)options</span><br><span class="line">            context:(<span class="keyword">nullable</span> <span class="type">void</span> *)context;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第二步，实现接收通知的接口方法。</strong></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)observeValueForKeyPath:(<span class="keyword">nullable</span> <span class="built_in">NSString</span> *)keyPath</span><br><span class="line">                      ofObject:(<span class="keyword">nullable</span> <span class="type">id</span>)object</span><br><span class="line">                        change:(<span class="keyword">nullable</span> <span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>, <span class="type">id</span>&gt; *)change</span><br><span class="line">                       context:(<span class="keyword">nullable</span> <span class="type">void</span> *)context;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第三步，移除观察者。</strong></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)removeObserver:(<span class="built_in">NSObject</span> *)observer</span><br><span class="line">            forKeyPath:(<span class="built_in">NSString</span> *)keyPath;</span><br></pre></td></tr></table></figure>
+
 <p>在第一步中，NSKeyValueObservingOptions类型有四个取值，可以通过 <code>|</code> 来连接多个取值。分别为：</p>
 <ul>
 <li><strong>NSKeyValueObservingOptionNew</strong>，在属性值变化的时候回调，可以在change中取到<strong>变化后</strong>的值。</li>
@@ -424,512 +202,131 @@
 <li><strong>NSKeyValueObservingOptionInitial</strong>，在属性值初始化或者变化的时候回调，拿不到变化前后的值。</li>
 <li><strong>NSKeyValueObservingOptionPrior</strong>，在属性值变化前和变化后各回调一次，拿不到变化前后的值。</li>
 </ul>
-<p>举一个例子：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectB</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ObjectA *objectA;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ObjectB</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.objectA = [[ObjectA alloc] init];</span><br><span class="line">        <span class="comment">// 第一步，将目标对象添加为观察者</span></span><br><span class="line">        [_objectA addObserver:<span class="keyword">self</span></span><br><span class="line">                   forKeyPath:<span class="string">@"privatePropertyInteger"</span></span><br><span class="line">                      options:<span class="built_in">NSKeyValueObservingOptionNew</span></span><br><span class="line">                      context:<span class="literal">nil</span>];</span><br><span class="line">        </span><br><span class="line">        [_objectA setValue:@(<span class="number">999</span>) forKey:<span class="string">@"privatePropertyInteger"</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二步，实现接收通知的接口方法</span></span><br><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath</span><br><span class="line">                      ofObject:(<span class="keyword">id</span>)object</span><br><span class="line">                        change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>,<span class="keyword">id</span>&gt; *)change</span><br><span class="line">                       context:(<span class="keyword">void</span> *)context &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 这里最好判断一下object的类型和keyPath的值，不符合则交给父类处理</span></span><br><span class="line">    <span class="keyword">if</span> ([object isKindOfClass:[ObjectA <span class="keyword">class</span>]] &amp;&amp;</span><br><span class="line">        [keyPath isEqualToString:<span class="string">@"privatePropertyInteger"</span>]) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, change);  <span class="comment">// 这里可以读取到 new = 999</span></span><br><span class="line">        </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [<span class="keyword">super</span> observeValueForKeyPath:keyPath</span><br><span class="line">                             ofObject:object</span><br><span class="line">                               change:change</span><br><span class="line">                              context:context];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第三步，移除观察者。</span></span><br><span class="line">- (<span class="keyword">void</span>) dealloc &#123;</span><br><span class="line">    </span><br><span class="line">    [_objectA removeObserver:<span class="keyword">self</span></span><br><span class="line">                  forKeyPath:<span class="string">@"privatePropertyInteger"</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure></p>
+<p>举一个例子：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ObjectB</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) ObjectA *objectA;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ObjectB</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span> = [<span class="variable language_">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.objectA = [[ObjectA alloc] init];</span><br><span class="line">        <span class="comment">// 第一步，将目标对象添加为观察者</span></span><br><span class="line">        [_objectA addObserver:<span class="keyword">self</span></span><br><span class="line">                   forKeyPath:<span class="string">@&quot;privatePropertyInteger&quot;</span></span><br><span class="line">                      options:<span class="built_in">NSKeyValueObservingOptionNew</span></span><br><span class="line">                      context:<span class="literal">nil</span>];</span><br><span class="line">        </span><br><span class="line">        [_objectA setValue:@(<span class="number">999</span>) forKey:<span class="string">@&quot;privatePropertyInteger&quot;</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二步，实现接收通知的接口方法</span></span><br><span class="line">- (<span class="type">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath</span><br><span class="line">                      ofObject:(<span class="type">id</span>)object</span><br><span class="line">                        change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>,<span class="type">id</span>&gt; *)change</span><br><span class="line">                       context:(<span class="type">void</span> *)context &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 这里最好判断一下object的类型和keyPath的值，不符合则交给父类处理</span></span><br><span class="line">    <span class="keyword">if</span> ([object isKindOfClass:[ObjectA <span class="keyword">class</span>]] &amp;&amp;</span><br><span class="line">        [keyPath isEqualToString:<span class="string">@&quot;privatePropertyInteger&quot;</span>]) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, change);  <span class="comment">// 这里可以读取到 new = 999</span></span><br><span class="line">        </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [<span class="variable language_">super</span> observeValueForKeyPath:keyPath</span><br><span class="line">                             ofObject:object</span><br><span class="line">                               change:change</span><br><span class="line">                              context:context];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第三步，移除观察者。</span></span><br><span class="line">- (<span class="type">void</span>) dealloc &#123;</span><br><span class="line">    </span><br><span class="line">    [_objectA removeObserver:<span class="keyword">self</span></span><br><span class="line">                  forKeyPath:<span class="string">@&quot;privatePropertyInteger&quot;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
 <p>KVO可以在MVC模式中得到很好的应用。因为当Model发生变化时，通过KVO可以很方便地通知到Controller，从而通过Controller来改变View的展示。所以说<strong>KVO是解决Model和View同步的好办法。</strong></p>
 <h2 id="3-KVO的原理"><a href="#3-KVO的原理" class="headerlink" title="3. KVO的原理"></a>3. KVO的原理</h2><p>KVO的实现依赖于Runtime的强大动态能力。</p>
 <p><strong>当某个类的对象第一次被观察时，系统就会在运行期动态地创建该类的一个派生类，在这个派生类中重写这个类中任何被观察属性的 setter 方法。</strong></p>
 <p>即当一个类型为 ObjectA 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_ObjectA 类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于ObjectA，会重写以下几个方法。</p>
-<h3 id="1-重写setter"><a href="#1-重写setter" class="headerlink" title="1. 重写setter"></a>1. 重写setter</h3><p>在 setter 中，会添加以下两个方法的调用。<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)willChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">- (<span class="keyword">void</span>)didChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br></pre></td></tr></table></figure></p>
-<p>然后在 <code>didChangeValueForKey:</code> 中，去调用：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="keyword">nullable</span> <span class="built_in">NSString</span> *)keyPath</span><br><span class="line">                      ofObject:(<span class="keyword">nullable</span> <span class="keyword">id</span>)object</span><br><span class="line">                        change:(<span class="keyword">nullable</span> <span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>, <span class="keyword">id</span>&gt; *)change</span><br><span class="line">                       context:(<span class="keyword">nullable</span> <span class="keyword">void</span> *)context;</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-重写setter"><a href="#1-重写setter" class="headerlink" title="1. 重写setter"></a>1. 重写setter</h3><p>在 setter 中，会添加以下两个方法的调用。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)willChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">- (<span class="type">void</span>)didChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br></pre></td></tr></table></figure>
+<p>然后在 <code>didChangeValueForKey:</code> 中，去调用：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)observeValueForKeyPath:(<span class="keyword">nullable</span> <span class="built_in">NSString</span> *)keyPath</span><br><span class="line">                      ofObject:(<span class="keyword">nullable</span> <span class="type">id</span>)object</span><br><span class="line">                        change:(<span class="keyword">nullable</span> <span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>, <span class="type">id</span>&gt; *)change</span><br><span class="line">                       context:(<span class="keyword">nullable</span> <span class="type">void</span> *)context;</span><br></pre></td></tr></table></figure>
 <p>于是实现了属性值修改的通知。因为 KVO 的原理是修改 setter 方法，因此使用 KVO 必须调用 setter 。若直接访问属性对象则没有效果。</p>
-<h3 id="2-重写class"><a href="#2-重写class" class="headerlink" title="2. 重写class"></a>2. 重写class</h3><p>当修改了isa指向后，class的返回值不会变，但isa的值则发生改变。<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加Observer之后</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出ObjectA</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, [_objectA <span class="keyword">class</span>]);   </span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出NSKVONotifying_ObjectA（object_getClass方法返回isa指向）</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, object_getClass(_objectA));</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-重写class"><a href="#2-重写class" class="headerlink" title="2. 重写class"></a>2. 重写class</h3><p>当修改了isa指向后，class的返回值不会变，但isa的值则发生改变。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加Observer之后</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出ObjectA</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, [_objectA <span class="keyword">class</span>]);   </span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出NSKVONotifying_ObjectA（object_getClass方法返回isa指向）</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, object_getClass(_objectA));    </span><br></pre></td></tr></table></figure>
+
 <h3 id="3-重写dealloc"><a href="#3-重写dealloc" class="headerlink" title="3. 重写dealloc"></a>3. 重写dealloc</h3><p>系统重写 dealloc 方法来释放资源。</p>
 <h3 id="4-重写-isKVOA"><a href="#4-重写-isKVOA" class="headerlink" title="4. 重写_isKVOA"></a>4. 重写_isKVOA</h3><p>这个私有方法估计是用来标示该类是一个 KVO 机制声称的类。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://www.jianshu.com/p/66bda10168f1" target="_blank" rel="noopener">KVC和KVO的使用及原理</a><br><a href="http://blog.csdn.net/wzzvictory/article/details/9674431" target="_blank" rel="noopener">KVC/KVO原理详解及编程指南</a><br><a href="http://blog.csdn.net/dizzthxl/article/details/9034659" target="_blank" rel="noopener">iOS里的KVO模式</a></p></div>
-      
-    </div>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/66bda10168f1">KVC和KVO的使用及原理</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/wzzvictory/article/details/9674431">KVC&#x2F;KVO原理详解及编程指南</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/dizzthxl/article/details/9034659">iOS里的KVO模式</a></li>
+</ul>
 
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/02/27/希尔排序——重温排序（二）/" rel="next" title="希尔排序——重温排序（二）">
-                <i class="fa fa-chevron-left"></i> 希尔排序——重温排序（二）
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/11/iOS-AVPlayer-实现后台连续播放视频/" rel="prev" title="iOS AVPlayer 实现后台连续播放视频">
-                iOS AVPlayer 实现后台连续播放视频 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、KVC"><span class="nav-text">一、KVC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-KVC是什么"><span class="nav-text">1. KVC是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-KVC的用法"><span class="nav-text">2. KVC的用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-KVC的原理"><span class="nav-text">3. KVC的原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、KVO"><span class="nav-text">二、KVO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-KVO是什么"><span class="nav-text">1. KVO是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-KVO的用法"><span class="nav-text">2. KVO的用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-KVO的原理"><span class="nav-text">3. KVO的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重写setter"><span class="nav-text">1. 重写setter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-重写class"><span class="nav-text">2. 重写class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-重写dealloc"><span class="nav-text">3. 重写dealloc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-重写-isKVOA"><span class="nav-text">4. 重写_isKVOA</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81KVC"><span class="toc-number">1.</span> <span class="toc-text">一、KVC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-KVC%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">1. KVC是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-KVC%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">2. KVC的用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-KVC%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">3. KVC的原理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81KVO"><span class="toc-number">2.</span> <span class="toc-text">二、KVO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-KVO%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.1.</span> <span class="toc-text">1. KVO是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-KVO%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">2. KVO的用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-KVO%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">3. KVO的原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%87%8D%E5%86%99setter"><span class="toc-number">2.3.1.</span> <span class="toc-text">1. 重写setter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%87%8D%E5%86%99class"><span class="toc-number">2.3.2.</span> <span class="toc-text">2. 重写class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%87%8D%E5%86%99dealloc"><span class="toc-number">2.3.3.</span> <span class="toc-text">3. 重写dealloc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%87%8D%E5%86%99-isKVOA"><span class="toc-number">2.3.4.</span> <span class="toc-text">4. 重写_isKVOA</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

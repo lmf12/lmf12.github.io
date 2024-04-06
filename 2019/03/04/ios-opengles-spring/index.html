@@ -1,401 +1,165 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, OpenGL, 长腿, 增高, 局部拉伸" />
-
-
-<meta name="description" content="本文介绍了如何使用 OpenGL ES 来实现长腿功能。学习这个例子可以加深我们对纹理渲染流程的理解。另外，还会着重介绍一下「渲染到纹理」这个新知识点。">
-<meta name="keywords" content="iOS, OpenGL, 长腿, 增高, 局部拉伸">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="本文介绍了如何使用 OpenGL ES 来实现长腿功能。学习这个例子可以加深我们对纹理渲染流程的理解。另外，还会着重介绍一下「渲染到纹理」这个新知识点。  警告：本文属于进阶教程，阅读前请确保已经熟悉 OpenGL ES 纹理渲染的相关概念，否则强行阅读可能导致走火入魔。传送门   注：下文中的 OpenGL ES 均指代 OpenGL ES 2.0。  一、效果展示首先来看一下最终的效果，这个">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 iOS OpenGL ES 实现长腿功能">
-<meta property="og:url" content="http://www.lymanli.com/2019/03/04/ios-opengles-spring/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2019/03/04/ios-opengles-spring/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="本文介绍了如何使用 OpenGL ES 来实现长腿功能。学习这个例子可以加深我们对纹理渲染流程的理解。另外，还会着重介绍一下「渲染到纹理」这个新知识点。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="本文介绍了如何使用 OpenGL ES 来实现长腿功能。学习这个例子可以加深我们对纹理渲染流程的理解。另外，还会着重介绍一下「渲染到纹理」这个新知识点。  警告：本文属于进阶教程，阅读前请确保已经熟悉 OpenGL ES 纹理渲染的相关概念，否则强行阅读可能导致走火入魔。传送门   注：下文中的 OpenGL ES 均指代 OpenGL ES 2.0。  一、效果展示首先来看一下最终的效果，这个">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring.jpg">
 <meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFSpringView/image.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-1.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-2.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-3.jpg">
-<meta property="og:updated_time" content="2022-09-10T03:47:03.974Z">
+<meta property="article:published_time" content="2019-03-04T11:26:43.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.004Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用 iOS OpenGL ES 实现长腿功能">
-<meta name="twitter:description" content="本文介绍了如何使用 OpenGL ES 来实现长腿功能。学习这个例子可以加深我们对纹理渲染流程的理解。另外，还会着重介绍一下「渲染到纹理」这个新知识点。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2019/03/04/ios-opengles-spring/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>使用 iOS OpenGL ES 实现长腿功能 | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>使用 iOS OpenGL ES 实现长腿功能</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2019/04/05/ios-opengles-filter/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2019/02/17/ios-opengles-render-texture/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="toc-number">1.</span> <span class="toc-text">一、效果展示</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">二、思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E6%8B%89%E4%BC%B8"><span class="toc-number">2.1.</span> <span class="toc-text">1、怎么实现拉伸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E9%87%8D%E5%A4%8D%E8%B0%83%E6%95%B4"><span class="toc-number">2.2.</span> <span class="toc-text">2、怎么实现重复调整</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-OpenGL-ES"><span class="toc-number">3.</span> <span class="toc-text">三、为什么要使用 OpenGL ES</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E7%8E%B0%E6%8B%89%E4%BC%B8%E9%80%BB%E8%BE%91"><span class="toc-number">4.</span> <span class="toc-text">四、实现拉伸逻辑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%B8%B2%E6%9F%93%E5%88%B0%E7%BA%B9%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">五、渲染到纹理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BF%9D%E5%AD%98%E7%BB%93%E6%9E%9C"><span class="toc-number">6.</span> <span class="toc-text">六、保存结果</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">7.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        使用 iOS OpenGL ES 实现长腿功能
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2019-03-04T11:26:43.000Z" class="dt-published" itemprop="datePublished">2019-03-04</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/OpenGL-ES/">OpenGL ES</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2019/03/04/ios-opengles-spring/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">使用 iOS OpenGL ES 实现长腿功能</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T19:26:43+08:00">2019-03-04</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2022-09-10T11:47:03+08:00">2022-09-10</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenGL-ES/" itemprop="url" rel="index"><span itemprop="name">OpenGL ES</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/03/04/ios-opengles-spring/" class="leancloud_visitors" data-flag-title="使用 iOS OpenGL ES 实现长腿功能">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring.jpg"></p>
 <p>本文介绍了如何使用 OpenGL ES 来实现长腿功能。学习这个例子可以加深我们对纹理渲染流程的理解。另外，还会着重介绍一下「渲染到纹理」这个新知识点。</p>
-<a id="more"></a>
 <blockquote>
 <p><strong>警告：</strong>本文属于进阶教程，阅读前请确保已经熟悉 OpenGL ES 纹理渲染的相关概念，否则强行阅读可能导致走火入魔。<a href="http://www.lymanli.com/2019/02/17/ios-opengles-render-texture/">传送门</a></p>
 </blockquote>
@@ -403,14 +167,14 @@
 <p><strong>注：</strong>下文中的 OpenGL ES 均指代 OpenGL ES 2.0。</p>
 </blockquote>
 <h1 id="一、效果展示"><a href="#一、效果展示" class="headerlink" title="一、效果展示"></a>一、效果展示</h1><p>首先来看一下最终的效果，这个功能简单来说，就是实现了图片的局部拉伸，从逻辑上来说并不复杂。</p>
-<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFSpringView/image.gif" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/MFSpringView/image.gif"></p>
 <h1 id="二、思路"><a href="#二、思路" class="headerlink" title="二、思路"></a>二、思路</h1><h2 id="1、怎么实现拉伸"><a href="#1、怎么实现拉伸" class="headerlink" title="1、怎么实现拉伸"></a>1、怎么实现拉伸</h2><p>我们来回忆一下，我们要渲染一张图片，需要将图片拆分成两个三角形，如下所示：</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-1.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-1.jpg"></p>
 <p>如果我们想对图片进行拉伸，很简单，只需要修改一下 4 个顶点坐标的 Y 值即可。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-2.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-2.jpg"></p>
 <p>那么，如果我们只想对图片中间的部分进行拉伸，应该怎么做呢？</p>
 <p>其实答案也很容易想到，我们只需要修改一下图片的拆分方式。如下所示，我们把图片拆分成了 6 个三角形，也可以说是 3 个小矩形。这样，我们只需要对中间的小矩形做拉伸处理就可以了。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-3.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-spring-image-3.jpg"></p>
 <h2 id="2、怎么实现重复调整"><a href="#2、怎么实现重复调整" class="headerlink" title="2、怎么实现重复调整"></a>2、怎么实现重复调整</h2><p>我们观察上面的动态效果图，可以看到第二次的压缩操作，是基于第一次的拉伸操作的结果来进行的。因此，在每一步我们都需要拿到上一步的结果，作为原始图，进行再次调整。</p>
 <p>这里的「原始图」就是一个纹理。换句话说，我们需要将每一次的调整结果，都重新生成一个纹理，供下次调整的时候使用。</p>
 <p>这一步是本文的重点，我们会通过「渲染到纹理」的方式来实现，具体的步骤我们在后面会详细介绍。</p>
@@ -419,7 +183,8 @@
 <p>但是，由于 CoreGraphics 绘图依赖于 CPU，当我们在调节拉伸区域的时候，需要不断地进行重绘，此时 CPU 的占用必然会暴涨，从而引起卡顿。而使用 OpenGL ES 则不存在这样的问题。</p>
 <h1 id="四、实现拉伸逻辑"><a href="#四、实现拉伸逻辑" class="headerlink" title="四、实现拉伸逻辑"></a>四、实现拉伸逻辑</h1><p>从上面我们知道，渲染图片我们需要 8 个顶点，而拉伸逻辑的关键就是顶点坐标的计算，在拿到计算结果后再重新渲染。</p>
 <p>计算顶点的关键步骤如下：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 根据当前控件的尺寸和纹理的尺寸，计算初始纹理坐标</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param size 原始纹理尺寸</span></span><br><span class="line"><span class="comment"> @param startY 中间区域的开始纵坐标位置 0~1</span></span><br><span class="line"><span class="comment"> @param endY 中间区域的结束纵坐标位置 0~1</span></span><br><span class="line"><span class="comment"> @param newHeight 新的中间区域的高度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)calculateOriginTextureCoordWithTextureSize:(<span class="built_in">CGSize</span>)size</span><br><span class="line">                                            startY:(<span class="built_in">CGFloat</span>)startY</span><br><span class="line">                                              endY:(<span class="built_in">CGFloat</span>)endY</span><br><span class="line">                                         newHeight:(<span class="built_in">CGFloat</span>)newHeight &#123;</span><br><span class="line">    <span class="built_in">CGFloat</span> ratio = (size.height / size.width) *</span><br><span class="line">                    (<span class="keyword">self</span>.bounds.size.width / <span class="keyword">self</span>.bounds.size.height);</span><br><span class="line">    <span class="built_in">CGFloat</span> textureWidth = <span class="keyword">self</span>.currentTextureWidth;</span><br><span class="line">    <span class="built_in">CGFloat</span> textureHeight = textureWidth * ratio;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 拉伸量</span></span><br><span class="line">    <span class="built_in">CGFloat</span> delta = (newHeight - (endY -  startY)) * textureHeight;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断是否超出最大值</span></span><br><span class="line">    <span class="keyword">if</span> (textureHeight + delta &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">        delta = <span class="number">1</span> - textureHeight;</span><br><span class="line">        newHeight = delta / textureHeight + (endY -  startY);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 纹理的顶点</span></span><br><span class="line">    GLKVector3 pointLT = &#123;-textureWidth, textureHeight + delta, <span class="number">0</span>&#125;;  <span class="comment">// 左上角</span></span><br><span class="line">    GLKVector3 pointRT = &#123;textureWidth, textureHeight + delta, <span class="number">0</span>&#125;;  <span class="comment">// 右上角</span></span><br><span class="line">    GLKVector3 pointLB = &#123;-textureWidth, -textureHeight - delta, <span class="number">0</span>&#125;;  <span class="comment">// 左下角</span></span><br><span class="line">    GLKVector3 pointRB = &#123;textureWidth, -textureHeight - delta, <span class="number">0</span>&#125;;  <span class="comment">// 右下角</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 中间矩形区域的顶点</span></span><br><span class="line">    <span class="built_in">CGFloat</span> startYCoord = MIN(<span class="number">-2</span> * textureHeight * startY + textureHeight, textureHeight);</span><br><span class="line">    <span class="built_in">CGFloat</span> endYCoord = MAX(<span class="number">-2</span> * textureHeight * endY + textureHeight, -textureHeight);</span><br><span class="line">    GLKVector3 centerPointLT = &#123;-textureWidth, startYCoord + delta, <span class="number">0</span>&#125;;  <span class="comment">// 左上角</span></span><br><span class="line">    GLKVector3 centerPointRT = &#123;textureWidth, startYCoord + delta, <span class="number">0</span>&#125;;  <span class="comment">// 右上角</span></span><br><span class="line">    GLKVector3 centerPointLB = &#123;-textureWidth, endYCoord - delta, <span class="number">0</span>&#125;;  <span class="comment">// 左下角</span></span><br><span class="line">    GLKVector3 centerPointRB = &#123;textureWidth, endYCoord - delta, <span class="number">0</span>&#125;;  <span class="comment">// 右下角</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 纹理的上面两个顶点</span></span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">0</span>].positionCoord = pointLT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">0</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">1</span>].positionCoord = pointRT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">1</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 中间区域的4个顶点</span></span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">2</span>].positionCoord = centerPointLT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">2</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">1</span> - startY);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">3</span>].positionCoord = centerPointRT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">3</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">1</span> - startY);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">4</span>].positionCoord = centerPointLB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">4</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">1</span> - endY);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">5</span>].positionCoord = centerPointRB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">5</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">1</span> - endY);</span><br><span class="line">    <span class="comment">// 纹理的下面两个顶点</span></span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">6</span>].positionCoord = pointLB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">6</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">7</span>].positionCoord = pointRB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">7</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 根据当前控件的尺寸和纹理的尺寸，计算初始纹理坐标</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param size 原始纹理尺寸</span></span><br><span class="line"><span class="comment"> @param startY 中间区域的开始纵坐标位置 0~1</span></span><br><span class="line"><span class="comment"> @param endY 中间区域的结束纵坐标位置 0~1</span></span><br><span class="line"><span class="comment"> @param newHeight 新的中间区域的高度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="type">void</span>)calculateOriginTextureCoordWithTextureSize:(<span class="built_in">CGSize</span>)size</span><br><span class="line">                                            startY:(<span class="built_in">CGFloat</span>)startY</span><br><span class="line">                                              endY:(<span class="built_in">CGFloat</span>)endY</span><br><span class="line">                                         newHeight:(<span class="built_in">CGFloat</span>)newHeight &#123;</span><br><span class="line">    <span class="built_in">CGFloat</span> ratio = (size.height / size.width) *</span><br><span class="line">                    (<span class="keyword">self</span>.bounds.size.width / <span class="keyword">self</span>.bounds.size.height);</span><br><span class="line">    <span class="built_in">CGFloat</span> textureWidth = <span class="keyword">self</span>.currentTextureWidth;</span><br><span class="line">    <span class="built_in">CGFloat</span> textureHeight = textureWidth * ratio;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 拉伸量</span></span><br><span class="line">    <span class="built_in">CGFloat</span> delta = (newHeight - (endY -  startY)) * textureHeight;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断是否超出最大值</span></span><br><span class="line">    <span class="keyword">if</span> (textureHeight + delta &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">        delta = <span class="number">1</span> - textureHeight;</span><br><span class="line">        newHeight = delta / textureHeight + (endY -  startY);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 纹理的顶点</span></span><br><span class="line">    GLKVector3 pointLT = &#123;-textureWidth, textureHeight + delta, <span class="number">0</span>&#125;;  <span class="comment">// 左上角</span></span><br><span class="line">    GLKVector3 pointRT = &#123;textureWidth, textureHeight + delta, <span class="number">0</span>&#125;;  <span class="comment">// 右上角</span></span><br><span class="line">    GLKVector3 pointLB = &#123;-textureWidth, -textureHeight - delta, <span class="number">0</span>&#125;;  <span class="comment">// 左下角</span></span><br><span class="line">    GLKVector3 pointRB = &#123;textureWidth, -textureHeight - delta, <span class="number">0</span>&#125;;  <span class="comment">// 右下角</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 中间矩形区域的顶点</span></span><br><span class="line">    <span class="built_in">CGFloat</span> startYCoord = MIN(<span class="number">-2</span> * textureHeight * startY + textureHeight, textureHeight);</span><br><span class="line">    <span class="built_in">CGFloat</span> endYCoord = MAX(<span class="number">-2</span> * textureHeight * endY + textureHeight, -textureHeight);</span><br><span class="line">    GLKVector3 centerPointLT = &#123;-textureWidth, startYCoord + delta, <span class="number">0</span>&#125;;  <span class="comment">// 左上角</span></span><br><span class="line">    GLKVector3 centerPointRT = &#123;textureWidth, startYCoord + delta, <span class="number">0</span>&#125;;  <span class="comment">// 右上角</span></span><br><span class="line">    GLKVector3 centerPointLB = &#123;-textureWidth, endYCoord - delta, <span class="number">0</span>&#125;;  <span class="comment">// 左下角</span></span><br><span class="line">    GLKVector3 centerPointRB = &#123;textureWidth, endYCoord - delta, <span class="number">0</span>&#125;;  <span class="comment">// 右下角</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 纹理的上面两个顶点</span></span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">0</span>].positionCoord = pointLT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">0</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">1</span>].positionCoord = pointRT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">1</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 中间区域的4个顶点</span></span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">2</span>].positionCoord = centerPointLT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">2</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">1</span> - startY);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">3</span>].positionCoord = centerPointRT;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">3</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">1</span> - startY);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">4</span>].positionCoord = centerPointLB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">4</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">1</span> - endY);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">5</span>].positionCoord = centerPointRB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">5</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">1</span> - endY);</span><br><span class="line">    <span class="comment">// 纹理的下面两个顶点</span></span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">6</span>].positionCoord = pointLB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">6</span>].textureCoord = GLKVector2Make(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">7</span>].positionCoord = pointRB;</span><br><span class="line">    <span class="keyword">self</span>.vertices[<span class="number">7</span>].textureCoord = GLKVector2Make(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h1 id="五、渲染到纹理"><a href="#五、渲染到纹理" class="headerlink" title="五、渲染到纹理"></a>五、渲染到纹理</h1><p>上面提到：<strong>我们需要将每一次的调整结果，都重新生成一个纹理，供下次调整的时候使用</strong>。</p>
 <p>出于对结果分辨率的考虑，我们不会直接读取当前屏幕渲染结果对应的帧缓存，而是采取「渲染到纹理」的方式，重新生成一个宽度与原图一致的纹理。</p>
 <p>这是为什么呢？</p>
@@ -427,514 +192,128 @@
 <p>这样会导致图片的分辨率下降，所以我们会使用能保持原有分辨率的方式，即「渲染到纹理」。</p>
 <p>在这之前，我们都是将纹理直接渲染到屏幕上，关键步骤像这样：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GLuint renderBuffer; <span class="comment">// 渲染缓存</span></span><br><span class="line">GLuint frameBuffer;  <span class="comment">// 帧缓存</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">// 绑定渲染缓存要输出的 layer</span></span><br><span class="line">glGenRenderbuffers(<span class="number">1</span>, &amp;renderBuffer);</span><br><span class="line">glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);</span><br><span class="line">[<span class="keyword">self</span>.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 将渲染缓存绑定到帧缓存上</span></span><br><span class="line">glGenFramebuffers(<span class="number">1</span>, &amp;frameBuffer);</span><br><span class="line">glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);</span><br><span class="line">glFramebufferRenderbuffer(GL_FRAMEBUFFER,</span><br><span class="line">                          GL_COLOR_ATTACHMENT0,</span><br><span class="line">                          GL_RENDERBUFFER,</span><br><span class="line">                          renderBuffer);</span><br></pre></td></tr></table></figure>
+
 <p>我们生成了一个渲染缓存，并把这个渲染缓存挂载到帧缓存的 <code>GL_COLOR_ATTACHMENT0</code> 颜色缓存上，并通过 <code>context</code> 为当前的渲染缓存绑定了输出的 <code>layer</code> 。</p>
 <p>其实，如果我们不需要在屏幕上显示我们的渲染结果，也可以直接将数据渲染到另一个纹理上。更有趣的是，这个渲染后的结果，还可以被当成一个普通的纹理来使用。这也是我们实现重复调整功能的基础。</p>
 <p>具体操作如下：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成帧缓存，挂载渲染缓存</span></span><br><span class="line">GLuint frameBuffer;</span><br><span class="line">GLuint texture;</span><br><span class="line">    </span><br><span class="line">glGenFramebuffers(<span class="number">1</span>, &amp;frameBuffer);</span><br><span class="line">glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);</span><br><span class="line">    </span><br><span class="line">glGenTextures(<span class="number">1</span>, &amp;texture);</span><br><span class="line">glBindTexture(GL_TEXTURE_2D, texture);</span><br><span class="line">glTexImage2D(GL_TEXTURE_2D, <span class="number">0</span>, GL_RGBA, newTextureWidth, newTextureHeight, <span class="number">0</span>, GL_RGBA, GL_UNSIGNED_BYTE, <span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
 <p>通过对比我们可以发现，这里我们用 <code>Texture</code> 来替换 <code>Renderbuffer</code> ，并且同样是挂载到 <code>GL_COLOR_ATTACHMENT0</code> 上，不过这里就不需要另外再绑定 <code>layer</code> 了。</p>
 <p><strong>另外，我们需要为新的纹理设置一个尺寸，这个尺寸不再受限于屏幕上控件的尺寸，这也是新纹理可以保持原有分辨率的原因。</strong></p>
 <p>这时候，渲染的结果都会被保存在 <code>texture</code> 中，而 <code>texture</code> 也可以被当成普通的纹理来使用。</p>
 <h1 id="六、保存结果"><a href="#六、保存结果" class="headerlink" title="六、保存结果"></a>六、保存结果</h1><p>当我们调整出满意的图片后，需要把它保存下来。这里分为两步，第一步仍然是上面提到的<strong>重新生成纹理</strong>，第二步就是<strong>把纹理转化为图片</strong>。</p>
 <p>第二步主要通过 <code>glReadPixels</code> 方法来实现，它可以从当前的帧缓存中读取出纹理数据。直接上代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回某个纹理对应的 UIImage，调用前先绑定对应的帧缓存</span></span><br><span class="line">- (<span class="built_in">UIImage</span> *)imageFromTextureWithWidth:(<span class="keyword">int</span>)width height:(<span class="keyword">int</span>)height &#123;</span><br><span class="line">    <span class="keyword">int</span> size = width * height * <span class="number">4</span>;</span><br><span class="line">    GLubyte *buffer = malloc(size);</span><br><span class="line">    glReadPixels(<span class="number">0</span>, <span class="number">0</span>, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);</span><br><span class="line">    <span class="built_in">CGDataProviderRef</span> provider = <span class="built_in">CGDataProviderCreateWithData</span>(<span class="literal">NULL</span>, buffer, size, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">int</span> bitsPerComponent = <span class="number">8</span>;</span><br><span class="line">    <span class="keyword">int</span> bitsPerPixel = <span class="number">32</span>;</span><br><span class="line">    <span class="keyword">int</span> bytesPerRow = <span class="number">4</span> * width;</span><br><span class="line">    <span class="built_in">CGColorSpaceRef</span> colorSpaceRef = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line">    <span class="built_in">CGBitmapInfo</span> bitmapInfo = kCGBitmapByteOrderDefault;</span><br><span class="line">    <span class="built_in">CGColorRenderingIntent</span> renderingIntent = kCGRenderingIntentDefault;</span><br><span class="line">    <span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, height, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, renderingIntent);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 此时的 imageRef 是上下颠倒的，调用 CG 的方法重新绘制一遍，刚好翻转过来</span></span><br><span class="line">    <span class="built_in">UIGraphicsBeginImageContext</span>(<span class="built_in">CGSizeMake</span>(width, height));</span><br><span class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(context, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, width, height), imageRef);</span><br><span class="line">    <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line">    <span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line">    </span><br><span class="line">    free(buffer);</span><br><span class="line">    <span class="keyword">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回某个纹理对应的 UIImage，调用前先绑定对应的帧缓存</span></span><br><span class="line">- (<span class="built_in">UIImage</span> *)imageFromTextureWithWidth:(<span class="type">int</span>)width height:(<span class="type">int</span>)height &#123;</span><br><span class="line">    <span class="type">int</span> size = width * height * <span class="number">4</span>;</span><br><span class="line">    GLubyte *buffer = malloc(size);</span><br><span class="line">    glReadPixels(<span class="number">0</span>, <span class="number">0</span>, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);</span><br><span class="line">    <span class="built_in">CGDataProviderRef</span> provider = <span class="built_in">CGDataProviderCreateWithData</span>(<span class="literal">NULL</span>, buffer, size, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="type">int</span> bitsPerComponent = <span class="number">8</span>;</span><br><span class="line">    <span class="type">int</span> bitsPerPixel = <span class="number">32</span>;</span><br><span class="line">    <span class="type">int</span> bytesPerRow = <span class="number">4</span> * width;</span><br><span class="line">    <span class="built_in">CGColorSpaceRef</span> colorSpaceRef = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line">    <span class="built_in">CGBitmapInfo</span> bitmapInfo = kCGBitmapByteOrderDefault;</span><br><span class="line">    <span class="built_in">CGColorRenderingIntent</span> renderingIntent = kCGRenderingIntentDefault;</span><br><span class="line">    <span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, height, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, renderingIntent);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 此时的 imageRef 是上下颠倒的，调用 CG 的方法重新绘制一遍，刚好翻转过来</span></span><br><span class="line">    <span class="built_in">UIGraphicsBeginImageContext</span>(<span class="built_in">CGSizeMake</span>(width, height));</span><br><span class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(context, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, width, height), imageRef);</span><br><span class="line">    <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line">    <span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line">    </span><br><span class="line">    free(buffer);</span><br><span class="line">    <span class="keyword">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>至此，我们已经拿到了 <code>UIImage</code> 对象，可以把它保存到相册里了。</p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/MFSpringView" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://www.jianshu.com/p/99ce551bb109" target="_blank" rel="noopener">iOS 中使用 OpenGL 实现增高功能</a><br><a href="https://www.jianshu.com/p/eccb53001670" target="_blank" rel="noopener">学习 OpenGL ES 之渲染到纹理</a></p></div>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a target="_blank" rel="noopener" href="https://github.com/lmf12/MFSpringView">GitHub</a> 上查看完整代码。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/99ce551bb109">iOS 中使用 OpenGL 实现增高功能</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/eccb53001670">学习 OpenGL ES 之渲染到纹理</a></li>
+</ul>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/02/17/ios-opengles-render-texture/" rel="next" title="从零讲解 iOS 中 OpenGL ES 的纹理渲染">
-                <i class="fa fa-chevron-left"></i> 从零讲解 iOS 中 OpenGL ES 的纹理渲染
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/05/ios-opengles-filter/" rel="prev" title="在 iOS 中使用 GLSL 实现抖音特效">
-                在 iOS 中使用 GLSL 实现抖音特效 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、效果展示"><span class="nav-text">一、效果展示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、思路"><span class="nav-text">二、思路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、怎么实现拉伸"><span class="nav-text">1、怎么实现拉伸</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、怎么实现重复调整"><span class="nav-text">2、怎么实现重复调整</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、为什么要使用-OpenGL-ES"><span class="nav-text">三、为什么要使用 OpenGL ES</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、实现拉伸逻辑"><span class="nav-text">四、实现拉伸逻辑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、渲染到纹理"><span class="nav-text">五、渲染到纹理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、保存结果"><span class="nav-text">六、保存结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="toc-number">1.</span> <span class="toc-text">一、效果展示</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">二、思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E6%8B%89%E4%BC%B8"><span class="toc-number">2.1.</span> <span class="toc-text">1、怎么实现拉伸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E9%87%8D%E5%A4%8D%E8%B0%83%E6%95%B4"><span class="toc-number">2.2.</span> <span class="toc-text">2、怎么实现重复调整</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-OpenGL-ES"><span class="toc-number">3.</span> <span class="toc-text">三、为什么要使用 OpenGL ES</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E7%8E%B0%E6%8B%89%E4%BC%B8%E9%80%BB%E8%BE%91"><span class="toc-number">4.</span> <span class="toc-text">四、实现拉伸逻辑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%B8%B2%E6%9F%93%E5%88%B0%E7%BA%B9%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">五、渲染到纹理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BF%9D%E5%AD%98%E7%BB%93%E6%9E%9C"><span class="toc-number">6.</span> <span class="toc-text">六、保存结果</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">7.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

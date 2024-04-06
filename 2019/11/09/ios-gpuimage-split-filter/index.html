@@ -1,400 +1,164 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, GPUImage, 分屏, 九宫格, 四格" />
-
-
-<meta name="description" content="本文通过编写一个通用的片段着色器，实现了抖音中的各种分屏滤镜。另外，还讲解了延时动态分屏滤镜的实现。">
-<meta name="keywords" content="iOS, GPUImage, 分屏, 九宫格, 四格">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="本文通过编写一个通用的片段着色器，实现了抖音中的各种分屏滤镜。另外，还讲解了延时动态分屏滤镜的实现。 一、静态分屏静态分屏指的是，每一个屏的图像都完全一样。 分屏滤镜实现起来比较容易，无非是在片段着色器中，修改纹理坐标和纹理的对应关系。分屏之后，每个屏内纹理的对应关系都不太一样。因此在实现的时候，容易写的很复杂，会有大量的区域判断逻辑。 这样实现出来的着色器拓展性比较差。假如有多种分屏滤镜，就要">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何优雅地实现一个分屏滤镜">
-<meta property="og:url" content="http://www.lymanli.com/2019/11/09/ios-gpuimage-split-filter/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2019/11/09/ios-gpuimage-split-filter/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="本文通过编写一个通用的片段着色器，实现了抖音中的各种分屏滤镜。另外，还讲解了延时动态分屏滤镜的实现。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="本文通过编写一个通用的片段着色器，实现了抖音中的各种分屏滤镜。另外，还讲解了延时动态分屏滤镜的实现。 一、静态分屏静态分屏指的是，每一个屏的图像都完全一样。 分屏滤镜实现起来比较容易，无非是在片段着色器中，修改纹理坐标和纹理的对应关系。分屏之后，每个屏内纹理的对应关系都不太一样。因此在实现的时候，容易写的很复杂，会有大量的区域判断逻辑。 这样实现出来的着色器拓展性比较差。假如有多种分屏滤镜，就要">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter-image-1.jpg">
 <meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-4.gif">
 <meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-5.gif">
-<meta property="og:updated_time" content="2022-09-15T18:41:01.836Z">
+<meta property="article:published_time" content="2019-11-09T15:37:30.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.002Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何优雅地实现一个分屏滤镜">
-<meta name="twitter:description" content="本文通过编写一个通用的片段着色器，实现了抖音中的各种分屏滤镜。另外，还讲解了延时动态分屏滤镜的实现。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2019/11/09/ios-gpuimage-split-filter/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>如何优雅地实现一个分屏滤镜 | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>如何优雅地实现一个分屏滤镜</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2019/12/25/review-2019/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2019/09/29/ios-gpuimage-face-detect/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%9D%99%E6%80%81%E5%88%86%E5%B1%8F"><span class="toc-number">1.</span> <span class="toc-text">一、静态分屏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-number">1.1.</span> <span class="toc-text">预备知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9D%80%E8%89%B2%E5%99%A8%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.</span> <span class="toc-text">着色器实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="toc-number">1.3.</span> <span class="toc-text">效果展示</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%8A%A8%E6%80%81%E5%88%86%E5%B1%8F"><span class="toc-number">2.</span> <span class="toc-text">二、动态分屏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86-1"><span class="toc-number">2.1.</span> <span class="toc-text">预备知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA-1"><span class="toc-number">2.3.</span> <span class="toc-text">效果展示</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">源码</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        如何优雅地实现一个分屏滤镜
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2019-11-09T15:37:30.000Z" class="dt-published" itemprop="datePublished">2019-11-09</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/GPUImage-%E5%AE%9E%E6%93%8D%E6%89%8B%E5%86%8C/">GPUImage 实操手册</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2019/11/09/ios-gpuimage-split-filter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">如何优雅地实现一个分屏滤镜</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-09T23:37:30+08:00">2019-11-09</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2022-09-16T02:41:01+08:00">2022-09-16</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/GPUImage-实操手册/" itemprop="url" rel="index"><span itemprop="name">GPUImage 实操手册</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/11/09/ios-gpuimage-split-filter/" class="leancloud_visitors" data-flag-title="如何优雅地实现一个分屏滤镜">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter.jpg"></p>
 <p>本文通过编写一个通用的片段着色器，实现了抖音中的各种分屏滤镜。另外，还讲解了延时动态分屏滤镜的实现。</p>
-<a id="more"></a>
 <h1 id="一、静态分屏"><a href="#一、静态分屏" class="headerlink" title="一、静态分屏"></a>一、静态分屏</h1><p><strong>静态分屏指的是，每一个屏的图像都完全一样。</strong></p>
 <p>分屏滤镜实现起来比较容易，无非是在片段着色器中，修改纹理坐标和纹理的对应关系。分屏之后，每个屏内纹理的对应关系都不太一样。因此在实现的时候，容易写的很复杂，会有大量的区域判断逻辑。</p>
 <p>这样实现出来的着色器拓展性比较差。假如有多种分屏滤镜，就要实现多个着色器，而且屏数越多，区域判断逻辑就越复杂。</p>
@@ -405,35 +169,44 @@
 <p>下面以乘法为例，其他类似。</p>
 </blockquote>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec2</span> a, b, c;</span><br><span class="line">c = a * b;</span><br></pre></td></tr></table></figure>
+
 <p>等价于</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c.x = a.x * b.x;</span><br><span class="line">c.y = a.y * b.y;</span><br></pre></td></tr></table></figure>
+
 <p><strong>2、向量与标量的加减乘除</strong></p>
 <blockquote>
 <p>下面以加法为例，其他类似。</p>
 </blockquote>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec2</span> a, b;</span><br><span class="line"><span class="type">float</span> c;</span><br><span class="line">b = a + c;</span><br></pre></td></tr></table></figure>
+
 <p>等价于</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b.x = a.x + c;</span><br><span class="line">b.y = a.y + c;</span><br></pre></td></tr></table></figure>
+
 <p><strong>3、向量与向量的 mod 运算</strong>（两个向量需要保证维数相同）</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec2</span> a, b, c;</span><br><span class="line">c = <span class="built_in">mod</span>(a, b);</span><br></pre></td></tr></table></figure>
+
 <p>等价于</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c.x = <span class="built_in">mod</span>(a.x, b.x);</span><br><span class="line">c.y = <span class="built_in">mod</span>(a.y, b.y);</span><br></pre></td></tr></table></figure>
+
 <p><strong>4、向量与标量的 mod 运算</strong></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec2</span> a, b;</span><br><span class="line"><span class="type">float</span> c;</span><br><span class="line">b = <span class="built_in">mod</span>(a, c);</span><br></pre></td></tr></table></figure>
+
 <p>等价于</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b.x = <span class="built_in">mod</span>(a.x, c);</span><br><span class="line">b.y = <span class="built_in">mod</span>(a.y, c);</span><br></pre></td></tr></table></figure>
+
 <h2 id="着色器实现"><a href="#着色器实现" class="headerlink" title="着色器实现"></a>着色器实现</h2><p>有了上面的 GLSL 运算知识，来看下我们最终实现的片段着色器。</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> inputImageTexture;</span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> textureCoordinate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> horizontal;  <span class="comment">// (1)</span></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> vertical;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">   <span class="type">float</span> horizontalCount = <span class="built_in">max</span>(horizontal, <span class="number">1.0</span>);  <span class="comment">// (2)</span></span><br><span class="line">   <span class="type">float</span> verticalCount = <span class="built_in">max</span>(vertical, <span class="number">1.0</span>);</span><br><span class="line"> </span><br><span class="line">   <span class="type">float</span> ratio = verticalCount / horizontalCount;  <span class="comment">// (3)</span></span><br><span class="line">   </span><br><span class="line">   <span class="type">vec2</span> originSize = <span class="type">vec2</span>(<span class="number">1.0</span>, <span class="number">1.0</span>);</span><br><span class="line">   <span class="type">vec2</span> newSize = originSize;</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">if</span> (ratio &gt; <span class="number">1.0</span>) &#123;</span><br><span class="line">       newSize.y = <span class="number">1.0</span> / ratio;</span><br><span class="line">   &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">       newSize.x = ratio;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="type">vec2</span> <span class="keyword">offset</span> = (originSize - newSize) / <span class="number">2.0</span>;  <span class="comment">// (4)</span></span><br><span class="line">   <span class="type">vec2</span> position = <span class="keyword">offset</span> + <span class="built_in">mod</span>(textureCoordinate * <span class="built_in">min</span>(horizontalCount, verticalCount), newSize);  <span class="comment">// (5)</span></span><br><span class="line">   </span><br><span class="line">   <span class="built_in">gl_FragColor</span> = <span class="built_in">texture2D</span>(inputImageTexture, position);  <span class="comment">// (6)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p><strong>(1)</strong> 我们最终暴露的接口，通过 <code>uniform</code> 变量的形式，从着色器外部传入<strong>横向分屏数</strong> <code>horizontal</code> 和<strong>纵向分屏数</strong> <code>vertical</code> 。</p>
 <p><strong>(2)</strong> 开始运算前，做了最小分屏数的限制，避免小于 <code>1.0</code> 的分屏数出现。</p>
-<p><strong>(3)</strong> 从这一行开始，是为了计算分屏之后，每一屏的新尺寸。比如分成 2 : 2，则 <code>newSize</code> 仍然是 <code>(1.0, 1.0)</code>，因为每一屏都能显示完整的图像；而分成 3 : 2（横向 3 屏，纵向 2 屏），则 <code>newSize</code> 将会是 <code>(2.0 / 3.0, 1.0)</code>，因为每一屏的纵向能显示完整的图像，而横向只能显示 2 / 3 的图像。</p>
+<p><strong>(3)</strong> 从这一行开始，是为了计算分屏之后，每一屏的新尺寸。比如分成 2 : 2，则 <code>newSize</code> 仍然是 <code>(1.0, 1.0)</code>，因为每一屏都能显示完整的图像；而分成 3 : 2（横向 3 屏，纵向 2 屏），则 <code>newSize</code> 将会是 <code>(2.0 / 3.0, 1.0)</code>，因为每一屏的纵向能显示完整的图像，而横向只能显示 2 &#x2F; 3 的图像。</p>
 <p><strong>(4)</strong> 计算新的图像在原始图像中的偏移量。因为我们的图像要居中裁剪，所以要计算出裁剪后的偏移。比如 <code>(2.0 / 3.0, 1.0)</code> 的图像，对应的 <code>offset</code> 是 <code>(1.0 / 6.0, 0.0)</code> 。</p>
 <p><strong>(5)</strong> 这一行是这个着色器的精华所在，可能不太好理解。我们将原始的纹理坐标，乘上 <code>horizontalCount</code> 和 <code>verticalCount</code> 的较小者，然后对新的尺寸进行求模运算。这样，当<strong>原始纹理坐标</strong>在 0 ~ 1 的范围内增长时，可以让<strong>新的纹理坐标</strong>在 <code>newSize</code> 的范围内循环多次。另外，计算的结果加上 <code>offset</code>，可以让<strong>新的纹理坐标</strong>偏移到居中的位置。</p>
 <p>下面简单演示一下每一步计算的效果，帮助理解：</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter-image-1.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-split-filter-image-1.jpg"></p>
 <p><strong>(6)</strong> 通过新的计算出来的纹理坐标，从纹理中读出相应的颜色值输出。</p>
 <h2 id="效果展示"><a href="#效果展示" class="headerlink" title="效果展示"></a>效果展示</h2><p>现在，我们得到了一个通用的分屏着色器，像三屏、六屏、九屏这些效果，只需要修改两个参数就可以实现。另外，上面的实现逻辑，甚至可以支持 1.5 : 2.5 这种非整数的分屏操作。</p>
-<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-4.gif" alt=""></p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-4.gif"></p>
 <h1 id="二、动态分屏"><a href="#二、动态分屏" class="headerlink" title="二、动态分屏"></a>二、动态分屏</h1><p><strong>动态分屏指的是，每个屏的图像都不一样，每间隔一段时间，会主动捕获一个新的图像。</strong></p>
 <p>由于每个屏的图像都不一样，因此在渲染过程中，需要捕获多个不同的纹理。比如我们想要实现一个四屏的滤镜，就需要捕获 4 个不同的纹理。</p>
 <h2 id="预备知识-1"><a href="#预备知识-1" class="headerlink" title="预备知识"></a>预备知识</h2><p>我们知道，在 GPUImage 框架中，滤镜效果的渲染发生在 <code>GPUImageFilter</code> 中。</p>
@@ -451,511 +224,123 @@
 <h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p><strong>1、捕获和释放</strong></p>
 <p><code>GPUImageFramebuffer</code> 的捕获和释放都很简单，通过 <code>lock</code> 和 <code>unlock</code> 来实现，</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[firstInputFramebuffer lock];</span><br><span class="line"><span class="keyword">self</span>.firstFramebuffer = firstInputFramebuffer;</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span>.firstFramebuffer unlock];</span><br><span class="line"><span class="keyword">self</span>.firstFramebuffer = <span class="literal">nil</span>;</span><br></pre></td></tr></table></figure>
+
 <p><strong>2、多纹理的渲染</strong></p>
 <p>在捕获了额外的纹理后，需要重写 <code>-renderToTextureWithVertices:textureCoordinates:</code> 方法，在里面传递<strong>多个纹理</strong>到着色器中。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.firstFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE3);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.firstFramebuffer texture]);</span><br><span class="line">    glUniform1i(firstTextureUniform, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.secondFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE4);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.secondFramebuffer texture]);</span><br><span class="line">    glUniform1i(secondTextureUniform, <span class="number">4</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第三个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.thirdFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE5);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.thirdFramebuffer texture]);</span><br><span class="line">    glUniform1i(thirdTextureUniform, <span class="number">5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第四个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.fourthFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE6);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.fourthFramebuffer texture]);</span><br><span class="line">    glUniform1i(fourthTextureUniform, <span class="number">6</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传递纹理的数量</span></span><br><span class="line">glUniform1i(textureCountUniform, (<span class="keyword">int</span>)<span class="keyword">self</span>.capturedCount);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.firstFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE3);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.firstFramebuffer texture]);</span><br><span class="line">    glUniform1i(firstTextureUniform, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.secondFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE4);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.secondFramebuffer texture]);</span><br><span class="line">    glUniform1i(secondTextureUniform, <span class="number">4</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第三个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.thirdFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE5);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.thirdFramebuffer texture]);</span><br><span class="line">    glUniform1i(thirdTextureUniform, <span class="number">5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第四个纹理</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.fourthFramebuffer) &#123;</span><br><span class="line">    glActiveTexture(GL_TEXTURE6);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [<span class="keyword">self</span>.fourthFramebuffer texture]);</span><br><span class="line">    glUniform1i(fourthTextureUniform, <span class="number">6</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传递纹理的数量</span></span><br><span class="line">glUniform1i(textureCountUniform, (<span class="type">int</span>)<span class="keyword">self</span>.capturedCount);</span><br></pre></td></tr></table></figure>
+
 <p>同时在着色器中接收并处理：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> inputImageTexture;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> inputImageTexture1;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> inputImageTexture2;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> inputImageTexture3;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> inputImageTexture4;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">int</span> textureCount;</span><br><span class="line"></span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> textureCoordinate;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">vec2</span> position = <span class="built_in">mod</span>(textureCoordinate * <span class="number">2.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (textureCoordinate.x &lt;= <span class="number">0.5</span> &amp;&amp; textureCoordinate.y &lt;= <span class="number">0.5</span>) &#123;  <span class="comment">// 左上</span></span><br><span class="line">        <span class="built_in">gl_FragColor</span> = <span class="built_in">texture2D</span>(textureCount &gt;= <span class="number">1</span> ? inputImageTexture1 : inputImageTexture,</span><br><span class="line">                                 position);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (textureCoordinate.x &gt; <span class="number">0.5</span> &amp;&amp; textureCoordinate.y &lt;= <span class="number">0.5</span>) &#123;   <span class="comment">// 右上</span></span><br><span class="line">        <span class="built_in">gl_FragColor</span> = <span class="built_in">texture2D</span>(textureCount &gt;= <span class="number">2</span> ? inputImageTexture2 : inputImageTexture,</span><br><span class="line">                                 position);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (textureCoordinate.x &lt;= <span class="number">0.5</span> &amp;&amp; textureCoordinate.y &gt; <span class="number">0.5</span>) &#123;  <span class="comment">// 左下</span></span><br><span class="line">        <span class="built_in">gl_FragColor</span> = <span class="built_in">texture2D</span>(textureCount &gt;= <span class="number">3</span> ? inputImageTexture3 : inputImageTexture,</span><br><span class="line">                                 position);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 右下</span></span><br><span class="line">        <span class="built_in">gl_FragColor</span> = <span class="built_in">texture2D</span>(textureCount &gt;= <span class="number">4</span> ? inputImageTexture4 : inputImageTexture,</span><br><span class="line">                                 position);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>由于这里每个屏接收的纹理都不一样，就不可避免地要添加区域判断逻辑了。</p>
 <h2 id="效果展示-1"><a href="#效果展示-1" class="headerlink" title="效果展示"></a>效果展示</h2><p>最后，看一下延时动态分屏的效果：</p>
-<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-5.gif" alt=""></p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/SimpleCam" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/SimpleCam/image-5.gif"></p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a target="_blank" rel="noopener" href="https://github.com/lmf12/SimpleCam">GitHub</a> 上查看完整代码。</p>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/09/29/ios-gpuimage-face-detect/" rel="next" title="在 GPUImage 中检测人脸关键点">
-                <i class="fa fa-chevron-left"></i> 在 GPUImage 中检测人脸关键点
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/12/25/review-2019/" rel="prev" title="写在 2019 年末">
-                写在 2019 年末 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、静态分屏"><span class="nav-text">一、静态分屏</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#预备知识"><span class="nav-text">预备知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#着色器实现"><span class="nav-text">着色器实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果展示"><span class="nav-text">效果展示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、动态分屏"><span class="nav-text">二、动态分屏</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#预备知识-1"><span class="nav-text">预备知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实现"><span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果展示-1"><span class="nav-text">效果展示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%9D%99%E6%80%81%E5%88%86%E5%B1%8F"><span class="toc-number">1.</span> <span class="toc-text">一、静态分屏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-number">1.1.</span> <span class="toc-text">预备知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9D%80%E8%89%B2%E5%99%A8%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.</span> <span class="toc-text">着色器实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="toc-number">1.3.</span> <span class="toc-text">效果展示</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%8A%A8%E6%80%81%E5%88%86%E5%B1%8F"><span class="toc-number">2.</span> <span class="toc-text">二、动态分屏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86-1"><span class="toc-number">2.1.</span> <span class="toc-text">预备知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA-1"><span class="toc-number">2.3.</span> <span class="toc-text">效果展示</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">源码</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

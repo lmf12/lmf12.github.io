@@ -1,112 +1,18 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, OpenGL, 抖音, GLSL" />
-
-
-<meta name="description" content="本文通过模仿抖音中几种特效的实现，来讲解 GLSL 的实际应用。">
-<meta name="keywords" content="iOS, OpenGL, 抖音, GLSL">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="本文通过模仿抖音中几种特效的实现，来讲解 GLSL 的实际应用。 前言本文的灵感来自于 《当一个 Android 开发玩抖音玩疯了之后(二)》 这篇文章。 这位博主在 Android 平台上，通过自己的分析，尝试还原了抖音上的几种视频特效。他是通过「部分 GLSL 代码 + 部分 Java 代码」的方式来实现的。 读完之后，在膜拜之余，我产生了一个大胆的想法：我可不可以在 iOS 上，只通过纯">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在 iOS 中使用 GLSL 实现抖音特效">
-<meta property="og:url" content="http://www.lymanli.com/2019/04/05/ios-opengles-filter/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2019/04/05/ios-opengles-filter/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="本文通过模仿抖音中几种特效的实现，来讲解 GLSL 的实际应用。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="本文通过模仿抖音中几种特效的实现，来讲解 GLSL 的实际应用。 前言本文的灵感来自于 《当一个 Android 开发玩抖音玩疯了之后(二)》 这篇文章。 这位博主在 Android 平台上，通过自己的分析，尝试还原了抖音上的几种视频特效。他是通过「部分 GLSL 代码 + 部分 Java 代码」的方式来实现的。 读完之后，在膜拜之余，我产生了一个大胆的想法：我可不可以在 iOS 上，只通过纯">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-scale.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-soulout.gif">
@@ -114,291 +20,149 @@
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-shinewhite.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-glitch.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-vertigo.gif">
-<meta property="og:updated_time" content="2019-04-10T15:21:25.000Z">
+<meta property="article:published_time" content="2019-04-05T05:35:05.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.003Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在 iOS 中使用 GLSL 实现抖音特效">
-<meta name="twitter:description" content="本文通过模仿抖音中几种特效的实现，来讲解 GLSL 的实际应用。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2019/04/05/ios-opengles-filter/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>在 iOS 中使用 GLSL 实现抖音特效 | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>在 iOS 中使用 GLSL 实现抖音特效</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2019/05/09/ios-opengles-wobble/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2019/03/04/ios-opengles-spring/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%87%E3%80%81%E5%8A%A8%E7%94%BB"><span class="toc-number">2.</span> <span class="toc-text">〇、动画</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%BC%A9%E6%94%BE"><span class="toc-number">3.</span> <span class="toc-text">一、缩放</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%81%B5%E9%AD%82%E5%87%BA%E7%AA%8D"><span class="toc-number">4.</span> <span class="toc-text">二、灵魂出窍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%8A%96%E5%8A%A8"><span class="toc-number">5.</span> <span class="toc-text">三、抖动</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E9%97%AA%E7%99%BD"><span class="toc-number">6.</span> <span class="toc-text">四、闪白</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%AF%9B%E5%88%BA"><span class="toc-number">7.</span> <span class="toc-text">五、毛刺</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%B9%BB%E8%A7%89"><span class="toc-number">8.</span> <span class="toc-text">六、幻觉</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">9.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">10.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        在 iOS 中使用 GLSL 实现抖音特效
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2019-04-05T05:35:05.000Z" class="dt-published" itemprop="datePublished">2019-04-05</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/OpenGL-ES/">OpenGL ES</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2019/04/05/ios-opengles-filter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">在 iOS 中使用 GLSL 实现抖音特效</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-05T13:35:05+08:00">2019-04-05</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2019-04-10T23:21:25+08:00">2019-04-10</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenGL-ES/" itemprop="url" rel="index"><span itemprop="name">OpenGL ES</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/04/05/ios-opengles-filter/" class="leancloud_visitors" data-flag-title="在 iOS 中使用 GLSL 实现抖音特效">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter.jpg"></p>
 <p>本文通过模仿抖音中几种特效的实现，来讲解 GLSL 的实际应用。</p>
-<a id="more"></a>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文的灵感来自于 <a href="https://www.jianshu.com/p/5bb7f2a0da90" target="_blank" rel="noopener">《当一个 Android 开发玩抖音玩疯了之后(二)》</a> 这篇文章。</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文的灵感来自于 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5bb7f2a0da90">《当一个 Android 开发玩抖音玩疯了之后(二)》</a> 这篇文章。</p>
 <p>这位博主在 Android 平台上，通过自己的分析，尝试还原了抖音上的几种视频特效。他是通过「部分 GLSL 代码 + 部分 Java 代码」的方式来实现的。</p>
 <p>读完之后，在膜拜之余，我产生了一个大胆的想法：<strong>我可不可以在 iOS 上，只通过纯 GLSL 的编写，来实现类似的效果呢？</strong></p>
 <p>很好的想法，不过，由于抖音的特效是基于视频的滤镜，我们在这之前只讲到了关于图片的渲染，如果马上跳跃到视频的部分，好像有点超纲了。</p>
@@ -412,55 +176,64 @@
 <p>这个「逐帧计算」的过程，我们是放到 Shader 中进行的。然后我们可以通过一个表示时间的参数，在重新渲染的时候，传入当前的时间，让 Shader 计算出当前动画的进度。至于重新渲染的时机，则是依靠 <code>CADisplayLink</code> 来实现的。</p>
 <p>具体代码大概像这样：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.displayLink = [<span class="built_in">CADisplayLink</span> displayLinkWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(timeAction)];</span><br><span class="line">[<span class="keyword">self</span>.displayLink addToRunLoop:[<span class="built_in">NSRunLoop</span> mainRunLoop] forMode:<span class="built_in">NSRunLoopCommonModes</span>];</span><br></pre></td></tr></table></figure>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)timeAction &#123;</span><br><span class="line">    glUseProgram(<span class="keyword">self</span>.program);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, <span class="keyword">self</span>.vertexBuffer);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 传入时间</span></span><br><span class="line">    <span class="built_in">CGFloat</span> currentTime = <span class="keyword">self</span>.displayLink.timestamp - <span class="keyword">self</span>.startTimeInterval;</span><br><span class="line">    GLuint time = glGetUniformLocation(<span class="keyword">self</span>.program, <span class="string">"Time"</span>);</span><br><span class="line">    glUniform1f(time, currentTime);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清除画布</span></span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    glClearColor(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 重绘</span></span><br><span class="line">    glDrawArrays(GL_TRIANGLE_STRIP, <span class="number">0</span>, <span class="number">4</span>);</span><br><span class="line">    [<span class="keyword">self</span>.context presentRenderbuffer:GL_RENDERBUFFER];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>相应地，在 Shader 中有一个 <code>uniform</code> 修饰的 <code>Time</code> 参数：<br><figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br></pre></td></tr></table></figure></p>
+
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)timeAction &#123;</span><br><span class="line">    glUseProgram(<span class="keyword">self</span>.program);</span><br><span class="line">    glBindBuffer(GL_ARRAY_BUFFER, <span class="keyword">self</span>.vertexBuffer);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 传入时间</span></span><br><span class="line">    <span class="built_in">CGFloat</span> currentTime = <span class="keyword">self</span>.displayLink.timestamp - <span class="keyword">self</span>.startTimeInterval;</span><br><span class="line">    GLuint time = glGetUniformLocation(<span class="keyword">self</span>.program, <span class="string">&quot;Time&quot;</span>);</span><br><span class="line">    glUniform1f(time, currentTime);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清除画布</span></span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    glClearColor(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 重绘</span></span><br><span class="line">    glDrawArrays(GL_TRIANGLE_STRIP, <span class="number">0</span>, <span class="number">4</span>);</span><br><span class="line">    [<span class="keyword">self</span>.context presentRenderbuffer:GL_RENDERBUFFER];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相应地，在 Shader 中有一个 <code>uniform</code> 修饰的 <code>Time</code> 参数：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br></pre></td></tr></table></figure>
+
 <p>这样 Shader 就可以通过 <code>Time</code> 来计算出当前应该显示的图像了。</p>
 <h1 id="一、缩放"><a href="#一、缩放" class="headerlink" title="一、缩放"></a>一、缩放</h1><p><strong>1、最终效果</strong></p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-scale.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-scale.gif"></p>
 <p>我们要实现的第一种效果是「缩放」，看起来很简单，可以通过修改顶点坐标和纹理坐标的对应关系来实现。</p>
 <p>这是一个很基础的效果，在下面的其它特效中还会用到。修改坐标的对应关系可以通过修改顶点着色器，或者修改片段着色器来实现。 这里先讲修改顶点着色器的方式，在后面的特效中会再提一下修改片段着色器的方式。</p>
 <p><strong>2、代码实现</strong></p>
 <p>顶点着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">attribute</span> <span class="type">vec4</span> Position;</span><br><span class="line"><span class="keyword">attribute</span> <span class="type">vec2</span> TextureCoords;</span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> TextureCoordsVarying;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="type">float</span> PI = <span class="number">3.1415926</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">float</span> duration = <span class="number">0.6</span>;</span><br><span class="line">    <span class="type">float</span> maxAmplitude = <span class="number">0.3</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> time = <span class="built_in">mod</span>(Time, duration);</span><br><span class="line">    <span class="type">float</span> amplitude = <span class="number">1.0</span> + maxAmplitude * <span class="built_in">abs</span>(<span class="built_in">sin</span>(time * (PI / duration)));</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">gl_Position</span> = <span class="type">vec4</span>(Position.x * amplitude, Position.y * amplitude, Position.zw);</span><br><span class="line">    TextureCoordsVarying = TextureCoords;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这里的 <code>duration</code> 表示一次缩放周期的时长，<code>mod(Time, duration)</code> 表示将传入的时间转换到一个周期内，即 <code>time</code> 的范围是 <code>0 ~ 0.6</code>，<code>amplitude</code> 表示振幅，引入 <code>PI</code> 的目的是为了使用 <code>sin</code> 函数，将 <code>amplitude</code> 的范围控制在 <code>1.0 ~ 1.3</code> 之间，并随着时间变化。</p>
 <p>这里放大的关键在于 <code>vec4(Position.x * amplitude, Position.y * amplitude, Position.zw)</code> ，我们将顶点坐标的 <code>x</code> 和 <code>y</code> 分别乘上一个放大系数，在纹理坐标不变的情况下，就达到了拉伸的效果。</p>
 <h1 id="二、灵魂出窍"><a href="#二、灵魂出窍" class="headerlink" title="二、灵魂出窍"></a>二、灵魂出窍</h1><p><strong>1、最终效果</strong></p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-soulout.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-soulout.gif"></p>
 <p>「灵魂出窍」看上去是两个层的叠加，并且上面的那层随着时间的推移，会逐渐放大且不透明度逐渐降低。这里也用到了放大的效果，我们这次用片段着色器来实现。</p>
 <p><strong>2、代码实现</strong></p>
 <p>片段着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> Texture;</span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> TextureCoordsVarying;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">float</span> duration = <span class="number">0.7</span>;</span><br><span class="line">    <span class="type">float</span> maxAlpha = <span class="number">0.4</span>;</span><br><span class="line">    <span class="type">float</span> maxScale = <span class="number">1.8</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> progress = <span class="built_in">mod</span>(Time, duration) / duration; <span class="comment">// 0~1</span></span><br><span class="line">    <span class="type">float</span> alpha = maxAlpha * (<span class="number">1.0</span> - progress);</span><br><span class="line">    <span class="type">float</span> scale = <span class="number">1.0</span> + (maxScale - <span class="number">1.0</span>) * progress;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> weakX = <span class="number">0.5</span> + (TextureCoordsVarying.x - <span class="number">0.5</span>) / scale;</span><br><span class="line">    <span class="type">float</span> weakY = <span class="number">0.5</span> + (TextureCoordsVarying.y - <span class="number">0.5</span>) / scale;</span><br><span class="line">    <span class="type">vec2</span> weakTextureCoords = <span class="type">vec2</span>(weakX, weakY);</span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> weakMask = <span class="built_in">texture2D</span>(Texture, weakTextureCoords);</span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> mask = <span class="built_in">texture2D</span>(Texture, TextureCoordsVarying);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">gl_FragColor</span> = mask * (<span class="number">1.0</span> - alpha) + weakMask * alpha;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>首先是放大的效果。关键点在于 <code>weakX</code> 和 <code>weakY</code> 的计算，比如 <code>0.5 + (TextureCoordsVarying.x - 0.5) / scale</code> 这一句的意思是，将顶点坐标对应的纹理坐标的 <code>x</code> 值到纹理中点的距离，缩小一定的比例。这次我们是改变了纹理坐标，而保持顶点坐标不变，同样达到了拉伸的效果。</p>
 <p>然后是两层叠加的效果。通过上面的计算，我们得到了两个纹理颜色值 <code>weakMask</code> 和 <code>mask</code>， <code>weakMask</code> 是在 <code>mask</code> 的基础上做了放大处理。</p>
-<p>我们将两个颜色值进行叠加需要用到一个公式：<strong>最终色 = 基色 * a% + 混合色 * (1 - a%)</strong> ，这个公式来自 <a href="https://baike.baidu.com/item/%E6%B7%B7%E5%90%88%E6%A8%A1%E5%BC%8F/6700481" target="_blank" rel="noopener">混合模式中的正常模式</a> 。</p>
+<p>我们将两个颜色值进行叠加需要用到一个公式：<strong>最终色 &#x3D; 基色 * a% + 混合色 * (1 - a%)</strong> ，这个公式来自 <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%B7%B7%E5%90%88%E6%A8%A1%E5%BC%8F/6700481">混合模式中的正常模式</a> 。</p>
 <p>这个公式表明了一个不透明的层和一个半透明的层进行叠加，重叠部分的最终颜色值。因此，上面叠加的最终结果是 <code>mask * (1.0 - alpha) + weakMask * alpha</code> 。</p>
 <h1 id="三、抖动"><a href="#三、抖动" class="headerlink" title="三、抖动"></a>三、抖动</h1><p><strong>1、最终效果</strong></p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-shake.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-shake.gif"></p>
 <p>「抖动」是很经典的抖音的颜色偏移效果，其实这个效果实现起来还挺简单的。另外，除了颜色偏移，可以看到还有微弱的放大效果。</p>
 <p><strong>2、代码实现</strong></p>
 <p>片段着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> Texture;</span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> TextureCoordsVarying;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">float</span> duration = <span class="number">0.7</span>;</span><br><span class="line">    <span class="type">float</span> maxScale = <span class="number">1.1</span>;</span><br><span class="line">    <span class="type">float</span> <span class="keyword">offset</span> = <span class="number">0.02</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> progress = <span class="built_in">mod</span>(Time, duration) / duration; <span class="comment">// 0~1</span></span><br><span class="line">    <span class="type">vec2</span> offsetCoords = <span class="type">vec2</span>(<span class="keyword">offset</span>, <span class="keyword">offset</span>) * progress;</span><br><span class="line">    <span class="type">float</span> scale = <span class="number">1.0</span> + (maxScale - <span class="number">1.0</span>) * progress;</span><br><span class="line">    </span><br><span class="line">    <span class="type">vec2</span> ScaleTextureCoords = <span class="type">vec2</span>(<span class="number">0.5</span>, <span class="number">0.5</span>) + (TextureCoordsVarying - <span class="type">vec2</span>(<span class="number">0.5</span>, <span class="number">0.5</span>)) / scale;</span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> maskR = <span class="built_in">texture2D</span>(Texture, ScaleTextureCoords + offsetCoords);</span><br><span class="line">    <span class="type">vec4</span> maskB = <span class="built_in">texture2D</span>(Texture, ScaleTextureCoords - offsetCoords);</span><br><span class="line">    <span class="type">vec4</span> mask = <span class="built_in">texture2D</span>(Texture, ScaleTextureCoords);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">gl_FragColor</span> = <span class="type">vec4</span>(maskR.r, mask.g, maskB.b, mask.a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这里的放大和上面类似，我们主要看一下颜色偏移。颜色偏移是对三个颜色通道进行分离，并且给红色通道和蓝色通道添加了不同的位置偏移，代码很容易看懂。</p>
 <h1 id="四、闪白"><a href="#四、闪白" class="headerlink" title="四、闪白"></a>四、闪白</h1><p><strong>1、最终效果</strong></p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-shinewhite.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-shinewhite.gif"></p>
 <p>「闪白」其实看起来一点儿也不酷炫，而且看久了还容易被闪瞎。这个效果实现起来也十分简单，无非就是叠加一个白色层，然后白色层的透明度随着时间不断地变化。</p>
 <p><strong>2、代码实现</strong></p>
 <p>片段着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> Texture;</span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> TextureCoordsVarying;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="type">float</span> PI = <span class="number">3.1415926</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">float</span> duration = <span class="number">0.6</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> time = <span class="built_in">mod</span>(Time, duration);</span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> whiteMask = <span class="type">vec4</span>(<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    <span class="type">float</span> amplitude = <span class="built_in">abs</span>(<span class="built_in">sin</span>(time * (PI / duration)));</span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> mask = <span class="built_in">texture2D</span>(Texture, TextureCoordsVarying);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">gl_FragColor</span> = mask * (<span class="number">1.0</span> - amplitude) + whiteMask * amplitude;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在上面「灵魂出窍」的例子中，我们已经知道了如何实现两个层的叠加。这里我们只需要创建一个白色的层 <code>whiteMask</code>，然后根据当前的透明度来计算最终的颜色值即可。</p>
 <h1 id="五、毛刺"><a href="#五、毛刺" class="headerlink" title="五、毛刺"></a>五、毛刺</h1><p><strong>1、最终效果</strong></p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-glitch.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-glitch.gif"></p>
 <p>终于有了一个稍微复杂一点的效果，「毛刺」看上去是「撕裂 + 微弱的颜色偏移」。颜色偏移我们在上面已经实现，这里主要是讲解撕裂的效果。</p>
 <p>具体的思路是，我们让每一行像素随机偏移 <code>-1 ~ 1</code> 的距离（这里的 <code>-1 ~ 1</code> 是对于纹理坐标来说的），但是如果整个画面都偏移比较大的值，那我们可能都看不出原来图像的样子。所以我们的逻辑是，<strong>设定一个阈值，小于这个阈值才进行偏移，超过这个阈值则乘上一个缩小系数。</strong></p>
 <p>则最终呈现的效果是：<strong>绝大部分的行都会进行微小的偏移，只有少量的行会进行较大偏移。</strong></p>
 <p><strong>2、代码实现</strong></p>
 <p>片段着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> Texture;</span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> TextureCoordsVarying;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="type">float</span> PI = <span class="number">3.1415926</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> rand(<span class="type">float</span> n) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">fract</span>(<span class="built_in">sin</span>(n) * <span class="number">43758.5453123</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">float</span> maxJitter = <span class="number">0.06</span>;</span><br><span class="line">    <span class="type">float</span> duration = <span class="number">0.3</span>;</span><br><span class="line">    <span class="type">float</span> colorROffset = <span class="number">0.01</span>;</span><br><span class="line">    <span class="type">float</span> colorBOffset = <span class="number">-0.025</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> time = <span class="built_in">mod</span>(Time, duration * <span class="number">2.0</span>);</span><br><span class="line">    <span class="type">float</span> amplitude = <span class="built_in">max</span>(<span class="built_in">sin</span>(time * (PI / duration)), <span class="number">0.0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> jitter = rand(TextureCoordsVarying.y) * <span class="number">2.0</span> - <span class="number">1.0</span>; <span class="comment">// -1~1</span></span><br><span class="line">    <span class="type">bool</span> needOffset = <span class="built_in">abs</span>(jitter) &lt; maxJitter * amplitude;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> textureX = TextureCoordsVarying.x + (needOffset ? jitter : (jitter * amplitude * <span class="number">0.006</span>));</span><br><span class="line">    <span class="type">vec2</span> textureCoords = <span class="type">vec2</span>(textureX, TextureCoordsVarying.y);</span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> mask = <span class="built_in">texture2D</span>(Texture, textureCoords);</span><br><span class="line">    <span class="type">vec4</span> maskR = <span class="built_in">texture2D</span>(Texture, textureCoords + <span class="type">vec2</span>(colorROffset * amplitude, <span class="number">0.0</span>));</span><br><span class="line">    <span class="type">vec4</span> maskB = <span class="built_in">texture2D</span>(Texture, textureCoords + <span class="type">vec2</span>(colorBOffset * amplitude, <span class="number">0.0</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">gl_FragColor</span> = <span class="type">vec4</span>(maskR.r, mask.g, maskB.b, mask.a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>上面提到的像素随机偏移需要用到随机数，可惜 GLSL 里并没有内置的随机函数，所以我们需要自己实现一个。</p>
-<p>这个 <code>float rand(float n)</code> 的实现看上去很神奇，它其实是来自 <a href="https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83" target="_blank" rel="noopener">这里</a> ，江湖人称「噪声函数」。</p>
-<p>它其实是一个伪随机函数，本质上是一个 Hash 函数。但在这里我们可以把它当成随机函数来使用，它的返回值范围是 <code>0 ~ 1</code>。如果你对这个函数想了解更多的话可以看 <a href="https://xiaoiver.github.io/coding/2018/08/01/%E5%99%AA%E5%A3%B0%E7%9A%84%E8%89%BA%E6%9C%AF.html" target="_blank" rel="noopener">这里</a> 。</p>
+<p>这个 <code>float rand(float n)</code> 的实现看上去很神奇，它其实是来自 <a target="_blank" rel="noopener" href="https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83">这里</a> ，江湖人称「噪声函数」。</p>
+<p>它其实是一个伪随机函数，本质上是一个 Hash 函数。但在这里我们可以把它当成随机函数来使用，它的返回值范围是 <code>0 ~ 1</code>。如果你对这个函数想了解更多的话可以看 <a target="_blank" rel="noopener" href="https://xiaoiver.github.io/coding/2018/08/01/%E5%99%AA%E5%A3%B0%E7%9A%84%E8%89%BA%E6%9C%AF.html">这里</a> 。</p>
 <h1 id="六、幻觉"><a href="#六、幻觉" class="headerlink" title="六、幻觉"></a>六、幻觉</h1><p><strong>1、最终效果</strong></p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-vertigo.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-filter-vertigo.gif"></p>
 <p>「幻觉」这个效果有点一言难尽，因为其实看上去并不是很像。原来的效果是基于视频上一帧的结果去合成，静态的图片很难模拟出这种情况。不管怎么说，既然已经尽力，不像就不像吧，下面讲一下我的实现思路。</p>
 <p>可以看出这个效果是<strong>残影</strong>和<strong>颜色偏移</strong>的叠加。</p>
 <p>残影的效果还好，在移动的过程中，每经过一段时间间隔，根据当前的位置去创建一个新层，并且新层的不透明度随着时间逐渐减弱。于是在一个移动周期内，可以看到很多透明度不同的层叠加在一起，从而形成残影的效果。</p>
@@ -468,6 +241,7 @@
 <p><strong>2、代码实现</strong></p>
 <p>片段着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> Texture;</span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> TextureCoordsVarying;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Time;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="type">float</span> PI = <span class="number">3.1415926</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="type">float</span> duration = <span class="number">2.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">vec4</span> getMask(<span class="type">float</span> time, <span class="type">vec2</span> textureCoords, <span class="type">float</span> padding) &#123;</span><br><span class="line">    <span class="type">vec2</span> translation = <span class="type">vec2</span>(<span class="built_in">sin</span>(time * (PI * <span class="number">2.0</span> / duration)),</span><br><span class="line">                            <span class="built_in">cos</span>(time * (PI * <span class="number">2.0</span> / duration)));</span><br><span class="line">    <span class="type">vec2</span> translationTextureCoords = textureCoords + padding * translation;</span><br><span class="line">    <span class="type">vec4</span> mask = <span class="built_in">texture2D</span>(Texture, translationTextureCoords);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> mask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> maskAlphaProgress(<span class="type">float</span> currentTime, <span class="type">float</span> hideTime, <span class="type">float</span> startTime) &#123;</span><br><span class="line">    <span class="type">float</span> time = <span class="built_in">mod</span>(duration + currentTime - startTime, duration);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">min</span>(time, hideTime);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">float</span> time = <span class="built_in">mod</span>(Time, duration);</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> scale = <span class="number">1.2</span>;</span><br><span class="line">    <span class="type">float</span> padding = <span class="number">0.5</span> * (<span class="number">1.0</span> - <span class="number">1.0</span> / scale);</span><br><span class="line">    <span class="type">vec2</span> textureCoords = <span class="type">vec2</span>(<span class="number">0.5</span>, <span class="number">0.5</span>) + (TextureCoordsVarying - <span class="type">vec2</span>(<span class="number">0.5</span>, <span class="number">0.5</span>)) / scale;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> hideTime = <span class="number">0.9</span>;</span><br><span class="line">    <span class="type">float</span> timeGap = <span class="number">0.2</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> maxAlphaR = <span class="number">0.5</span>; <span class="comment">// max R</span></span><br><span class="line">    <span class="type">float</span> maxAlphaG = <span class="number">0.05</span>; <span class="comment">// max G</span></span><br><span class="line">    <span class="type">float</span> maxAlphaB = <span class="number">0.05</span>; <span class="comment">// max B</span></span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> mask = getMask(time, textureCoords, padding);</span><br><span class="line">    <span class="type">float</span> alphaR = <span class="number">1.0</span>; <span class="comment">// R</span></span><br><span class="line">    <span class="type">float</span> alphaG = <span class="number">1.0</span>; <span class="comment">// G</span></span><br><span class="line">    <span class="type">float</span> alphaB = <span class="number">1.0</span>; <span class="comment">// B</span></span><br><span class="line">    </span><br><span class="line">    <span class="type">vec4</span> resultMask = <span class="type">vec4</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">float</span> f = <span class="number">0.0</span>; f &lt; duration; f += timeGap) &#123;</span><br><span class="line">        <span class="type">float</span> tmpTime = f;</span><br><span class="line">        <span class="type">vec4</span> tmpMask = getMask(tmpTime, textureCoords, padding);</span><br><span class="line">        <span class="type">float</span> tmpAlphaR = maxAlphaR - maxAlphaR * maskAlphaProgress(time, hideTime, tmpTime) / hideTime;</span><br><span class="line">        <span class="type">float</span> tmpAlphaG = maxAlphaG - maxAlphaG * maskAlphaProgress(time, hideTime, tmpTime) / hideTime;</span><br><span class="line">        <span class="type">float</span> tmpAlphaB = maxAlphaB - maxAlphaB * maskAlphaProgress(time, hideTime, tmpTime) / hideTime;</span><br><span class="line">     </span><br><span class="line">        resultMask += <span class="type">vec4</span>(tmpMask.r * tmpAlphaR,</span><br><span class="line">                           tmpMask.g * tmpAlphaG,</span><br><span class="line">                           tmpMask.b * tmpAlphaB,</span><br><span class="line">                           <span class="number">1.0</span>);</span><br><span class="line">        alphaR -= tmpAlphaR;</span><br><span class="line">        alphaG -= tmpAlphaG;</span><br><span class="line">        alphaB -= tmpAlphaB;</span><br><span class="line">    &#125;</span><br><span class="line">    resultMask += <span class="type">vec4</span>(mask.r * alphaR, mask.g * alphaG, mask.b * alphaB, <span class="number">1.0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">gl_FragColor</span> = resultMask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>从代码的行数可以看出，这个效果应该是里面最复杂的。为了实现残影，我们先让图片随时间做圆周运动。</p>
 <p><code>vec4 getMask(float time, vec2 textureCoords, float padding)</code> 这个函数可以计算出，在某个时刻图片的具体位置。通过它我们可以每经过一段时间，去生成一个新的层。</p>
 <p><code>float maskAlphaProgress(float currentTime, float hideTime, float startTime)</code> 这个函数可以计算出，某个时刻创建的层，在当前时刻的透明度。</p>
@@ -476,502 +250,113 @@
 <blockquote>
 <p><strong>注：</strong> 在 iOS 的模拟器上，只能用 CPU 来模拟 GPU 的功能。所以在模拟器上运行上面的代码时，可能会十分卡顿。尤其是最后这个效果，由于计算量太大，亲测模拟器显示不出来。因此如果要跑代码，最好使用真机运行。</p>
 </blockquote>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/blog-demo/tree/master/testOpenGLESFilter" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://www.jianshu.com/p/5bb7f2a0da90" target="_blank" rel="noopener">当一个 Android 开发玩抖音玩疯了之后(二)</a></p></div>
-      
-    </div>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a target="_blank" rel="noopener" href="https://github.com/lmf12/blog-demo/tree/master/testOpenGLESFilter">GitHub</a> 上查看完整代码。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5bb7f2a0da90">当一个 Android 开发玩抖音玩疯了之后(二)</a></li>
+</ul>
 
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/03/04/ios-opengles-spring/" rel="next" title="使用 iOS OpenGL ES 实现长腿功能">
-                <i class="fa fa-chevron-left"></i> 使用 iOS OpenGL ES 实现长腿功能
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/09/ios-opengles-wobble/" rel="prev" title="GLSL 与布丁晃动艺术">
-                GLSL 与布丁晃动艺术 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#〇、动画"><span class="nav-text">〇、动画</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、缩放"><span class="nav-text">一、缩放</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、灵魂出窍"><span class="nav-text">二、灵魂出窍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、抖动"><span class="nav-text">三、抖动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、闪白"><span class="nav-text">四、闪白</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、毛刺"><span class="nav-text">五、毛刺</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、幻觉"><span class="nav-text">六、幻觉</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%87%E3%80%81%E5%8A%A8%E7%94%BB"><span class="toc-number">2.</span> <span class="toc-text">〇、动画</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%BC%A9%E6%94%BE"><span class="toc-number">3.</span> <span class="toc-text">一、缩放</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%81%B5%E9%AD%82%E5%87%BA%E7%AA%8D"><span class="toc-number">4.</span> <span class="toc-text">二、灵魂出窍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%8A%96%E5%8A%A8"><span class="toc-number">5.</span> <span class="toc-text">三、抖动</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E9%97%AA%E7%99%BD"><span class="toc-number">6.</span> <span class="toc-text">四、闪白</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%AF%9B%E5%88%BA"><span class="toc-number">7.</span> <span class="toc-text">五、毛刺</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%B9%BB%E8%A7%89"><span class="toc-number">8.</span> <span class="toc-text">六、幻觉</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">9.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">10.</span> <span class="toc-text">参考</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

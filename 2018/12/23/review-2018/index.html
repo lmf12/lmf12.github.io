@@ -1,398 +1,162 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="年终总结, 2018" />
-
-
-<meta name="description" content="再过两天就是圣诞节了，这同时意味着 2018 年迎来了尾声。回顾这一年，还是有很多事情值得一说，于是抽空做了下总结和记录。">
-<meta name="keywords" content="年终总结, 2018">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="再过两天就是圣诞节了，这同时意味着 2018 年迎来了尾声。回顾这一年，还是有很多事情值得一说，于是抽空做了下总结和记录。 年初挖的坑每到新年，我们都会列一堆新年计划，今年的我也不例外。首先，怀着忐忑的心情，回顾一下年初的时候，我挖了哪些坑，又填了哪些。 1、看完《黑客与画家》英文版 《黑客与画家》之前就已经读过了数遍，之所以会有这个目标，是因为希望提升下英语阅读能力。然而就在 2018 年即将">
 <meta property="og:type" content="article">
 <meta property="og:title" content="写在 2018 年末">
-<meta property="og:url" content="http://www.lymanli.com/2018/12/23/review-2018/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2018/12/23/review-2018/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="再过两天就是圣诞节了，这同时意味着 2018 年迎来了尾声。回顾这一年，还是有很多事情值得一说，于是抽空做了下总结和记录。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="再过两天就是圣诞节了，这同时意味着 2018 年迎来了尾声。回顾这一年，还是有很多事情值得一说，于是抽空做了下总结和记录。 年初挖的坑每到新年，我们都会列一堆新年计划，今年的我也不例外。首先，怀着忐忑的心情，回顾一下年初的时候，我挖了哪些坑，又填了哪些。 1、看完《黑客与画家》英文版 《黑客与画家》之前就已经读过了数遍，之所以会有这个目标，是因为希望提升下英语阅读能力。然而就在 2018 年即将">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/review-2018.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/review-2018-image-1.jpg">
-<meta property="og:updated_time" content="2018-12-23T13:48:21.000Z">
+<meta property="article:published_time" content="2018-12-23T06:34:48.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.005Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="写在 2018 年末">
-<meta name="twitter:description" content="再过两天就是圣诞节了，这同时意味着 2018 年迎来了尾声。回顾这一年，还是有很多事情值得一说，于是抽空做了下总结和记录。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/review-2018.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2018/12/23/review-2018/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>写在 2018 年末 | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>写在 2018 年末</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2019/02/17/ios-opengles-render-texture/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2018/11/10/subtract-mask/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B9%B4%E5%88%9D%E6%8C%96%E7%9A%84%E5%9D%91"><span class="toc-number">1.</span> <span class="toc-text">年初挖的坑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E5%A4%A7%E4%BA%8B%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">重大事件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2018-02-25-%E5%BC%80%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2"><span class="toc-number">2.1.</span> <span class="toc-text">2018-02-25 开技术博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2018-04-16-%E5%9C%A8%E6%B7%B1%E5%9C%B3%E4%B9%B0%E6%88%BF"><span class="toc-number">2.2.</span> <span class="toc-text">2018-04-16 在深圳买房</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2018-06-25-%E6%8D%A2%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.3.</span> <span class="toc-text">2018-06-25 换工作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B0%E5%B9%B4%E5%B1%95%E6%9C%9B"><span class="toc-number">3.</span> <span class="toc-text">新年展望</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        写在 2018 年末
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2018-12-23T06:34:48.000Z" class="dt-published" itemprop="datePublished">2018-12-23</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E8%AE%B0%E5%BF%86%E7%A2%8E%E7%89%87/">记忆碎片</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2018/12/23/review-2018/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">写在 2018 年末</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-23T14:34:48+08:00">2018-12-23</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2018-12-23T21:48:21+08:00">2018-12-23</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/记忆碎片/" itemprop="url" rel="index"><span itemprop="name">记忆碎片</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/12/23/review-2018/" class="leancloud_visitors" data-flag-title="写在 2018 年末">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/review-2018.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/review-2018.jpg"></p>
 <p>再过两天就是圣诞节了，这同时意味着 2018 年迎来了尾声。回顾这一年，还是有很多事情值得一说，于是抽空做了下总结和记录。</p>
-<a id="more"></a>
 <h1 id="年初挖的坑"><a href="#年初挖的坑" class="headerlink" title="年初挖的坑"></a>年初挖的坑</h1><p>每到新年，我们都会列一堆新年计划，今年的我也不例外。首先，怀着忐忑的心情，回顾一下年初的时候，我挖了哪些坑，又填了哪些。</p>
 <p><strong>1、看完《黑客与画家》英文版</strong></p>
 <p>《黑客与画家》之前就已经读过了数遍，之所以会有这个目标，是因为希望提升下英语阅读能力。然而就在 2018 年即将无情离开之际，这个目标也还没开始执行。不对，还是有尝试去找英文版，只不过没有找到。嗯，都怪「微信读书」没有上架。</p>
@@ -404,15 +168,15 @@
 <p>我觉得阅读是一件很重要的事情，它是我们了解这个世界的一个途径。这个目标在 2017 年也有，当时超额完成了 16 本。可惜今年由于换工作等原因，中途搁置了很久，快到年末的时候才匆匆补上点进度。最后只看完了 4 本，还没达到及格线。</p>
 <p>它们分别是：</p>
 <ul>
-<li><a href="https://book.douban.com/subject/26163553/" target="_blank" rel="noopener">投资中最简单的事</a></li>
-<li><a href="https://book.douban.com/subject/1770782/" target="_blank" rel="noopener">追风筝的人</a></li>
-<li><a href="https://book.douban.com/subject/4913064/" target="_blank" rel="noopener">活着</a></li>
-<li><a href="https://book.douban.com/subject/27110733/" target="_blank" rel="noopener">被嫌弃的松子的一生</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/26163553/">投资中最简单的事</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/1770782/">追风筝的人</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/4913064/">活着</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/27110733/">被嫌弃的松子的一生</a></li>
 </ul>
 <p>另外，今年完整看完的技术类书籍也顺便列一下：</p>
 <ul>
-<li><a href="https://book.douban.com/subject/25829244/" target="_blank" rel="noopener">Effective Objective-C 2.0</a></li>
-<li><a href="https://book.douban.com/subject/25716177/" target="_blank" rel="noopener">iOS Core Animation: Advanced Techniques</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/25829244/">Effective Objective-C 2.0</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/25716177/">iOS Core Animation: Advanced Techniques</a></li>
 </ul>
 <p><strong>综上所述，今年的填坑完成度是 57.5% ，差点就及格了，希望明年更进一步。</strong></p>
 <h1 id="重大事件"><a href="#重大事件" class="headerlink" title="重大事件"></a>重大事件</h1><p>在我们的一生中，会经历大大小小很多事情。其中大部分的事情只是在无用地重复，对我们人生起到关键作用的事情屈指可数。我这一年值得记录的事件如下：</p>
@@ -432,19 +196,19 @@
 <ul>
 <li><p>公众号<br>  据不完全统计，目前被公众号「iOS开发」、「Cocoa开发者社区」转载过多篇文章，并且阅读量都在 1000+ 。</p>
 <ul>
-<li><a href="https://mp.weixin.qq.com/s/xG79LVzMymXS_D9sNSoCkw" target="_blank" rel="noopener">【Cocoa开发者社区】一行代码实现 UIView 镂空效果</a> </li>
-<li><a href="https://mp.weixin.qq.com/s/9HpJO9yLWphl1LH3sSFHWw" target="_blank" rel="noopener">【Cocoa开发者社区】iOS 多级 UIScrollView 嵌套的实现方案</a></li>
-<li><a href="https://mp.weixin.qq.com/s/M0DudxdXEV2zOo7XRIYWaA" target="_blank" rel="noopener">【Cocoa开发者社区】新手也看得懂的 iOS Runtime 教程</a></li>
-<li><a href="https://mp.weixin.qq.com/s/UPgGbIqpzQOn3yjvAz6rxA" target="_blank" rel="noopener">【iOS开发】一行代码实现 UIView 镂空效果</a></li>
-<li><a href="https://mp.weixin.qq.com/s/rwBYC6DiMzJUNmlChCZKag" target="_blank" rel="noopener">【iOS开发】新手也看得懂的 iOS Runtime 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/xG79LVzMymXS_D9sNSoCkw">【Cocoa开发者社区】一行代码实现 UIView 镂空效果</a> </li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/9HpJO9yLWphl1LH3sSFHWw">【Cocoa开发者社区】iOS 多级 UIScrollView 嵌套的实现方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/M0DudxdXEV2zOo7XRIYWaA">【Cocoa开发者社区】新手也看得懂的 iOS Runtime 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/UPgGbIqpzQOn3yjvAz6rxA">【iOS开发】一行代码实现 UIView 镂空效果</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/rwBYC6DiMzJUNmlChCZKag">【iOS开发】新手也看得懂的 iOS Runtime 教程</a></li>
 </ul>
 </li>
-<li><p><a href="https://www.jianshu.com/u/e43d2bdec533" target="_blank" rel="noopener">简书</a><br>  截至目前获得 132 个喜欢，43 位粉丝。 </p>
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/u/e43d2bdec533">简书</a><br>  截至目前获得 132 个喜欢，43 位粉丝。 </p>
 </li>
-<li><p><a href="https://juejin.im/user/5b141339f265da6e326c4883" target="_blank" rel="noopener">掘金</a><br>  截至目前获得 105 次点赞，24 位关注者。 </p>
+<li><p><a target="_blank" rel="noopener" href="https://juejin.im/user/5b141339f265da6e326c4883">掘金</a><br>  截至目前获得 105 次点赞，24 位关注者。 </p>
 </li>
-<li><p><a href="https://github.com/lmf12" target="_blank" rel="noopener">GitHub</a><br>  今年累计获得了 100 多个 star ，目前首页长这样，期待明年 repository 的排名能刷新一波。</p>
-<p>  <img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/review-2018-image-1.jpg" alt=""></p>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/lmf12">GitHub</a><br>  今年累计获得了 100 多个 star ，目前首页长这样，期待明年 repository 的排名能刷新一波。</p>
+<p>  <img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/review-2018-image-1.jpg"></p>
 </li>
 </ul>
 <h2 id="2018-04-16-在深圳买房"><a href="#2018-04-16-在深圳买房" class="headerlink" title="2018-04-16 在深圳买房"></a>2018-04-16 在深圳买房</h2><p>深圳有句著名的 slogan ：「来了就是惠州人」。意思是大部分在深圳拼搏的人，最后都在惠州买了房子。当然这句话是对深圳高房价的吐槽。</p>
@@ -464,500 +228,108 @@
 <p>We are all in the gutter, but some of us are looking at the stars. — Oscar Wilde</p>
 </blockquote>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/11/10/subtract-mask/" rel="next" title="一行代码实现 UIView 镂空效果">
-                <i class="fa fa-chevron-left"></i> 一行代码实现 UIView 镂空效果
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/17/ios-opengles-render-texture/" rel="prev" title="从零讲解 iOS 中 OpenGL ES 的纹理渲染">
-                从零讲解 iOS 中 OpenGL ES 的纹理渲染 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#年初挖的坑"><span class="nav-text">年初挖的坑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#重大事件"><span class="nav-text">重大事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2018-02-25-开技术博客"><span class="nav-text">2018-02-25 开技术博客</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2018-04-16-在深圳买房"><span class="nav-text">2018-04-16 在深圳买房</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2018-06-25-换工作"><span class="nav-text">2018-06-25 换工作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新年展望"><span class="nav-text">新年展望</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B9%B4%E5%88%9D%E6%8C%96%E7%9A%84%E5%9D%91"><span class="toc-number">1.</span> <span class="toc-text">年初挖的坑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E5%A4%A7%E4%BA%8B%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">重大事件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2018-02-25-%E5%BC%80%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2"><span class="toc-number">2.1.</span> <span class="toc-text">2018-02-25 开技术博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2018-04-16-%E5%9C%A8%E6%B7%B1%E5%9C%B3%E4%B9%B0%E6%88%BF"><span class="toc-number">2.2.</span> <span class="toc-text">2018-04-16 在深圳买房</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2018-06-25-%E6%8D%A2%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.3.</span> <span class="toc-text">2018-06-25 换工作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B0%E5%B9%B4%E5%B1%95%E6%9C%9B"><span class="toc-number">3.</span> <span class="toc-text">新年展望</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

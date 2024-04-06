@@ -1,112 +1,18 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, OpenGL, 绘画板" />
-
-
-<meta name="description" content="今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。">
-<meta name="keywords" content="iOS, OpenGL, 绘画板">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。 首先看一下最终效果：  在 iOS 中，有很多种方式可以实现一个绘画板，比如我的另外一个项目 MFPaintView 就是基于 CoreGraphics 实现的。 然而，使用 OpenGL ES 来实现可以获得更多的灵活性，比如我们可以自定义笔触的形状，这是其他实现方式做不到的。 我们">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在 iOS 中使用 OpenGL ES 实现绘画板">
-<meta property="og:url" content="http://www.lymanli.com/2020/01/04/ios-opengles-paint/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2020/01/04/ios-opengles-paint/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。 首先看一下最终效果：  在 iOS 中，有很多种方式可以实现一个绘画板，比如我的另外一个项目 MFPaintView 就是基于 CoreGraphics 实现的。 然而，使用 OpenGL ES 来实现可以获得更多的灵活性，比如我们可以自定义笔触的形状，这是其他实现方式做不到的。 我们">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint.jpg">
 <meta property="og:image" content="https://media.githubusercontent.com/media/lmf12/ImageHost/master/GLPaintView/image.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-1.jpg">
@@ -115,293 +21,151 @@
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-3.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-gif-1.gif">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-4.jpg">
-<meta property="og:updated_time" content="2022-09-10T03:46:06.150Z">
+<meta property="article:published_time" content="2020-01-04T06:40:52.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.003Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在 iOS 中使用 OpenGL ES 实现绘画板">
-<meta name="twitter:description" content="今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2020/01/04/ios-opengles-paint/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>在 iOS 中使用 OpenGL ES 实现绘画板 | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>在 iOS 中使用 OpenGL ES 实现绘画板</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2020/03/15/ios-video-filter/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2019/12/25/review-2019/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%80%8E%E4%B9%88%E7%BB%98%E5%88%B6%E6%9B%B2%E7%BA%BF"><span class="toc-number">1.</span> <span class="toc-text">一、怎么绘制曲线</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%80%8E%E4%B9%88%E7%BB%98%E5%88%B6%E5%AF%86%E9%9B%86%E7%9A%84%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">二、怎么绘制密集的点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%8E%E4%B9%88%E4%BD%BF%E6%9B%B2%E7%BA%BF%E5%8F%98%E5%B9%B3%E6%BB%91"><span class="toc-number">3.</span> <span class="toc-text">三、怎么使曲线变平滑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%80%8E%E4%B9%88%E7%94%9F%E6%88%90%E5%9D%87%E5%8C%80%E7%9A%84%E7%82%B9%E5%BA%8F%E5%88%97"><span class="toc-number">4.</span> <span class="toc-text">四、怎么生成均匀的点序列</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E7%BB%98%E7%94%BB%E6%9D%BF%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.</span> <span class="toc-text">五、绘画板功能实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">6.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        在 iOS 中使用 OpenGL ES 实现绘画板
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2020-01-04T06:40:52.000Z" class="dt-published" itemprop="datePublished">2020-01-04</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/OpenGL-ES/">OpenGL ES</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2020/01/04/ios-opengles-paint/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">在 iOS 中使用 OpenGL ES 实现绘画板</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-04T14:40:52+08:00">2020-01-04</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2022-09-10T11:46:06+08:00">2022-09-10</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenGL-ES/" itemprop="url" rel="index"><span itemprop="name">OpenGL ES</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2020/01/04/ios-opengles-paint/" class="leancloud_visitors" data-flag-title="在 iOS 中使用 OpenGL ES 实现绘画板">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint.jpg"></p>
 <p>今天我们使用 OpenGL ES 来实现一个绘画板，主要介绍在 OpenGL ES 中绘制平滑曲线的实现方案。</p>
-<a id="more"></a>
 <p><strong>首先看一下最终效果：</strong></p>
-<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/GLPaintView/image.gif" alt=""></p>
-<p>在 iOS 中，有很多种方式可以实现一个绘画板，比如我的另外一个项目 <a href="https://github.com/lmf12/MFPaintView" target="_blank" rel="noopener">MFPaintView</a> 就是基于 CoreGraphics 实现的。</p>
+<p><img src="https://media.githubusercontent.com/media/lmf12/ImageHost/master/GLPaintView/image.gif"></p>
+<p>在 iOS 中，有很多种方式可以实现一个绘画板，比如我的另外一个项目 <a target="_blank" rel="noopener" href="https://github.com/lmf12/MFPaintView">MFPaintView</a> 就是基于 CoreGraphics 实现的。</p>
 <p>然而，使用 OpenGL ES 来实现可以获得更多的灵活性，比如我们可以自定义笔触的形状，这是其他实现方式做不到的。</p>
 <p>我们知道，OpenGL ES 中只有 <strong>点、直线、三角形</strong> 这三种图元。因此，<strong>怎么在 OpenGL ES 中绘制曲线</strong>，是我们第一个要解决的问题，也是最复杂的问题。</p>
 <p>我们会使用比较大的篇幅来讲解这个问题。至于绘画板的其他功能实现，并不是说不重要，只是说其他的绘画板实现方式，也会有类似的逻辑，所以这部分会放在最后再简单介绍一下。</p>
@@ -409,26 +173,30 @@
 <p>因为要绘制点，所以我们采取的是 <strong>点图元</strong> 。即我们要把顶点数据当成 <strong>点</strong> 来绘制，并且每个点都要绘制出笔触的纹理。关键步骤如下：</p>
 <p>指定图元类型：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">glDrawArrays(GL_POINTS, <span class="number">0</span>, <span class="keyword">self</span>.vertexCount);</span><br></pre></td></tr></table></figure>
+
 <p>顶点着色器：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">attribute</span> <span class="type">vec4</span> Position;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> Size;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="built_in">gl_Position</span> = Position;</span><br><span class="line">    <span class="built_in">gl_PointSize</span> = Size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>片段着色器：</p>
-<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> R;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> G;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> B;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> A;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> Texture;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">vec4</span> mask = <span class="built_in">texture2D</span>(Texture, <span class="type">vec2</span>(<span class="built_in">gl_PointCoord</span>.x, <span class="number">1.0</span> - <span class="built_in">gl_PointCoord</span>.y));</span><br><span class="line">    <span class="built_in">gl_FragColor</span> = A * <span class="type">vec4</span>(R, G, B, <span class="number">1.0</span>) * mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> R;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> G;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> B;</span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> A;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> Texture;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main (<span class="type">void</span>) &#123;</span><br><span class="line">    <span class="type">vec4</span> mask = <span class="built_in">texture2D</span>(Texture, <span class="type">vec2</span>(<span class="built_in">gl_PointCoord</span>.x, <span class="number">1.0</span> - <span class="built_in">gl_PointCoord</span>.y));</span><br><span class="line">    <span class="built_in">gl_FragColor</span> = A * <span class="type">vec4</span>(R, G, B, <span class="number">1.0</span>) * mask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 <p>这里的关键点在于 <code>gl_PointCoord</code> 这个内置变量，当我们使用点图元的时候，可以通过这个变量获取到 <strong>当前像素在点图元中的归一化坐标</strong> 。</p>
 <p>但是这个坐标的原点是在左上角，这和纹理坐标在竖直方向上是相反的。所以从纹理读取颜色的时候，要做一个 y 坐标的转换。</p>
 <p>接下来，我们通过 <code>UITouch</code> 来获取触摸点的位置，然后算出归一化的顶点坐标。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)touchesMoved:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event &#123;</span><br><span class="line">    [<span class="keyword">super</span> touchesMoved:touches withEvent:event];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> addPointWithTouches:touches];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)touchesMoved:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event &#123;</span><br><span class="line">    [<span class="variable language_">super</span> touchesMoved:touches withEvent:event];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> addPointWithTouches:touches];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>但是由于 iOS 系统触摸事件的派发频率有限，我们最终得到的只能是稀疏的点。如下图所示，每个触摸点之间的间隔会比较大。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-1.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-1.jpg"></p>
 <h1 id="二、怎么绘制密集的点"><a href="#二、怎么绘制密集的点" class="headerlink" title="二、怎么绘制密集的点"></a>二、怎么绘制密集的点</h1><p>很容易想到，只需要在两个点之间，按照一定的密度进行插值，就可以绘制出连续的轨迹。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-2.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-2.jpg"></p>
 <p>但是很明显，我们的绘制结果是折线，并不平滑。</p>
-<h1 id="三、怎么使曲线变平滑"><a href="#三、怎么使曲线变平滑" class="headerlink" title="三、怎么使曲线变平滑"></a>三、怎么使曲线变平滑</h1><p>解决点连接不平滑的问题，一般是使用贝塞尔曲线。这种方案在 <a href="https://github.com/lmf12/MFPaintView" target="_blank" rel="noopener">MFPaintView</a> 中也得到了很好的应用。</p>
+<h1 id="三、怎么使曲线变平滑"><a href="#三、怎么使曲线变平滑" class="headerlink" title="三、怎么使曲线变平滑"></a>三、怎么使曲线变平滑</h1><p>解决点连接不平滑的问题，一般是使用贝塞尔曲线。这种方案在 <a target="_blank" rel="noopener" href="https://github.com/lmf12/MFPaintView">MFPaintView</a> 中也得到了很好的应用。</p>
 <p>具体的做法是使用 <strong>两个顶点间的中点</strong> 和 <strong>一个顶点</strong> ，来构造一条贝塞尔曲线。如下图，图中的 3 个 <strong>红点</strong> 被用来构造一条贝塞尔曲线。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-5.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-5.jpg"></p>
 <p>于是，我们的问题就变成了 <strong>怎么在 OpenGL ES 中绘制贝塞尔曲线</strong> 。相当于已知贝塞尔曲线的 3 个关键点，反向来求曲线上的点序列。</p>
 <p>我们知道贝塞尔曲线的方程是 <code>P = (1 - t)^2 * P0 + 2 * t * (1 - t) * P1 + t^2 * P2</code>， <code>t</code> 是唯一的变量，其取值范围是 <code>0 ~ 1</code> 。</p>
 <p>所以我们可以采取线性取值的方式，每一条贝塞尔曲线取 <code>n</code> 个点（<code>n</code> 是个确定的常量）。只要依次往方程中代入 <code>1 / n 、 2 / n 、 ... n / n</code> ，就可以得到一个点序列。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-3.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-3.jpg"></p>
 <p>先将 <code>n</code> 取一个比较小的值，这样比较容易看出存在的问题。我们发现，<strong>点序列的间隔并不均匀</strong>。原因有两个：</p>
 <ol>
 <li>不同贝塞尔曲线的长度不一样，使用同一个 <code>n</code> 值，算出来的点的疏密程度肯定不同。</li>
@@ -438,16 +206,18 @@
 <p>这个问题的推导和计算比较复杂。如果你有兴趣，可以阅读一下文末的两篇文章。由于我还不能完全领悟，就不在这里误导大家了。</p>
 <p>简单来说，就是我们通过一系列的骚操作，封装了一个方法，只需要传入贝塞尔曲线的 3 个关键点和笔触尺寸，就可以获取均匀的点序列。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">NSArray</span> &lt;<span class="built_in">NSValue</span> *&gt;*)pointsWithFrom:(<span class="built_in">CGPoint</span>)from</span><br><span class="line">                                    to:(<span class="built_in">CGPoint</span>)to</span><br><span class="line">                               control:(<span class="built_in">CGPoint</span>)control</span><br><span class="line">                             pointSize:(<span class="built_in">CGFloat</span>)pointSize;</span><br></pre></td></tr></table></figure>
+
 <p>下面我们固定贝塞尔曲线的 <strong>起始点</strong> 和 <strong>控制点</strong>，只移动 <strong>终止点</strong>，来验证一下这个方法是否可靠。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-gif-1.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-gif-1.gif"></p>
 <p>可以看到，在移动过程中，点和点的距离基本是保持一致的，并且是均匀的。通过这个「神奇」的方法，我们终于画出了平滑且均匀的曲线。</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-4.jpg" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/opengles-paint-image-4.jpg"></p>
 <h1 id="五、绘画板功能实现"><a href="#五、绘画板功能实现" class="headerlink" title="五、绘画板功能实现"></a>五、绘画板功能实现</h1><p>终于讲完了最麻烦的部分，接下来简单介绍一下绘画板基本功能的实现。</p>
 <p><strong>1、颜色混合</strong></p>
 <p>在以往的例子中，我们在开始一次渲染之前，都会调用 <code>glClear(GL_COLOR_BUFFER_BIT)</code> 来清除画布，因为我们不希望保留上次的渲染结果。</p>
 <p>但是对于一个绘画板来说，我们要不断地往画布上画东西，所以是希望保留上次结果的。因此，在绘制之前不能执行清除的操作。</p>
 <p>另外，由于我们的画笔可能是半透明的，所以新绘制的颜色需要和画布上已经存在的颜色进行混合。因此在绘制开始之前，需要开启混合选项。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">glEnable(GL_BLEND);</span><br><span class="line">glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);</span><br></pre></td></tr></table></figure>
+
 <p><strong>2、笔触调整</strong></p>
 <p>笔触有 3 个属性可以调整：<strong>颜色、尺寸、形状</strong>。它们本质上都是对点图元的调整，通过 <code>uniform</code> 变量的形式，将颜色、尺寸、纹理传入着色器并应用。</p>
 <p><strong>3、橡皮擦</strong></p>
@@ -455,505 +225,120 @@
 <p><strong>4、撤销重做</strong></p>
 <p>撤销重做功能需要依赖两个栈来实现。我们把用户的手指从 <strong>按下屏幕到离开屏幕</strong> 这一过程中产生的数据，定义为一个操作对象，这个操作对象保存了归一化后的点序列，以及点的属性。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MFPaintModel</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 笔刷尺寸</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGFloat</span> brushSize;</span><br><span class="line"><span class="comment">/// 笔刷颜色</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIColor</span> *brushColor;</span><br><span class="line"><span class="comment">/// 笔刷模式</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) GLPaintViewBrushMode brushMode;</span><br><span class="line"><span class="comment">/// 笔触纹理图片文件名</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *brushImageName;</span><br><span class="line"><span class="comment">/// 点序列</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSArray</span>&lt;<span class="built_in">NSValue</span> *&gt; *points;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
 <p>撤销重做的代码实现大概像这样子：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span>.operationStack isEmpty]) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    MFPaintModel *model = <span class="keyword">self</span>.operationStack.topModel;</span><br><span class="line">    [<span class="keyword">self</span>.operationStack popModel];</span><br><span class="line">    [<span class="keyword">self</span>.undoOperationStack pushModel:model];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> reDraw];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)redo &#123;</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span>.undoOperationStack isEmpty]) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    MFPaintModel *model = <span class="keyword">self</span>.undoOperationStack.topModel;</span><br><span class="line">    [<span class="keyword">self</span>.undoOperationStack popModel];</span><br><span class="line">    [<span class="keyword">self</span>.operationStack pushModel:model];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> drawModel:model];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span>.operationStack isEmpty]) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    MFPaintModel *model = <span class="keyword">self</span>.operationStack.topModel;</span><br><span class="line">    [<span class="keyword">self</span>.operationStack popModel];</span><br><span class="line">    [<span class="keyword">self</span>.undoOperationStack pushModel:model];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> reDraw];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)redo &#123;</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span>.undoOperationStack isEmpty]) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    MFPaintModel *model = <span class="keyword">self</span>.undoOperationStack.topModel;</span><br><span class="line">    [<span class="keyword">self</span>.undoOperationStack popModel];</span><br><span class="line">    [<span class="keyword">self</span>.operationStack pushModel:model];</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> drawModel:model];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>需要注意的是，由于 <strong>撤销操作</strong> 需要先清除画布，所以每次都需要重绘。而 <strong>重做操作</strong> 可以利用上次绘制的结果，所以每次只需要绘制一个步骤即可。</p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/GLPaintView" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://www.jianshu.com/p/8d30a007f0a1" target="_blank" rel="noopener">iOS开发-OpenGL ES画图应用</a><br><a href="https://www.cnblogs.com/didi/archive/2009/09/09/1563435.html" target="_blank" rel="noopener">Bezier - 匀速贝塞尔曲线运动的实现</a><br><a href="https://www.zhihu.com/question/27715729/answer/293563315" target="_blank" rel="noopener">如何得到贝塞尔曲线的曲线长度和 t 的近似关系？</a></p></div>
-      
-    </div>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a target="_blank" rel="noopener" href="https://github.com/lmf12/GLPaintView">GitHub</a> 上查看完整代码。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8d30a007f0a1">iOS开发-OpenGL ES画图应用</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/didi/archive/2009/09/09/1563435.html">Bezier - 匀速贝塞尔曲线运动的实现</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/27715729/answer/293563315">如何得到贝塞尔曲线的曲线长度和 t 的近似关系？</a></li>
+</ul>
 
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/12/25/review-2019/" rel="next" title="写在 2019 年末">
-                <i class="fa fa-chevron-left"></i> 写在 2019 年末
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/03/15/ios-video-filter/" rel="prev" title="在 iOS 中给视频添加滤镜">
-                在 iOS 中给视频添加滤镜 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、怎么绘制曲线"><span class="nav-text">一、怎么绘制曲线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、怎么绘制密集的点"><span class="nav-text">二、怎么绘制密集的点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、怎么使曲线变平滑"><span class="nav-text">三、怎么使曲线变平滑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、怎么生成均匀的点序列"><span class="nav-text">四、怎么生成均匀的点序列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、绘画板功能实现"><span class="nav-text">五、绘画板功能实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%80%8E%E4%B9%88%E7%BB%98%E5%88%B6%E6%9B%B2%E7%BA%BF"><span class="toc-number">1.</span> <span class="toc-text">一、怎么绘制曲线</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%80%8E%E4%B9%88%E7%BB%98%E5%88%B6%E5%AF%86%E9%9B%86%E7%9A%84%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">二、怎么绘制密集的点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%8E%E4%B9%88%E4%BD%BF%E6%9B%B2%E7%BA%BF%E5%8F%98%E5%B9%B3%E6%BB%91"><span class="toc-number">3.</span> <span class="toc-text">三、怎么使曲线变平滑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%80%8E%E4%B9%88%E7%94%9F%E6%88%90%E5%9D%87%E5%8C%80%E7%9A%84%E7%82%B9%E5%BA%8F%E5%88%97"><span class="toc-number">4.</span> <span class="toc-text">四、怎么生成均匀的点序列</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E7%BB%98%E7%94%BB%E6%9D%BF%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.</span> <span class="toc-text">五、绘画板功能实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">6.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

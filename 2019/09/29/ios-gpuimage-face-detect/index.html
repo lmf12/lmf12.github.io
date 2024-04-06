@@ -1,400 +1,164 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, GPUImage, face, 人脸识别, 关键点" />
-
-
-<meta name="description" content="在相机应用中，实时贴纸、实时瘦脸是比较常见的功能，它们的实现基础是人脸关键点检测。本文主要介绍，如何在 GPUImage 中检测人脸关键点。">
-<meta name="keywords" content="iOS, GPUImage, face, 人脸识别, 关键点">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="在相机应用中，实时贴纸、实时瘦脸是比较常见的功能，它们的实现基础是人脸关键点检测。本文主要介绍，如何在 GPUImage 中检测人脸关键点。 前言我们要通过某一种方式，获取视频中每一帧的人脸关键点，然后通过 OpenGL ES 将关键点绘制到屏幕上。最终呈现效果如下：  这里分为两个步骤：关键点获取、关键点绘制。 一、关键点获取在苹果自带的 SDK 中，已经包含了一部分的人脸识别功能。比如在 C">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在 GPUImage 中检测人脸关键点">
-<meta property="og:url" content="http://www.lymanli.com/2019/09/29/ios-gpuimage-face-detect/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2019/09/29/ios-gpuimage-face-detect/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="在相机应用中，实时贴纸、实时瘦脸是比较常见的功能，它们的实现基础是人脸关键点检测。本文主要介绍，如何在 GPUImage 中检测人脸关键点。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="在相机应用中，实时贴纸、实时瘦脸是比较常见的功能，它们的实现基础是人脸关键点检测。本文主要介绍，如何在 GPUImage 中检测人脸关键点。 前言我们要通过某一种方式，获取视频中每一帧的人脸关键点，然后通过 OpenGL ES 将关键点绘制到屏幕上。最终呈现效果如下：  这里分为两个步骤：关键点获取、关键点绘制。 一、关键点获取在苹果自带的 SDK 中，已经包含了一部分的人脸识别功能。比如在 C">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-face-detect.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-face-detect-image-1.gif">
-<meta property="og:updated_time" content="2019-09-30T07:54:34.000Z">
+<meta property="article:published_time" content="2019-09-29T06:03:29.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.002Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在 GPUImage 中检测人脸关键点">
-<meta name="twitter:description" content="在相机应用中，实时贴纸、实时瘦脸是比较常见的功能，它们的实现基础是人脸关键点检测。本文主要介绍，如何在 GPUImage 中检测人脸关键点。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-face-detect.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2019/09/29/ios-gpuimage-face-detect/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>在 GPUImage 中检测人脸关键点 | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>在 GPUImage 中检测人脸关键点</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2019/11/09/ios-gpuimage-split-filter/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2019/06/15/ios-gpuimage-camera/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%B3%E9%94%AE%E7%82%B9%E8%8E%B7%E5%8F%96"><span class="toc-number">2.</span> <span class="toc-text">一、关键点获取</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81Face"><span class="toc-number">2.1.</span> <span class="toc-text">1、Face++</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E7%AE%80%E4%BB%8B"><span class="toc-number">2.1.1.</span> <span class="toc-text">1、简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90"><span class="toc-number">2.1.2.</span> <span class="toc-text">2、如何集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.3.</span> <span class="toc-text">3、如何使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81OpenCV-Stasm"><span class="toc-number">2.2.</span> <span class="toc-text">2、OpenCV + Stasm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E7%AE%80%E4%BB%8B-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">1、简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">2、如何集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-1"><span class="toc-number">2.2.3.</span> <span class="toc-text">3、如何使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%85%B3%E9%94%AE%E7%82%B9%E7%BB%98%E5%88%B6"><span class="toc-number">3.</span> <span class="toc-text">二、关键点绘制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        在 GPUImage 中检测人脸关键点
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2019-09-29T06:03:29.000Z" class="dt-published" itemprop="datePublished">2019-09-29</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/GPUImage-%E5%AE%9E%E6%93%8D%E6%89%8B%E5%86%8C/">GPUImage 实操手册</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2019/09/29/ios-gpuimage-face-detect/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">在 GPUImage 中检测人脸关键点</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-29T14:03:29+08:00">2019-09-29</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2019-09-30T15:54:34+08:00">2019-09-30</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/GPUImage-实操手册/" itemprop="url" rel="index"><span itemprop="name">GPUImage 实操手册</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2019/09/29/ios-gpuimage-face-detect/" class="leancloud_visitors" data-flag-title="在 GPUImage 中检测人脸关键点">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-face-detect.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-face-detect.jpg"></p>
 <p>在相机应用中，实时贴纸、实时瘦脸是比较常见的功能，它们的实现基础是人脸关键点检测。本文主要介绍，如何在 GPUImage 中检测人脸关键点。</p>
-<a id="more"></a>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们要通过某一种方式，获取视频中每一帧的人脸关键点，然后通过 OpenGL ES 将关键点绘制到屏幕上。最终呈现效果如下：</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-face-detect-image-1.gif" alt=""></p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/gpuimage-face-detect-image-1.gif"></p>
 <p>这里分为两个步骤：<strong>关键点获取</strong>、<strong>关键点绘制</strong>。</p>
 <h1 id="一、关键点获取"><a href="#一、关键点获取" class="headerlink" title="一、关键点获取"></a>一、关键点获取</h1><p>在苹果自带的 SDK 中，已经包含了一部分的人脸识别功能。比如在 CoreImage、AVFoundation 中，就提供了相关的接口。但是，它们提供的接口功能有限，并不具备人脸关键点检测功能。</p>
 <p>我们要在视频中进行实时的人脸关键点检测，还需要借助第三方的库。这里主要介绍两种方式：</p>
@@ -405,541 +169,160 @@
 <h2 id="1、Face"><a href="#1、Face" class="headerlink" title="1、Face++"></a>1、Face++</h2><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p>Face++ 的人脸关键点 SDK 是收费的，但是它也提供免费试用的版本。</p>
 <p>在免费试用的版本中，试用的 API Key 每天可以发起 5 次联网授权，每次授权的时长为 24 小时。也就是说，在不删除 APP 的情况下，只要测试设备不超过 5 台，就可以一直使用下去。</p>
 <p>这对于开发者来说还是非常友好的，而且 Face++ 的注册集成也比较简单，建议大家都尝试一下。</p>
-<h3 id="2、如何集成"><a href="#2、如何集成" class="headerlink" title="2、如何集成"></a>2、如何集成</h3><p>人脸关键点 SDK 的集成可以参照 <a href="https://console.faceplusplus.com.cn/documents/5671789" target="_blank" rel="noopener">官方文档</a> ，先注册再下载 SDK 压缩包，压缩包里有详细的集成步骤。</p>
+<h3 id="2、如何集成"><a href="#2、如何集成" class="headerlink" title="2、如何集成"></a>2、如何集成</h3><p>人脸关键点 SDK 的集成可以参照 <a target="_blank" rel="noopener" href="https://console.faceplusplus.com.cn/documents/5671789">官方文档</a> ，先注册再下载 SDK 压缩包，压缩包里有详细的集成步骤。</p>
 <h3 id="3、如何使用"><a href="#3、如何使用" class="headerlink" title="3、如何使用"></a>3、如何使用</h3><p>人脸关键点 SDK 的使用主要分为三步：</p>
 <p><strong>第一步：发起联网授权</strong></p>
 <p>授权的操作不一定发起网络请求，而是会先检查本地的授权信息是否过期，过期了才会发起网络请求。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@weakify(<span class="keyword">self</span>);</span><br><span class="line">[MGFaceLicenseHandle licenseForNetwokrFinish:^(<span class="keyword">bool</span> License, <span class="built_in">NSDate</span> *sdkDate) &#123;</span><br><span class="line">    @strongify(<span class="keyword">self</span>);</span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="keyword">if</span> (License) &#123;</span><br><span class="line">            [[<span class="built_in">UIApplication</span> sharedApplication].keyWindow makeToast:<span class="string">@"Face++ 授权成功！"</span>];</span><br><span class="line">            [<span class="keyword">self</span> setupFacepp];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            [[<span class="built_in">UIApplication</span> sharedApplication].keyWindow makeToast:<span class="string">@"Face++ 授权失败！"</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@weakify(<span class="keyword">self</span>);</span><br><span class="line">[MGFaceLicenseHandle licenseForNetwokrFinish:^(<span class="type">bool</span> License, <span class="built_in">NSDate</span> *sdkDate) &#123;</span><br><span class="line">    @strongify(<span class="keyword">self</span>);</span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        <span class="keyword">if</span> (License) &#123;</span><br><span class="line">            [[<span class="built_in">UIApplication</span> sharedApplication].keyWindow makeToast:<span class="string">@&quot;Face++ 授权成功！&quot;</span>];</span><br><span class="line">            [<span class="keyword">self</span> setupFacepp];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            [[<span class="built_in">UIApplication</span> sharedApplication].keyWindow makeToast:<span class="string">@&quot;Face++ 授权失败！&quot;</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
 <p><strong>第二步：初始化人脸检测器</strong></p>
 <p>授权成功后，开始人脸检测器的初始化。初始化过程会进行模型数据加载，然后对识别模式、视频流格式、视频旋转角度等进行设置。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *modelPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:KMGFACEMODELNAME</span><br><span class="line">                                                          ofType:<span class="string">@""</span>];</span><br><span class="line"><span class="built_in">NSData</span> *modelData = [<span class="built_in">NSData</span> dataWithContentsOfFile:modelPath];</span><br><span class="line"><span class="keyword">self</span>.markManager = [[MGFacepp alloc] initWithModel:modelData</span><br><span class="line">                                     faceppSetting:^(MGFaceppConfig *config) &#123;</span><br><span class="line">                                         config.detectionMode = MGFppDetectionModeTrackingRobust;</span><br><span class="line">                                         config.pixelFormatType = PixelFormatTypeNV21;</span><br><span class="line">                                         config.orientation = <span class="number">90</span>;</span><br><span class="line">                                     &#125;];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *modelPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:KMGFACEMODELNAME</span><br><span class="line">                                                          ofType:<span class="string">@&quot;&quot;</span>];</span><br><span class="line"><span class="built_in">NSData</span> *modelData = [<span class="built_in">NSData</span> dataWithContentsOfFile:modelPath];</span><br><span class="line"><span class="keyword">self</span>.markManager = [[MGFacepp alloc] initWithModel:modelData</span><br><span class="line">                                     faceppSetting:^(MGFaceppConfig *config) &#123;</span><br><span class="line">                                         config.detectionMode = MGFppDetectionModeTrackingRobust;</span><br><span class="line">                                         config.pixelFormatType = PixelFormatTypeNV21;</span><br><span class="line">                                         config.orientation = <span class="number">90</span>;</span><br><span class="line">                                     &#125;];</span><br></pre></td></tr></table></figure>
+
 <p><strong>第三步：检测视频帧</strong></p>
 <p>人脸检测器初始化成功后，可以对视频流每一帧进行检测，这里传入的是 <code>CMSampleBufferRef</code> 类型的数据。由于顶点坐标的范围是 <code>-1 ~ 1</code>，所以还需要根据当前的视频尺寸比例，对识别的结果进行坐标转换。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">float</span> *)detectInFaceppWithSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer</span><br><span class="line">                           facePointCount:(<span class="keyword">int</span> *)facePointCount</span><br><span class="line">                                 isMirror:(<span class="built_in">BOOL</span>)isMirror &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">self</span>.markManager) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    MGImageData *imageData = [[MGImageData alloc] initWithSampleBuffer:sampleBuffer];</span><br><span class="line">    [<span class="keyword">self</span>.markManager beginDetectionFrame];</span><br><span class="line">    <span class="built_in">NSArray</span> *faceArray = [<span class="keyword">self</span>.markManager detectWithImageData:imageData];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 人脸个数</span></span><br><span class="line">    <span class="built_in">NSInteger</span> faceCount = [faceArray count];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> singleFaceLen = <span class="number">2</span> * kFaceppPointCount;</span><br><span class="line">    <span class="keyword">int</span> len = singleFaceLen * (<span class="keyword">int</span>)faceCount;</span><br><span class="line">    <span class="keyword">float</span> *landmarks = (<span class="keyword">float</span> *)malloc(len * <span class="keyword">sizeof</span>(<span class="keyword">float</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (MGFaceInfo *faceInfo <span class="keyword">in</span> faceArray) &#123;</span><br><span class="line">        <span class="built_in">NSInteger</span> faceIndex = [faceArray indexOfObject:faceInfo];</span><br><span class="line">        [<span class="keyword">self</span>.markManager GetGetLandmark:faceInfo isSmooth:<span class="literal">YES</span> pointsNumber:kFaceppPointCount];</span><br><span class="line">        [faceInfo.points enumerateObjectsUsingBlock:^(<span class="built_in">NSValue</span> *value, <span class="built_in">NSUInteger</span> idx, <span class="built_in">BOOL</span> *stop) &#123;</span><br><span class="line">            <span class="keyword">float</span> x = (value.CGPointValue.y - <span class="keyword">self</span>.sampleBufferLeftOffset) / <span class="keyword">self</span>.videoSize.width;</span><br><span class="line">            x = (isMirror ? x : (<span class="number">1</span> - x))  * <span class="number">2</span> - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">float</span> y = (value.CGPointValue.x - <span class="keyword">self</span>.sampleBufferTopOffset) / <span class="keyword">self</span>.videoSize.height * <span class="number">2</span> - <span class="number">1</span>;</span><br><span class="line">            landmarks[singleFaceLen * faceIndex + idx * <span class="number">2</span>] = x;</span><br><span class="line">            landmarks[singleFaceLen * faceIndex + idx * <span class="number">2</span> + <span class="number">1</span>] = y;</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="keyword">self</span>.markManager endDetectionFrame];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (faceArray.count) &#123;</span><br><span class="line">        *facePointCount = kFaceppPointCount * (<span class="keyword">int</span>)faceCount;</span><br><span class="line">        <span class="keyword">return</span> landmarks;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        free(landmarks);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">float</span> *)detectInFaceppWithSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer</span><br><span class="line">                           facePointCount:(<span class="type">int</span> *)facePointCount</span><br><span class="line">                                 isMirror:(<span class="type">BOOL</span>)isMirror &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">self</span>.markManager) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    MGImageData *imageData = [[MGImageData alloc] initWithSampleBuffer:sampleBuffer];</span><br><span class="line">    [<span class="keyword">self</span>.markManager beginDetectionFrame];</span><br><span class="line">    <span class="built_in">NSArray</span> *faceArray = [<span class="keyword">self</span>.markManager detectWithImageData:imageData];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 人脸个数</span></span><br><span class="line">    <span class="built_in">NSInteger</span> faceCount = [faceArray count];</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> singleFaceLen = <span class="number">2</span> * kFaceppPointCount;</span><br><span class="line">    <span class="type">int</span> len = singleFaceLen * (<span class="type">int</span>)faceCount;</span><br><span class="line">    <span class="type">float</span> *landmarks = (<span class="type">float</span> *)malloc(len * <span class="keyword">sizeof</span>(<span class="type">float</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (MGFaceInfo *faceInfo <span class="keyword">in</span> faceArray) &#123;</span><br><span class="line">        <span class="built_in">NSInteger</span> faceIndex = [faceArray indexOfObject:faceInfo];</span><br><span class="line">        [<span class="keyword">self</span>.markManager GetGetLandmark:faceInfo isSmooth:<span class="literal">YES</span> pointsNumber:kFaceppPointCount];</span><br><span class="line">        [faceInfo.points enumerateObjectsUsingBlock:^(<span class="built_in">NSValue</span> *value, <span class="built_in">NSUInteger</span> idx, <span class="type">BOOL</span> *stop) &#123;</span><br><span class="line">            <span class="type">float</span> x = (value.CGPointValue.y - <span class="keyword">self</span>.sampleBufferLeftOffset) / <span class="keyword">self</span>.videoSize.width;</span><br><span class="line">            x = (isMirror ? x : (<span class="number">1</span> - x))  * <span class="number">2</span> - <span class="number">1</span>;</span><br><span class="line">            <span class="type">float</span> y = (value.CGPointValue.x - <span class="keyword">self</span>.sampleBufferTopOffset) / <span class="keyword">self</span>.videoSize.height * <span class="number">2</span> - <span class="number">1</span>;</span><br><span class="line">            landmarks[singleFaceLen * faceIndex + idx * <span class="number">2</span>] = x;</span><br><span class="line">            landmarks[singleFaceLen * faceIndex + idx * <span class="number">2</span> + <span class="number">1</span>] = y;</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="keyword">self</span>.markManager endDetectionFrame];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (faceArray.count) &#123;</span><br><span class="line">        *facePointCount = kFaceppPointCount * (<span class="type">int</span>)faceCount;</span><br><span class="line">        <span class="keyword">return</span> landmarks;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        free(landmarks);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="2、OpenCV-Stasm"><a href="#2、OpenCV-Stasm" class="headerlink" title="2、OpenCV + Stasm"></a>2、OpenCV + Stasm</h2><h3 id="1、简介-1"><a href="#1、简介-1" class="headerlink" title="1、简介"></a>1、简介</h3><p>OpenCV 是一个开源的跨平台计算机视觉库，实现了图像处理方面的很多通用算法。Stasm 是用于检测人脸特征的开源算法库，依赖于 OpenCV 。</p>
 <p>我们知道，iPhone 屏幕的刷新频率可以达到 60 帧每秒。在相机预览时，出于功耗方面的考虑，一般会将帧率限制到 30 帧每秒左右，且不会引起明显的卡顿。</p>
-<p>所以，我们要对每一帧数据进行识别，则要求每一帧的识别时间要小于 1 / 30 秒，否则图像数据的渲染操作就要等待识别结果，从而导致帧率下降，引起卡顿。</p>
-<p>遗憾的是，采用 OpenCV + Stasm 的方式，每一帧的识别时间是超过 1 / 30 秒的。它或许更适合用来做静态图片的识别。</p>
+<p>所以，我们要对每一帧数据进行识别，则要求每一帧的识别时间要小于 1 &#x2F; 30 秒，否则图像数据的渲染操作就要等待识别结果，从而导致帧率下降，引起卡顿。</p>
+<p>遗憾的是，采用 OpenCV + Stasm 的方式，每一帧的识别时间是超过 1 &#x2F; 30 秒的。它或许更适合用来做静态图片的识别。</p>
 <p>所以也更推荐使用 Face++ 的方式。</p>
 <h3 id="2、如何集成-1"><a href="#2、如何集成-1" class="headerlink" title="2、如何集成"></a>2、如何集成</h3><p>OpenCV 通过 CocoPods 的方式来引入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &apos;OpenCV2-contrib&apos;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#x27;OpenCV2-contrib&#x27;</span><br></pre></td></tr></table></figure>
+
 <p>OpenCV2-contrib 相比于 OpenCV2 多包含了一些拓展包，比如 face 模块，而 Stasm 算法库需要依赖 face 模块。</p>
-<p>Stasm 算法库可以从 <a href="https://github.com/wuliangwang/Face/tree/master/Tool" target="_blank" rel="noopener">这个地址</a> 下载，需要将 stasm 和 haarcascades 文件夹都加入工程中。</p>
+<p>Stasm 算法库可以从 <a target="_blank" rel="noopener" href="https://github.com/wuliangwang/Face/tree/master/Tool">这个地址</a> 下载，需要将 stasm 和 haarcascades 文件夹都加入工程中。</p>
 <h3 id="3、如何使用-1"><a href="#3、如何使用-1" class="headerlink" title="3、如何使用"></a>3、如何使用</h3><p>人脸关键点的识别主要通过调用 <code>stasm_search_single</code> 函数来实现。</p>
 <p>由于这个方法的检测时间较长，因此我们在将视频帧数据传入之前，会先做单通道化、尺寸压缩等处理。这样的话， Stasm 拿到的每一帧的数据量会减少，可以有效地缩短检测的时长，但相应地也会损失检测的精度。</p>
 <p>关键的代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">float</span> *)detectInOpenCVWithSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer</span><br><span class="line">                           facePointCount:(<span class="keyword">int</span> *)facePointCount</span><br><span class="line">                                 isMirror:(<span class="built_in">BOOL</span>)isMirror &#123;</span><br><span class="line">    cv::Mat cvImage = [<span class="keyword">self</span> grayMatWithSampleBuffer:sampleBuffer];</span><br><span class="line">    <span class="keyword">int</span> resultWidth = <span class="number">250</span>;</span><br><span class="line">    <span class="keyword">int</span> resultHeight = resultWidth * <span class="number">1.0</span> / cvImage.rows * cvImage.cols;</span><br><span class="line">    cvImage = [<span class="keyword">self</span> resizeMat:cvImage toWidth:resultHeight]; <span class="comment">// 此时还没旋转，所以传入高度</span></span><br><span class="line">    cvImage = [<span class="keyword">self</span> correctMat:cvImage isMirror:isMirror];</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *imgData = (<span class="keyword">const</span> <span class="keyword">char</span> *)cvImage.data;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 是否找到人脸</span></span><br><span class="line">    <span class="keyword">int</span> foundface;</span><br><span class="line">    <span class="comment">// stasm_NLANDMARKS 表示人脸关键点数，乘 2 表示要分别存储 x， y</span></span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">2</span> * stasm_NLANDMARKS;</span><br><span class="line">    <span class="keyword">float</span> *landmarks = (<span class="keyword">float</span> *)malloc(len * <span class="keyword">sizeof</span>(<span class="keyword">float</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取宽高</span></span><br><span class="line">    <span class="keyword">int</span> imgCols = cvImage.cols;</span><br><span class="line">    <span class="keyword">int</span> imgRows = cvImage.rows;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 训练库的目录，直接传 [NSBundle mainBundle].bundlePath 就可以，会自动找到所有文件</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *xmlPath = [[<span class="built_in">NSBundle</span> mainBundle].bundlePath UTF8String];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 返回 0 表示出错</span></span><br><span class="line">    <span class="keyword">int</span> stasmActionError = stasm_search_single(&amp;foundface,</span><br><span class="line">                                               landmarks,</span><br><span class="line">                                               imgData,</span><br><span class="line">                                               imgCols,</span><br><span class="line">                                               imgRows,</span><br><span class="line">                                               <span class="string">""</span>,</span><br><span class="line">                                               xmlPath);</span><br><span class="line">    <span class="comment">// 打印错误信息</span></span><br><span class="line">    <span class="keyword">if</span> (!stasmActionError) &#123;</span><br><span class="line">        printf(<span class="string">"Error in stasm_search_single: %s\n"</span>, stasm_lasterr());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 释放cv::Mat</span></span><br><span class="line">    cvImage.release();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 识别到人脸</span></span><br><span class="line">    <span class="keyword">if</span> (foundface) &#123;</span><br><span class="line">        <span class="comment">// 转换坐标</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; len; ++index) &#123;</span><br><span class="line">            <span class="keyword">if</span> (index % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">float</span> scale = (<span class="keyword">self</span>.videoSize.height / <span class="keyword">self</span>.videoSize.width) / (<span class="number">16.0</span> / <span class="number">9.0</span>);</span><br><span class="line">                scale = MAX(<span class="number">1</span>, scale);  <span class="comment">// 比例超过 16 : 9 进行横向缩放</span></span><br><span class="line">                landmarks[index] = (landmarks[index] / imgCols * <span class="number">2</span> - <span class="number">1</span>) * scale;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">float</span> scale = (<span class="number">16.0</span> / <span class="number">9.0</span>) / (<span class="keyword">self</span>.videoSize.height / <span class="keyword">self</span>.videoSize.width);</span><br><span class="line">                scale = MAX(<span class="number">1</span>, scale);   <span class="comment">// 比例小于 16 : 9 进行纵向缩放</span></span><br><span class="line">                landmarks[index] = (landmarks[index] / imgRows * <span class="number">2</span> - <span class="number">1</span>) * scale;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        *facePointCount = stasm_NLANDMARKS;</span><br><span class="line">        <span class="keyword">return</span> landmarks;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        free(landmarks);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">float</span> *)detectInOpenCVWithSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer</span><br><span class="line">                           facePointCount:(<span class="type">int</span> *)facePointCount</span><br><span class="line">                                 isMirror:(<span class="type">BOOL</span>)isMirror &#123;</span><br><span class="line">    cv::Mat cvImage = [<span class="keyword">self</span> grayMatWithSampleBuffer:sampleBuffer];</span><br><span class="line">    <span class="type">int</span> resultWidth = <span class="number">250</span>;</span><br><span class="line">    <span class="type">int</span> resultHeight = resultWidth * <span class="number">1.0</span> / cvImage.rows * cvImage.cols;</span><br><span class="line">    cvImage = [<span class="keyword">self</span> resizeMat:cvImage toWidth:resultHeight]; <span class="comment">// 此时还没旋转，所以传入高度</span></span><br><span class="line">    cvImage = [<span class="keyword">self</span> correctMat:cvImage isMirror:isMirror];</span><br><span class="line">    <span class="keyword">const</span> <span class="type">char</span> *imgData = (<span class="keyword">const</span> <span class="type">char</span> *)cvImage.data;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 是否找到人脸</span></span><br><span class="line">    <span class="type">int</span> foundface;</span><br><span class="line">    <span class="comment">// stasm_NLANDMARKS 表示人脸关键点数，乘 2 表示要分别存储 x， y</span></span><br><span class="line">    <span class="type">int</span> len = <span class="number">2</span> * stasm_NLANDMARKS;</span><br><span class="line">    <span class="type">float</span> *landmarks = (<span class="type">float</span> *)malloc(len * <span class="keyword">sizeof</span>(<span class="type">float</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取宽高</span></span><br><span class="line">    <span class="type">int</span> imgCols = cvImage.cols;</span><br><span class="line">    <span class="type">int</span> imgRows = cvImage.rows;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 训练库的目录，直接传 [NSBundle mainBundle].bundlePath 就可以，会自动找到所有文件</span></span><br><span class="line">    <span class="keyword">const</span> <span class="type">char</span> *xmlPath = [[<span class="built_in">NSBundle</span> mainBundle].bundlePath UTF8String];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 返回 0 表示出错</span></span><br><span class="line">    <span class="type">int</span> stasmActionError = stasm_search_single(&amp;foundface,</span><br><span class="line">                                               landmarks,</span><br><span class="line">                                               imgData,</span><br><span class="line">                                               imgCols,</span><br><span class="line">                                               imgRows,</span><br><span class="line">                                               <span class="string">&quot;&quot;</span>,</span><br><span class="line">                                               xmlPath);</span><br><span class="line">    <span class="comment">// 打印错误信息</span></span><br><span class="line">    <span class="keyword">if</span> (!stasmActionError) &#123;</span><br><span class="line">        printf(<span class="string">&quot;Error in stasm_search_single: %s\n&quot;</span>, stasm_lasterr());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 释放cv::Mat</span></span><br><span class="line">    cvImage.release();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 识别到人脸</span></span><br><span class="line">    <span class="keyword">if</span> (foundface) &#123;</span><br><span class="line">        <span class="comment">// 转换坐标</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> index = <span class="number">0</span>; index &lt; len; ++index) &#123;</span><br><span class="line">            <span class="keyword">if</span> (index % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="type">float</span> scale = (<span class="keyword">self</span>.videoSize.height / <span class="keyword">self</span>.videoSize.width) / (<span class="number">16.0</span> / <span class="number">9.0</span>);</span><br><span class="line">                scale = MAX(<span class="number">1</span>, scale);  <span class="comment">// 比例超过 16 : 9 进行横向缩放</span></span><br><span class="line">                landmarks[index] = (landmarks[index] / imgCols * <span class="number">2</span> - <span class="number">1</span>) * scale;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="type">float</span> scale = (<span class="number">16.0</span> / <span class="number">9.0</span>) / (<span class="keyword">self</span>.videoSize.height / <span class="keyword">self</span>.videoSize.width);</span><br><span class="line">                scale = MAX(<span class="number">1</span>, scale);   <span class="comment">// 比例小于 16 : 9 进行纵向缩放</span></span><br><span class="line">                landmarks[index] = (landmarks[index] / imgRows * <span class="number">2</span> - <span class="number">1</span>) * scale;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        *facePointCount = stasm_NLANDMARKS;</span><br><span class="line">        <span class="keyword">return</span> landmarks;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        free(landmarks);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h1 id="二、关键点绘制"><a href="#二、关键点绘制" class="headerlink" title="二、关键点绘制"></a>二、关键点绘制</h1><p>通过上面的步骤，我们已经有了顶点数据，区别只是两种方式的顶点数量不同。</p>
 <p>顶点数据的绘制，要在 <code>GPUImageFilter</code> 中进行。我们要自定义一个滤镜，然后在这个滤镜中实现人脸关键点的绘制逻辑。</p>
 <p>在 <code>GPUImageFilter</code> 中，渲染的流程是在 <code>-renderToTextureWithVertices:textureCoordinates:</code> 这个方法里执行的。因此在自定义的滤镜中，我们需要重写这个方法。</p>
 <p>在这个方法里，我们需要做两件事情，一是将输入的纹理原封不动地绘制，二是对人脸关键点的绘制。</p>
 <p>纹理的绘制使用的是<strong>三角形图元</strong>，人脸关键点的绘制使用的是<strong>点图元</strong>，因此我们需要分成两次绘制。在原来的绘制方法中，已经有了纹理的绘制逻辑。所以，我们只需要在纹理绘制结束后，加上人脸关键点的绘制。</p>
 <p>完整的重写后的方法：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)renderToTextureWithVertices:(<span class="keyword">const</span> GLfloat *)vertices</span><br><span class="line">                 textureCoordinates:(<span class="keyword">const</span> GLfloat *)textureCoordinates &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.preventRendering)</span><br><span class="line">    &#123;</span><br><span class="line">        [firstInputFramebuffer unlock];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [GPUImageContext setActiveShaderProgram:filterProgram];</span><br><span class="line">    </span><br><span class="line">    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[<span class="keyword">self</span> sizeOfFBO] textureOptions:<span class="keyword">self</span>.outputTextureOptions onlyTexture:<span class="literal">NO</span>];</span><br><span class="line">    [outputFramebuffer activateFramebuffer];</span><br><span class="line">    <span class="keyword">if</span> (usingNextFrameForImageCapture)</span><br><span class="line">    &#123;</span><br><span class="line">        [outputFramebuffer lock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> setUniformsForProgramAtIndex:<span class="number">0</span>];</span><br><span class="line">    </span><br><span class="line">    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);</span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    </span><br><span class="line">    glActiveTexture(GL_TEXTURE2);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);</span><br><span class="line">    </span><br><span class="line">    glUniform1i(filterInputTextureUniform, <span class="number">2</span>);</span><br><span class="line">    glUniform1i(<span class="keyword">self</span>.isPointUniform, <span class="number">0</span>);    <span class="comment">// 表示是绘制纹理</span></span><br><span class="line">    </span><br><span class="line">    glVertexAttribPointer(filterPositionAttribute, <span class="number">2</span>, GL_FLOAT, <span class="number">0</span>, <span class="number">0</span>, vertices);</span><br><span class="line">    glVertexAttribPointer(filterTextureCoordinateAttribute, <span class="number">2</span>, GL_FLOAT, <span class="number">0</span>, <span class="number">0</span>, textureCoordinates);</span><br><span class="line">    </span><br><span class="line">    glDrawArrays(GL_TRIANGLE_STRIP, <span class="number">0</span>, <span class="number">4</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 绘制点</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.facesPoints) &#123;</span><br><span class="line">        glUniform1i(<span class="keyword">self</span>.isPointUniform, <span class="number">1</span>);    <span class="comment">// 表示是绘制点</span></span><br><span class="line">        glUniform1f(<span class="keyword">self</span>.pointSizeUniform, <span class="keyword">self</span>.sizeOfFBO.width * <span class="number">0.006</span>);  <span class="comment">// 设置点的大小</span></span><br><span class="line">        glVertexAttribPointer(filterPositionAttribute, <span class="number">2</span>, GL_FLOAT, <span class="number">0</span>, <span class="number">0</span>, <span class="keyword">self</span>.facesPoints);</span><br><span class="line">        glDrawArrays(GL_POINTS, <span class="number">0</span>, <span class="keyword">self</span>.facesPointCount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [firstInputFramebuffer unlock];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (usingNextFrameForImageCapture)</span><br><span class="line">    &#123;</span><br><span class="line">        dispatch_semaphore_signal(imageCaptureSemaphore);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)renderToTextureWithVertices:(<span class="keyword">const</span> GLfloat *)vertices</span><br><span class="line">                 textureCoordinates:(<span class="keyword">const</span> GLfloat *)textureCoordinates &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.preventRendering)</span><br><span class="line">    &#123;</span><br><span class="line">        [firstInputFramebuffer unlock];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [GPUImageContext setActiveShaderProgram:filterProgram];</span><br><span class="line">    </span><br><span class="line">    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[<span class="keyword">self</span> sizeOfFBO] textureOptions:<span class="keyword">self</span>.outputTextureOptions onlyTexture:<span class="literal">NO</span>];</span><br><span class="line">    [outputFramebuffer activateFramebuffer];</span><br><span class="line">    <span class="keyword">if</span> (usingNextFrameForImageCapture)</span><br><span class="line">    &#123;</span><br><span class="line">        [outputFramebuffer lock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span> setUniformsForProgramAtIndex:<span class="number">0</span>];</span><br><span class="line">    </span><br><span class="line">    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);</span><br><span class="line">    glClear(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    </span><br><span class="line">    glActiveTexture(GL_TEXTURE2);</span><br><span class="line">    glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);</span><br><span class="line">    </span><br><span class="line">    glUniform1i(filterInputTextureUniform, <span class="number">2</span>);</span><br><span class="line">    glUniform1i(<span class="keyword">self</span>.isPointUniform, <span class="number">0</span>);    <span class="comment">// 表示是绘制纹理</span></span><br><span class="line">    </span><br><span class="line">    glVertexAttribPointer(filterPositionAttribute, <span class="number">2</span>, GL_FLOAT, <span class="number">0</span>, <span class="number">0</span>, vertices);</span><br><span class="line">    glVertexAttribPointer(filterTextureCoordinateAttribute, <span class="number">2</span>, GL_FLOAT, <span class="number">0</span>, <span class="number">0</span>, textureCoordinates);</span><br><span class="line">    </span><br><span class="line">    glDrawArrays(GL_TRIANGLE_STRIP, <span class="number">0</span>, <span class="number">4</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 绘制点</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.facesPoints) &#123;</span><br><span class="line">        glUniform1i(<span class="keyword">self</span>.isPointUniform, <span class="number">1</span>);    <span class="comment">// 表示是绘制点</span></span><br><span class="line">        glUniform1f(<span class="keyword">self</span>.pointSizeUniform, <span class="keyword">self</span>.sizeOfFBO.width * <span class="number">0.006</span>);  <span class="comment">// 设置点的大小</span></span><br><span class="line">        glVertexAttribPointer(filterPositionAttribute, <span class="number">2</span>, GL_FLOAT, <span class="number">0</span>, <span class="number">0</span>, <span class="keyword">self</span>.facesPoints);</span><br><span class="line">        glDrawArrays(GL_POINTS, <span class="number">0</span>, <span class="keyword">self</span>.facesPointCount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [firstInputFramebuffer unlock];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (usingNextFrameForImageCapture)</span><br><span class="line">    &#123;</span><br><span class="line">        dispatch_semaphore_signal(imageCaptureSemaphore);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在绘制点图元的时候，可以通过对 <code>gl_PointSize</code> 进行赋值，来指定点的大小。然后在外部通过 <code>uniform</code> 变量传值的方式进行控制。</p>
 <p>顶点着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">attribute</span> <span class="type">vec4</span> position;</span><br><span class="line"><span class="keyword">attribute</span> <span class="type">vec4</span> inputTextureCoordinate;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> textureCoordinate;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">uniform</span> <span class="type">float</span> pointSize;</span><br><span class="line"> </span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">gl_Position</span> = position;</span><br><span class="line">    <span class="built_in">gl_PointSize</span> = pointSize;</span><br><span class="line">    textureCoordinate = inputTextureCoordinate.xy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>由于两次渲染的逻辑是独立的，所以一般来说，应该使用不同的 Shader 来实现。但由于这里的渲染逻辑比较简单，所以直接将两次渲染的逻辑都放到同一个 Shader 中。这也可以避免 Program 的来回切换，然后用一个 <code>uniform</code> 变量来判断当前的绘制类型。</p>
 <p>片段着色器代码：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">precision</span> <span class="keyword">highp</span> <span class="type">float</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">varying</span> <span class="type">vec2</span> textureCoordinate;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">uniform</span> <span class="type">sampler2D</span> inputImageTexture;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">uniform</span> <span class="type">int</span> isPoint;</span><br><span class="line"> </span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (isPoint != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">gl_FragColor</span> = <span class="type">vec4</span>(<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">gl_FragColor</span> = <span class="built_in">texture2D</span>(inputImageTexture, textureCoordinate);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>最后，只需要将这个滤镜加入到滤镜链里，就可以看到人脸关键点的绘制效果了。</p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/SimpleCam" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><div class="note default"><p><a href="https://juejin.im/post/5bb1da0bf265da0b001f4374" target="_blank" rel="noopener">iOS 计算机视觉 - 人脸识别</a><br><a href="https://www.jianshu.com/p/ab9513ebd028" target="_blank" rel="noopener">iOS - 人脸特征关键点获取</a></p></div>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a target="_blank" rel="noopener" href="https://github.com/lmf12/SimpleCam">GitHub</a> 上查看完整代码。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/5bb1da0bf265da0b001f4374">iOS 计算机视觉 - 人脸识别</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ab9513ebd028">iOS - 人脸特征关键点获取</a></li>
+</ul>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/06/15/ios-gpuimage-camera/" rel="next" title="使用 GPUImage 实现一个简单相机">
-                <i class="fa fa-chevron-left"></i> 使用 GPUImage 实现一个简单相机
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/09/ios-gpuimage-split-filter/" rel="prev" title="如何优雅地实现一个分屏滤镜">
-                如何优雅地实现一个分屏滤镜 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、关键点获取"><span class="nav-text">一、关键点获取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、Face"><span class="nav-text">1、Face++</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、简介"><span class="nav-text">1、简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、如何集成"><span class="nav-text">2、如何集成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、如何使用"><span class="nav-text">3、如何使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、OpenCV-Stasm"><span class="nav-text">2、OpenCV + Stasm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、简介-1"><span class="nav-text">1、简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、如何集成-1"><span class="nav-text">2、如何集成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、如何使用-1"><span class="nav-text">3、如何使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、关键点绘制"><span class="nav-text">二、关键点绘制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%B3%E9%94%AE%E7%82%B9%E8%8E%B7%E5%8F%96"><span class="toc-number">2.</span> <span class="toc-text">一、关键点获取</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81Face"><span class="toc-number">2.1.</span> <span class="toc-text">1、Face++</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E7%AE%80%E4%BB%8B"><span class="toc-number">2.1.1.</span> <span class="toc-text">1、简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90"><span class="toc-number">2.1.2.</span> <span class="toc-text">2、如何集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.3.</span> <span class="toc-text">3、如何使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81OpenCV-Stasm"><span class="toc-number">2.2.</span> <span class="toc-text">2、OpenCV + Stasm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E7%AE%80%E4%BB%8B-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">1、简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">2、如何集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-1"><span class="toc-number">2.2.3.</span> <span class="toc-text">3、如何使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%85%B3%E9%94%AE%E7%82%B9%E7%BB%98%E5%88%B6"><span class="toc-number">3.</span> <span class="toc-text">二、关键点绘制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

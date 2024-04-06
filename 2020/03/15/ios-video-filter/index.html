@@ -1,416 +1,184 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, OpenGL, GPUImage, video, 滤镜, filter, AVFoundation" />
-
-
-<meta name="description" content="「众所周知，视频可以 P」，今天我们来学习怎么给视频添加滤镜。">
-<meta name="keywords" content="iOS, OpenGL, GPUImage, video, 滤镜, filter, AVFoundation">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="「众所周知，视频可以 P」，今天我们来学习怎么给视频添加滤镜。 在 iOS 中，对视频进行图像处理一般有两种方式：GPUImage 和 AVFoundation 。 一、GPUImage在之前的文章中，我们对 GPUImage 已经有了一定的了解。之前一般使用它对摄像头采集的图像数据进行处理，然而，它对本地视频的处理也一样方便。 直接看代码： 12345678910111213141516171">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在 iOS 中给视频添加滤镜">
-<meta property="og:url" content="http://www.lymanli.com/2020/03/15/ios-video-filter/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2020/03/15/ios-video-filter/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="「众所周知，视频可以 P」，今天我们来学习怎么给视频添加滤镜。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="「众所周知，视频可以 P」，今天我们来学习怎么给视频添加滤镜。 在 iOS 中，对视频进行图像处理一般有两种方式：GPUImage 和 AVFoundation 。 一、GPUImage在之前的文章中，我们对 GPUImage 已经有了一定的了解。之前一般使用它对摄像头采集的图像数据进行处理，然而，它对本地视频的处理也一样方便。 直接看代码： 12345678910111213141516171">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/video-filter.jpg">
-<meta property="og:updated_time" content="2020-03-15T13:32:14.263Z">
+<meta property="article:published_time" content="2020-03-15T03:24:22.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.004Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在 iOS 中给视频添加滤镜">
-<meta name="twitter:description" content="「众所周知，视频可以 P」，今天我们来学习怎么给视频添加滤镜。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/video-filter.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2020/03/15/ios-video-filter/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>在 iOS 中给视频添加滤镜 | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>在 iOS 中给视频添加滤镜</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2020/03/21/ios-opengles-panorama/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2020/01/04/ios-opengles-paint/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81GPUImage"><span class="toc-number">1.</span> <span class="toc-text">一、GPUImage</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81AVFoundation"><span class="toc-number">2.</span> <span class="toc-text">二、AVFoundation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81-AVPlayer-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1、 AVPlayer 的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E4%BF%AE%E6%94%B9-AVPlayer-%E7%9A%84%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">2、修改 AVPlayer 的渲染过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89-AVVideoCompositing-%E7%B1%BB"><span class="toc-number">2.2.1.</span> <span class="toc-text">第一步：自定义 AVVideoCompositing 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89-AVVideoCompositionInstruction"><span class="toc-number">2.2.2.</span> <span class="toc-text">第二步：自定义 AVVideoCompositionInstruction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%9E%84%E5%BB%BA-AVMutableVideoComposition"><span class="toc-number">2.2.3.</span> <span class="toc-text">第三步：构建 AVMutableVideoComposition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E6%9E%84%E5%BB%BA-AVPlayerItem"><span class="toc-number">2.2.4.</span> <span class="toc-text">第四步：构建 AVPlayerItem</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%BA%94%E7%94%A8%E6%BB%A4%E9%95%9C%E6%95%88%E6%9E%9C"><span class="toc-number">2.3.</span> <span class="toc-text">3、应用滤镜效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%AF%BC%E5%87%BA%E5%A4%84%E7%90%86%E5%90%8E%E7%9A%84%E8%A7%86%E9%A2%91"><span class="toc-number">2.4.</span> <span class="toc-text">4、导出处理后的视频</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">源码</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        在 iOS 中给视频添加滤镜
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2020-03-15T03:24:22.000Z" class="dt-published" itemprop="datePublished">2020-03-15</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/OpenGL-ES/">OpenGL ES</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2020/03/15/ios-video-filter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">在 iOS 中给视频添加滤镜</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-15T11:24:22+08:00">2020-03-15</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-03-15T21:32:14+08:00">2020-03-15</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenGL-ES/" itemprop="url" rel="index"><span itemprop="name">OpenGL ES</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2020/03/15/ios-video-filter/" class="leancloud_visitors" data-flag-title="在 iOS 中给视频添加滤镜">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/video-filter.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/video-filter.jpg"></p>
 <p>「众所周知，视频可以 P」，今天我们来学习怎么给视频添加滤镜。</p>
-<a id="more"></a>
 <p>在 iOS 中，对视频进行图像处理一般有两种方式：<strong>GPUImage</strong> 和 <strong>AVFoundation</strong> 。</p>
 <h1 id="一、GPUImage"><a href="#一、GPUImage" class="headerlink" title="一、GPUImage"></a>一、GPUImage</h1><p>在之前的文章中，我们对 GPUImage 已经有了一定的了解。之前一般使用它对摄像头采集的图像数据进行处理，然而，它对本地视频的处理也一样方便。</p>
 <p>直接看代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// movie</span></span><br><span class="line"><span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"sample"</span> ofType:<span class="string">@"mp4"</span>];</span><br><span class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> fileURLWithPath:path];</span><br><span class="line">GPUImageMovie *movie = [[GPUImageMovie alloc] initWithURL:url];</span><br><span class="line"></span><br><span class="line"><span class="comment">// filter</span></span><br><span class="line">GPUImageSmoothToonFilter *filter = [[GPUImageSmoothToonFilter alloc] init];</span><br><span class="line"></span><br><span class="line"><span class="comment">// view</span></span><br><span class="line">GPUImageView *imageView = [[GPUImageView alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">80</span>, <span class="keyword">self</span>.view.frame.size.width, <span class="keyword">self</span>.view.frame.size.width)];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:imageView];</span><br><span class="line"></span><br><span class="line"><span class="comment">// chain</span></span><br><span class="line">[movie addTarget:filter];</span><br><span class="line">[filter addTarget:imageView];</span><br><span class="line"></span><br><span class="line"><span class="comment">// processing</span></span><br><span class="line">[movie startProcessing];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// movie</span></span><br><span class="line"><span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@&quot;sample&quot;</span> ofType:<span class="string">@&quot;mp4&quot;</span>];</span><br><span class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> fileURLWithPath:path];</span><br><span class="line">GPUImageMovie *movie = [[GPUImageMovie alloc] initWithURL:url];</span><br><span class="line"></span><br><span class="line"><span class="comment">// filter</span></span><br><span class="line">GPUImageSmoothToonFilter *filter = [[GPUImageSmoothToonFilter alloc] init];</span><br><span class="line"></span><br><span class="line"><span class="comment">// view</span></span><br><span class="line">GPUImageView *imageView = [[GPUImageView alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">80</span>, <span class="keyword">self</span>.view.frame.size.width, <span class="keyword">self</span>.view.frame.size.width)];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:imageView];</span><br><span class="line"></span><br><span class="line"><span class="comment">// chain</span></span><br><span class="line">[movie addTarget:filter];</span><br><span class="line">[filter addTarget:imageView];</span><br><span class="line"></span><br><span class="line"><span class="comment">// processing</span></span><br><span class="line">[movie startProcessing];</span><br></pre></td></tr></table></figure>
+
 <p>核心代码一共就几行。<code>GPUImageMovie</code> 负责视频文件的读取，<code>GPUImageSmoothToonFilter</code> 负责滤镜效果处理，<code>GPUImageView</code> 负责最终图像的展示。</p>
 <p>通过滤镜链将三者串起来，然后调用 <code>GPUImageMovie</code> 的 <code>startProcessing</code> 方法开始处理。</p>
 <p>虽然 <code>GPUImage</code> 在使用上简单，但是存在着 <strong>没有声音</strong>、<strong>在非主线程调用 UI</strong>、<strong>导出文件麻烦</strong>、<strong>无法进行播放控制</strong> 等诸多缺点。</p>
 <p><strong>小结：<code>GPUImage</code> 虽然使用很方便，但是存在诸多缺点，不满足生产环境需要</strong>。</p>
 <h1 id="二、AVFoundation"><a href="#二、AVFoundation" class="headerlink" title="二、AVFoundation"></a>二、AVFoundation</h1><h2 id="1、-AVPlayer-的使用"><a href="#1、-AVPlayer-的使用" class="headerlink" title="1、 AVPlayer 的使用"></a>1、 AVPlayer 的使用</h2><p>首先来复习一下 <code>AVPlayer</code> 最简单的使用方式：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURL</span> *url = [[<span class="built_in">NSBundle</span> mainBundle] URLForResource:<span class="string">@"sample"</span> withExtension:<span class="string">@"mp4"</span>];</span><br><span class="line"><span class="built_in">AVURLAsset</span> *asset = [<span class="built_in">AVURLAsset</span> assetWithURL:url];</span><br><span class="line"><span class="built_in">AVPlayerItem</span> *playerItem = [[<span class="built_in">AVPlayerItem</span> alloc] initWithAsset:asset];</span><br><span class="line">    </span><br><span class="line"><span class="built_in">AVPlayer</span> *player = [[<span class="built_in">AVPlayer</span> alloc] initWithPlayerItem:playerItem];</span><br><span class="line"><span class="built_in">AVPlayerLayer</span> *playerLayer = [<span class="built_in">AVPlayerLayer</span> playerLayerWithPlayer:player];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURL</span> *url = [[<span class="built_in">NSBundle</span> mainBundle] URLForResource:<span class="string">@&quot;sample&quot;</span> withExtension:<span class="string">@&quot;mp4&quot;</span>];</span><br><span class="line"><span class="built_in">AVURLAsset</span> *asset = [<span class="built_in">AVURLAsset</span> assetWithURL:url];</span><br><span class="line"><span class="built_in">AVPlayerItem</span> *playerItem = [[<span class="built_in">AVPlayerItem</span> alloc] initWithAsset:asset];</span><br><span class="line">    </span><br><span class="line"><span class="built_in">AVPlayer</span> *player = [[<span class="built_in">AVPlayer</span> alloc] initWithPlayerItem:playerItem];</span><br><span class="line"><span class="built_in">AVPlayerLayer</span> *playerLayer = [<span class="built_in">AVPlayerLayer</span> playerLayerWithPlayer:player];</span><br></pre></td></tr></table></figure>
+
 <p>第一步先构建 <code>AVPlayerItem</code>，然后通过 <code>AVPlayerItem</code> 创建 <code>AVPlayer</code>，最后通过 <code>AVPlayer</code> 创建 <code>AVPlayerLayer</code>。</p>
 <p><code>AVPlayerLayer</code> 是 <code>CALayer</code> 的子类，可以把它添加到任意的 <code>Layer</code> 上。当 <code>AVPlayer</code> 调用 <code>play</code> 方法时， <code>AVPlayerLayer</code> 上就能将图像渲染出来。</p>
 <p><code>AVPlayer</code> 的使用方式十分简单。但是，按照上面的方式，最终只能在 <code>AVPlayerLayer</code> 上渲染出最原始的图像。如果我们希望在播放的同时，对原始图像进行处理，则需要修改 <code>AVPlayer</code> 的渲染过程。</p>
 <h2 id="2、修改-AVPlayer-的渲染过程"><a href="#2、修改-AVPlayer-的渲染过程" class="headerlink" title="2、修改 AVPlayer 的渲染过程"></a>2、修改 AVPlayer 的渲染过程</h2><p>修改 <code>AVPlayer</code> 的渲染过程，要从 <code>AVPlayerItem</code> 下手，主要分为<strong>四步</strong>：</p>
 <h3 id="第一步：自定义-AVVideoCompositing-类"><a href="#第一步：自定义-AVVideoCompositing-类" class="headerlink" title="第一步：自定义 AVVideoCompositing 类"></a>第一步：自定义 AVVideoCompositing 类</h3><p><code>AVVideoCompositing</code> 是一个协议，我们的自定义类要实现这个协议。在这个自定义类中，可以获取到每一帧的原始图像，进行处理并输出。</p>
 <p>在这个协议中，最关键是 <code>startVideoCompositionRequest</code> 方法的实现：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CustomVideoCompositing.m</span></span><br><span class="line">- (<span class="keyword">void</span>)startVideoCompositionRequest:(<span class="built_in">AVAsynchronousVideoCompositionRequest</span> *)asyncVideoCompositionRequest &#123;</span><br><span class="line">    <span class="built_in">dispatch_async</span>(<span class="keyword">self</span>.renderingQueue, ^&#123;</span><br><span class="line">        <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">self</span>.shouldCancelAllRequests) &#123;</span><br><span class="line">                [asyncVideoCompositionRequest finishCancelledRequest];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                CVPixelBufferRef resultPixels = [<span class="keyword">self</span> newRenderdPixelBufferForRequest:asyncVideoCompositionRequest];</span><br><span class="line">                <span class="keyword">if</span> (resultPixels) &#123;</span><br><span class="line">                    [asyncVideoCompositionRequest finishWithComposedVideoFrame:resultPixels];</span><br><span class="line">                    CVPixelBufferRelease(resultPixels);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// print error</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CustomVideoCompositing.m</span></span><br><span class="line">- (<span class="type">void</span>)startVideoCompositionRequest:(<span class="built_in">AVAsynchronousVideoCompositionRequest</span> *)asyncVideoCompositionRequest &#123;</span><br><span class="line">    <span class="built_in">dispatch_async</span>(<span class="keyword">self</span>.renderingQueue, ^&#123;</span><br><span class="line">        <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">self</span>.shouldCancelAllRequests) &#123;</span><br><span class="line">                [asyncVideoCompositionRequest finishCancelledRequest];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                CVPixelBufferRef resultPixels = [<span class="keyword">self</span> newRenderdPixelBufferForRequest:asyncVideoCompositionRequest];</span><br><span class="line">                <span class="keyword">if</span> (resultPixels) &#123;</span><br><span class="line">                    [asyncVideoCompositionRequest finishWithComposedVideoFrame:resultPixels];</span><br><span class="line">                    CVPixelBufferRelease(resultPixels);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// print error</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>通过 <code>newRenderdPixelBufferForRequest</code> 方法从 <code>AVAsynchronousVideoCompositionRequest</code> 中获取到处理后的 <code>CVPixelBufferRef</code> 后输出，看下这个方法的实现：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CustomVideoCompositing.m</span></span><br><span class="line">- (CVPixelBufferRef)newRenderdPixelBufferForRequest:(<span class="built_in">AVAsynchronousVideoCompositionRequest</span> *)request &#123;</span><br><span class="line">    CustomVideoCompositionInstruction *videoCompositionInstruction = (CustomVideoCompositionInstruction *)request.videoCompositionInstruction;</span><br><span class="line">    <span class="built_in">NSArray</span>&lt;<span class="built_in">AVVideoCompositionLayerInstruction</span> *&gt; *layerInstructions = videoCompositionInstruction.layerInstructions;</span><br><span class="line">    <span class="built_in">CMPersistentTrackID</span> trackID = layerInstructions.firstObject.trackID;</span><br><span class="line">    </span><br><span class="line">    CVPixelBufferRef sourcePixelBuffer = [request sourceFrameByTrackID:trackID];</span><br><span class="line">    CVPixelBufferRef resultPixelBuffer = [videoCompositionInstruction applyPixelBuffer:sourcePixelBuffer];</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> (!resultPixelBuffer) &#123;</span><br><span class="line">        CVPixelBufferRef emptyPixelBuffer = [<span class="keyword">self</span> createEmptyPixelBuffer];</span><br><span class="line">        <span class="keyword">return</span> emptyPixelBuffer;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> resultPixelBuffer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在这个方法中，我们通过 <code>trackID</code> 从 <code>AVAsynchronousVideoCompositionRequest</code> 中获取到 <code>sourcePixelBuffer</code>，也就是当前帧的原始图像。</p>
 <p>然后调用 <code>videoCompositionInstruction</code> 的 <code>applyPixelBuffer</code> 方法，将 <code>sourcePixelBuffer</code> 作为输入，得到处理后的结果 <code>resultPixelBuffer</code>。也就是说，我们对图像的处理操作，都发生在 <code>applyPixelBuffer</code> 方法中。</p>
 <p>在 <code>newRenderdPixelBufferForRequest</code> 这个方法中，我们已经拿到了当前帧的原始图像 <code>sourcePixelBuffer</code>，其实也可以直接在这个方法中对图像进行处理。</p>
@@ -418,10 +186,13 @@
 <p>因为在实际渲染的时候，自定义 <code>AVVideoCompositing</code> 类的实例创建是系统内部完成的。也就是说，我们访问不到最终的 <code>AVVideoCompositing</code> 对象。所以无法进行一些渲染参数的动态修改。而从 <code>AVAsynchronousVideoCompositionRequest</code> 中，可以获取到 <code>AVVideoCompositionInstruction</code> 对象，所以我们需要自定义 <code>AVVideoCompositionInstruction</code>，这样就可以间接地通过修改 <code>AVVideoCompositionInstruction</code> 的属性，来动态修改渲染参数。</p>
 <h3 id="第二步：自定义-AVVideoCompositionInstruction"><a href="#第二步：自定义-AVVideoCompositionInstruction" class="headerlink" title="第二步：自定义 AVVideoCompositionInstruction"></a>第二步：自定义 AVVideoCompositionInstruction</h3><p>这个类的关键点是 <code>applyPixelBuffer</code> 方法的实现：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CustomVideoCompositionInstruction.m</span></span><br><span class="line">- (CVPixelBufferRef)applyPixelBuffer:(CVPixelBufferRef)pixelBuffer &#123;</span><br><span class="line">    <span class="keyword">self</span>.filter.pixelBuffer = pixelBuffer;</span><br><span class="line">    CVPixelBufferRef outputPixelBuffer = <span class="keyword">self</span>.filter.outputPixelBuffer;</span><br><span class="line">    CVPixelBufferRetain(outputPixelBuffer);</span><br><span class="line">    <span class="keyword">return</span> outputPixelBuffer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这里把 OpenGL ES 的处理细节都封装到了 <code>filter</code> 中。这个类的实现细节可以先忽略，只需要知道它接受<strong>原始的</strong> <code>CVPixelBufferRef</code>，返回<strong>处理后的</strong> <code>CVPixelBufferRef</code>。</p>
 <h3 id="第三步：构建-AVMutableVideoComposition"><a href="#第三步：构建-AVMutableVideoComposition" class="headerlink" title="第三步：构建 AVMutableVideoComposition"></a>第三步：构建 AVMutableVideoComposition</h3><p>构建的代码如下：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.videoComposition = [<span class="keyword">self</span> createVideoCompositionWithAsset:<span class="keyword">self</span>.asset];</span><br><span class="line"><span class="keyword">self</span>.videoComposition.customVideoCompositorClass = [CustomVideoCompositing <span class="keyword">class</span>];</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">AVMutableVideoComposition</span> *)createVideoCompositionWithAsset:(<span class="built_in">AVAsset</span> *)asset &#123;</span><br><span class="line">    <span class="built_in">AVMutableVideoComposition</span> *videoComposition = [<span class="built_in">AVMutableVideoComposition</span> videoCompositionWithPropertiesOfAsset:asset];</span><br><span class="line">    <span class="built_in">NSArray</span> *instructions = videoComposition.instructions;</span><br><span class="line">    <span class="built_in">NSMutableArray</span> *newInstructions = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">AVVideoCompositionInstruction</span> *instruction <span class="keyword">in</span> instructions) &#123;</span><br><span class="line">        <span class="built_in">NSArray</span> *layerInstructions = instruction.layerInstructions;</span><br><span class="line">        <span class="comment">// TrackIDs</span></span><br><span class="line">        <span class="built_in">NSMutableArray</span> *trackIDs = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">AVVideoCompositionLayerInstruction</span> *layerInstruction <span class="keyword">in</span> layerInstructions) &#123;</span><br><span class="line">            [trackIDs addObject:@(layerInstruction.trackID)];</span><br><span class="line">        &#125;</span><br><span class="line">        CustomVideoCompositionInstruction *newInstruction = [[CustomVideoCompositionInstruction alloc] initWithSourceTrackIDs:trackIDs timeRange:instruction.timeRange];</span><br><span class="line">        newInstruction.layerInstructions = instruction.layerInstructions;</span><br><span class="line">        [newInstructions addObject:newInstruction];</span><br><span class="line">    &#125;</span><br><span class="line">    videoComposition.instructions = newInstructions;</span><br><span class="line">    <span class="keyword">return</span> videoComposition;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>构建 <code>AVMutableVideoComposition</code> 的过程<strong>主要做两件事情</strong>。</p>
 <p>第一件事情，把 <code>videoComposition</code> 的 <code>customVideoCompositorClass</code> 属性，设置为我们自定义的 <code>CustomVideoCompositing</code>。</p>
 <p>第二件事情，首先通过系统提供的方法 <code>videoCompositionWithPropertiesOfAsset</code> 构建出 <code>AVMutableVideoComposition</code> 对象，然后将它的 <code>instructions</code> 属性修改为自定义的 <code>CustomVideoCompositionInstruction</code> 类型。（就像「第一步」提到的，后续可以在 <code>CustomVideoCompositing</code> 中，拿到 <code>CustomVideoCompositionInstruction</code> 对象。）</p>
@@ -431,18 +202,21 @@
 <h3 id="第四步：构建-AVPlayerItem"><a href="#第四步：构建-AVPlayerItem" class="headerlink" title="第四步：构建 AVPlayerItem"></a>第四步：构建 AVPlayerItem</h3><p>有了 <code>AVMutableVideoComposition</code> 之后，后面的事情就简单多了。</p>
 <p>只需要在创建 <code>AVPlayerItem</code> 的时候，多赋值一个 <code>videoComposition</code> 属性。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.playerItem = [[<span class="built_in">AVPlayerItem</span> alloc] initWithAsset:<span class="keyword">self</span>.asset];</span><br><span class="line"><span class="keyword">self</span>.playerItem.videoComposition = <span class="keyword">self</span>.videoComposition;</span><br></pre></td></tr></table></figure>
+
 <p>这样，整条链路就串起来了，<code>AVPlayer</code> 在播放时，就能在 <code>CustomVideoCompositionInstruction</code> 的 <code>applyPixelBuffer</code> 方法中接收到<strong>原始图像的</strong> <code>CVPixelBufferRef</code> 。</p>
 <h2 id="3、应用滤镜效果"><a href="#3、应用滤镜效果" class="headerlink" title="3、应用滤镜效果"></a>3、应用滤镜效果</h2><p>这一步要做的事情是：<strong>在 <code>CVPixelBufferRef</code> 上添加滤镜效果，并输出处理后的 <code>CVPixelBufferRef</code></strong> 。</p>
 <p>要做到这件事情，有很多种方式。包括但不限定于：<strong>OpenGL ES</strong>、<strong>CIImage</strong>、<strong>Metal</strong>、<strong>GPUImage</strong> 等。</p>
 <p>为了同样使用前面用到的 <code>GPUImageSmoothToonFilter</code>，这里介绍一下 <strong>GPUImage</strong> 的方式。</p>
 <p>关键代码如下：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">- (CVPixelBufferRef)renderByGPUImage:(CVPixelBufferRef)pixelBuffer &#123;</span><br><span class="line">    CVPixelBufferRetain(pixelBuffer);</span><br><span class="line">    </span><br><span class="line">    __block CVPixelBufferRef output = <span class="literal">nil</span>;</span><br><span class="line">    runSynchronouslyOnVideoProcessingQueue(^&#123;</span><br><span class="line">        [GPUImageContext useImageProcessingContext];</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// (1)</span></span><br><span class="line">        GLuint textureID = [<span class="keyword">self</span>.pixelBufferHelper convertYUVPixelBufferToTexture:pixelBuffer];</span><br><span class="line">        <span class="built_in">CGSize</span> size = <span class="built_in">CGSizeMake</span>(CVPixelBufferGetWidth(pixelBuffer),</span><br><span class="line">                                 CVPixelBufferGetHeight(pixelBuffer));</span><br><span class="line">        </span><br><span class="line">        [GPUImageContext setActiveShaderProgram:<span class="literal">nil</span>];</span><br><span class="line">        <span class="comment">// (2)</span></span><br><span class="line">        GPUImageTextureInput *textureInput = [[GPUImageTextureInput alloc] initWithTexture:textureID size:size];</span><br><span class="line">        GPUImageSmoothToonFilter *filter = [[GPUImageSmoothToonFilter alloc] init];</span><br><span class="line">        [textureInput addTarget:filter];</span><br><span class="line">        GPUImageTextureOutput *textureOutput = [[GPUImageTextureOutput alloc] init];</span><br><span class="line">        [filter addTarget:textureOutput];</span><br><span class="line">        [textureInput processTextureWithFrameTime:kCMTimeZero];</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// (3)</span></span><br><span class="line">        output = [<span class="keyword">self</span>.pixelBufferHelper convertTextureToPixelBuffer:textureOutput.texture</span><br><span class="line">                                                         textureSize:size];</span><br><span class="line">        </span><br><span class="line">        [textureOutput doneWithTexture];</span><br><span class="line">        </span><br><span class="line">        glDeleteTextures(<span class="number">1</span>, &amp;textureID);</span><br><span class="line">    &#125;);</span><br><span class="line">    CVPixelBufferRelease(pixelBuffer);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p><strong>(1)</strong> 一开始读入的视频帧是 YUV 格式的，首先把 YUV 格式的 <code>CVPixelBufferRef</code> 转成 OpenGL 纹理。</p>
 <p><strong>(2)</strong> 通过 <code>GPUImageTextureInput</code> 来构造滤镜链起点，<code>GPUImageSmoothToonFilter</code> 来添加滤镜效果，<code>GPUImageTextureOutput</code> 来构造滤镜链终点，最终也是输出 OpenGL 纹理。</p>
 <p><strong>(3)</strong> 将处理后的 OpenGL 纹理转化为 <code>CVPixelBufferRef</code> 。</p>
 <p>另外，由于 <strong>CIImage</strong> 使用简单，也顺便提一下用法。</p>
 <p>关键代码如下：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (CVPixelBufferRef)renderByCIImage:(CVPixelBufferRef)pixelBuffer &#123;</span><br><span class="line">    CVPixelBufferRetain(pixelBuffer);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGSize</span> size = <span class="built_in">CGSizeMake</span>(CVPixelBufferGetWidth(pixelBuffer),</span><br><span class="line">                             CVPixelBufferGetHeight(pixelBuffer));</span><br><span class="line">    <span class="comment">// (1)</span></span><br><span class="line">    <span class="built_in">CIImage</span> *image = [[<span class="built_in">CIImage</span> alloc] initWithCVPixelBuffer:pixelBuffer];  </span><br><span class="line">    <span class="comment">// (2)</span></span><br><span class="line">    <span class="built_in">CIImage</span> *filterImage = [<span class="built_in">CIImage</span> imageWithColor:[<span class="built_in">CIColor</span> colorWithRed:<span class="number">255.0</span> / <span class="number">255</span>  </span><br><span class="line">                                                                   green:<span class="number">245.0</span> / <span class="number">255</span></span><br><span class="line">                                                                    blue:<span class="number">215.0</span> / <span class="number">255</span></span><br><span class="line">                                                                   alpha:<span class="number">0.1</span>]];</span><br><span class="line">    <span class="comment">// (3)</span></span><br><span class="line">    image = [filterImage imageByCompositingOverImage:image];  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// (4)</span></span><br><span class="line">    CVPixelBufferRef output = [<span class="keyword">self</span>.pixelBufferHelper createPixelBufferWithSize:size];  </span><br><span class="line">    [<span class="keyword">self</span>.context render:image toCVPixelBuffer:output];</span><br><span class="line">    </span><br><span class="line">    CVPixelBufferRelease(pixelBuffer);</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p><strong>(1)</strong> 将 <code>CVPixelBufferRef</code> 转化为 <code>CIImage</code> 。</p>
 <p><strong>(2)</strong> 创建一个带透明度的 <code>CIImage</code> 。</p>
 <p><strong>(3)</strong> 用系统方法将 <code>CIImage</code> 进行叠加。</p>
@@ -450,504 +224,113 @@
 <h2 id="4、导出处理后的视频"><a href="#4、导出处理后的视频" class="headerlink" title="4、导出处理后的视频"></a>4、导出处理后的视频</h2><p>视频处理完成后，最终都希望能导出并保存。</p>
 <p>导出的代码也很简单：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.exportSession = [[<span class="built_in">AVAssetExportSession</span> alloc] initWithAsset:<span class="keyword">self</span>.asset presetName:<span class="built_in">AVAssetExportPresetHighestQuality</span>];</span><br><span class="line"><span class="keyword">self</span>.exportSession.videoComposition = <span class="keyword">self</span>.videoComposition;</span><br><span class="line"><span class="keyword">self</span>.exportSession.outputFileType = <span class="built_in">AVFileTypeMPEG4</span>;</span><br><span class="line"><span class="keyword">self</span>.exportSession.outputURL = [<span class="built_in">NSURL</span> fileURLWithPath:<span class="keyword">self</span>.exportPath];</span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.exportSession exportAsynchronouslyWithCompletionHandler:^&#123;</span><br><span class="line">    <span class="comment">// 保存到相册</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
 <p>这里关键的地方在于将 <code>videoComposition</code> 设置为前面构造的 <code>AVMutableVideoComposition</code> 对象，然后设置好输出路径和文件格式后就可以开始导出。导出成功后，可以将视频文件转存到相册中。</p>
 <p><strong>小结：<code>AVFoundation</code> 虽然使用比较繁琐，但是功能强大，可以很方便地导出视频处理的结果，是用来做视频处理的不二之选。</strong></p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/blog-demo/tree/master/testVideoFilter" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a target="_blank" rel="noopener" href="https://github.com/lmf12/blog-demo/tree/master/testVideoFilter">GitHub</a> 上查看完整代码。</p>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2020/01/04/ios-opengles-paint/" rel="next" title="在 iOS 中使用 OpenGL ES 实现绘画板">
-                <i class="fa fa-chevron-left"></i> 在 iOS 中使用 OpenGL ES 实现绘画板
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/03/21/ios-opengles-panorama/" rel="prev" title="使用 OpenGL ES 实现全景播放器">
-                使用 OpenGL ES 实现全景播放器 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、GPUImage"><span class="nav-text">一、GPUImage</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、AVFoundation"><span class="nav-text">二、AVFoundation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、-AVPlayer-的使用"><span class="nav-text">1、 AVPlayer 的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、修改-AVPlayer-的渲染过程"><span class="nav-text">2、修改 AVPlayer 的渲染过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步：自定义-AVVideoCompositing-类"><span class="nav-text">第一步：自定义 AVVideoCompositing 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步：自定义-AVVideoCompositionInstruction"><span class="nav-text">第二步：自定义 AVVideoCompositionInstruction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三步：构建-AVMutableVideoComposition"><span class="nav-text">第三步：构建 AVMutableVideoComposition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四步：构建-AVPlayerItem"><span class="nav-text">第四步：构建 AVPlayerItem</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、应用滤镜效果"><span class="nav-text">3、应用滤镜效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、导出处理后的视频"><span class="nav-text">4、导出处理后的视频</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81GPUImage"><span class="toc-number">1.</span> <span class="toc-text">一、GPUImage</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81AVFoundation"><span class="toc-number">2.</span> <span class="toc-text">二、AVFoundation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81-AVPlayer-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1、 AVPlayer 的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E4%BF%AE%E6%94%B9-AVPlayer-%E7%9A%84%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">2、修改 AVPlayer 的渲染过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89-AVVideoCompositing-%E7%B1%BB"><span class="toc-number">2.2.1.</span> <span class="toc-text">第一步：自定义 AVVideoCompositing 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89-AVVideoCompositionInstruction"><span class="toc-number">2.2.2.</span> <span class="toc-text">第二步：自定义 AVVideoCompositionInstruction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%9E%84%E5%BB%BA-AVMutableVideoComposition"><span class="toc-number">2.2.3.</span> <span class="toc-text">第三步：构建 AVMutableVideoComposition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E6%9E%84%E5%BB%BA-AVPlayerItem"><span class="toc-number">2.2.4.</span> <span class="toc-text">第四步：构建 AVPlayerItem</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%BA%94%E7%94%A8%E6%BB%A4%E9%95%9C%E6%95%88%E6%9E%9C"><span class="toc-number">2.3.</span> <span class="toc-text">3、应用滤镜效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%AF%BC%E5%87%BA%E5%A4%84%E7%90%86%E5%90%8E%E7%9A%84%E8%A7%86%E9%A2%91"><span class="toc-number">2.4.</span> <span class="toc-text">4、导出处理后的视频</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">源码</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>

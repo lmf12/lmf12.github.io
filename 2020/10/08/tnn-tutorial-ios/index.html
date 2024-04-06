@@ -1,404 +1,168 @@
 <!DOCTYPE html>
-
-
-
-
-<html class="theme-next mist" lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '6.0.4',
-    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  
-  <meta name="keywords" content="iOS, TNN" />
-
-
-<meta name="description" content="TNN 是腾讯优图实验室打造的高性能推理框架，目前已经在 GitHub 上开源，并在手Q、微视、P图等应用中落地。本文可能是比官方文档更加友好的入门指南，讲解如何从零在 iOS 工程中使用 TNN 框架。">
-<meta name="keywords" content="iOS, TNN">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="TNN 是腾讯优图实验室打造的高性能推理框架，目前已经在 GitHub 上开源，并在手Q、微视、P图等应用中落地。本文可能是比官方文档更加友好的入门指南，讲解如何从零在 iOS 工程中使用 TNN 框架。 TNN 是一个跨平台的框架，训练好的 TNN 模型可以直接在不同的平台使用。在官方介绍中没有 TNN 的全称，可能是 Tencent Neural Networks 。 目前，腾讯内部基于 T">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TNN 民间入门指南（iOS篇）">
-<meta property="og:url" content="http://www.lymanli.com/2020/10/08/tnn-tutorial-ios/index.html">
+<meta property="og:url" content="http://www.lymanli.com/2020/10/08/tnn-tutorial-ios/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="TNN 是腾讯优图实验室打造的高性能推理框架，目前已经在 GitHub 上开源，并在手Q、微视、P图等应用中落地。本文可能是比官方文档更加友好的入门指南，讲解如何从零在 iOS 工程中使用 TNN 框架。">
-<meta property="og:locale" content="zh-CN">
+<meta property="og:description" content="TNN 是腾讯优图实验室打造的高性能推理框架，目前已经在 GitHub 上开源，并在手Q、微视、P图等应用中落地。本文可能是比官方文档更加友好的入门指南，讲解如何从零在 iOS 工程中使用 TNN 框架。 TNN 是一个跨平台的框架，训练好的 TNN 模型可以直接在不同的平台使用。在官方介绍中没有 TNN 的全称，可能是 Tencent Neural Networks 。 目前，腾讯内部基于 T">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/tnn-tutorial-ios.jpg">
 <meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/tnn-tutorial-ios-image-1.jpg">
-<meta property="og:updated_time" content="2020-10-09T15:28:12.585Z">
+<meta property="article:published_time" content="2020-10-08T05:57:16.000Z">
+<meta property="article:modified_time" content="2024-04-05T16:31:17.006Z">
+<meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TNN 民间入门指南（iOS篇）">
-<meta name="twitter:description" content="TNN 是腾讯优图实验室打造的高性能推理框架，目前已经在 GitHub 上开源，并在手Q、微视、P图等应用中落地。本文可能是比官方文档更加友好的入门指南，讲解如何从零在 iOS 工程中使用 TNN 框架。">
 <meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/tnn-tutorial-ios.jpg">
-
-
-
-
-
-
-  <link rel="canonical" href="http://www.lymanli.com/2020/10/08/tnn-tutorial-ios/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-  <title>TNN 民间入门指南（iOS篇） | Lyman's Blog</title>
-  
-
-
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129740170-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-129740170-1');
-</script>
-
-
-
-
-
-
-  <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
-
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
-
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"> <div class="site-brand-wrapper">
-  <div class="site-meta ">
     
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Lyman's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
       
-        <p class="site-subtitle"></p>
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
       
-  </div>
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>TNN 民间入门指南（iOS篇）</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2021/05/01/review-2020/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2020/03/21/ios-opengles-panorama/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%87%E3%80%81%E5%BC%95%E5%85%A5-SDK"><span class="toc-number">1.</span> <span class="toc-text">〇、引入 SDK</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A8%A1%E5%9E%8B%E8%A7%A3%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">一、模型解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%9E%84%E5%BB%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">3.</span> <span class="toc-text">二、构建网络</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">三、预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E9%BB%98%E8%AE%A4%E6%96%B9%E5%BC%8F"><span class="toc-number">4.1.</span> <span class="toc-text">1、默认方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F"><span class="toc-number">4.2.</span> <span class="toc-text">2、自定义方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%89%A7%E8%A1%8C%E7%BD%91%E7%BB%9C"><span class="toc-number">5.</span> <span class="toc-text">四、执行网络</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%90%8E%E5%A4%84%E7%90%86"><span class="toc-number">6.</span> <span class="toc-text">五、后处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E9%BB%98%E8%AE%A4%E6%96%B9%E5%BC%8F-1"><span class="toc-number">6.1.</span> <span class="toc-text">1、默认方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F-1"><span class="toc-number">6.2.</span> <span class="toc-text">2、自定义方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">7.</span> <span class="toc-text">源码</span></a></li></ol>
+      </div>
+    
+  </span>
 </div>
 
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+    
+    <div class="content index py4 ">
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            首页</a>
-        </li>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        TNN 民间入门指南（iOS篇）
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
       
+    <div class="postdate">
+      
+        <time datetime="2020-10-08T05:57:16.000Z" class="dt-published" itemprop="datePublished">2020-10-08</time>
         
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            分类</a>
-        </li>
       
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            关于</a>
-        </li>
-      
+    </div>
+
 
       
-    </ul>
-  
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/TNN-%E6%B0%91%E9%97%B4%E6%95%99%E7%A8%8B/">TNN 民间教程</a>
+    </div>
 
-  
-</nav>
-
-
-  
-
-
-
- </div>
-    </header>
-
-    
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.lymanli.com/2020/10/08/tnn-tutorial-ios/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lyman Li">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Lyman's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">TNN 民间入门指南（iOS篇）</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-08T13:57:16+08:00">2020-10-08</time>
-            
-
-            
-            
-              
-                
-              
-            
-
-            
-              
-              <span class="post-meta-divider">|</span>
-              
-
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于&#58;</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2020-10-09T23:28:12+08:00">2020-10-09</time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/TNN-民间教程/" itemprop="url" rel="index"><span itemprop="name">TNN 民间教程</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2020/10/08/tnn-tutorial-ios/" class="leancloud_visitors" data-flag-title="TNN 民间入门指南（iOS篇）">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
 
       
-      
 
-      
-        <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/tnn-tutorial-ios.jpg" alt=""></p>
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/tnn-tutorial-ios.jpg"></p>
 <p>TNN 是腾讯优图实验室打造的高性能推理框架，目前已经在 GitHub 上开源，并在手Q、微视、P图等应用中落地。本文可能是比官方文档更加友好的入门指南，讲解如何从零在 iOS 工程中使用 TNN 框架。</p>
-<a id="more"></a>
 <p>TNN 是一个跨平台的框架，训练好的 TNN 模型可以直接在不同的平台使用。在官方介绍中没有 TNN 的全称，可能是 <strong>Tencent Neural Networks</strong> 。</p>
-<p>目前，腾讯内部基于 TNN 框架落地的 AI 能力有 <strong>人脸识别、抠背、GAN 玩法</strong> 等。关于 TNN 的更多介绍可以到 <a href="https://github.com/Tencent/TNN" target="_blank" rel="noopener">GitHub</a> 上查看。</p>
+<p>目前，腾讯内部基于 TNN 框架落地的 AI 能力有 <strong>人脸识别、抠背、GAN 玩法</strong> 等。关于 TNN 的更多介绍可以到 <a target="_blank" rel="noopener" href="https://github.com/Tencent/TNN">GitHub</a> 上查看。</p>
 <p>下面以一个灰度图自动上色的例子，讲解 TNN 的使用流程。</p>
 <h1 id="〇、引入-SDK"><a href="#〇、引入-SDK" class="headerlink" title="〇、引入 SDK"></a>〇、引入 SDK</h1><p>在 <strong>新建的 iOS 工程</strong> 中引入 TNN SDK 分为三步：</p>
 <ol>
-<li>编译 TNN 源码，生成 <code>tnn.framework</code> 和 <code>tnn.bundle</code>，把它们加入工程，并添加工程配置。这一步可以按照官方的 <a href="https://github.com/Tencent/TNN/blob/master/doc/cn/user/compile.md" target="_blank" rel="noopener">TNN 编译指南</a> 的 iOS 部分进行。</li>
+<li>编译 TNN 源码，生成 <code>tnn.framework</code> 和 <code>tnn.bundle</code>，把它们加入工程，并添加工程配置。这一步可以按照官方的 <a target="_blank" rel="noopener" href="https://github.com/Tencent/TNN/blob/master/doc/cn/user/compile.md">TNN 编译指南</a> 的 iOS 部分进行。</li>
 <li>在 <code>Build Phases-&gt;Link Binary With Libraries</code> 中添加依赖库 <code>Accelerate.framework</code> 和 <code>CoreML.framework</code> 。</li>
 <li>将默认生成的 <code>ViewController.m</code> 后缀改成 <code>.mm</code> 。</li>
 </ol>
@@ -411,546 +175,165 @@
 <li>调用 <code>TNN</code> 的 <code>Init</code> 方法来加载 <code>ModelConfig</code>。</li>
 </ol>
 <p>关键代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成 TNN 实例</span></span><br><span class="line"><span class="keyword">self</span>.network = new TNN();</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 获取模型路径</span></span><br><span class="line"><span class="built_in">NSString</span> *modelPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"G_8_GRAY2RGB_256"</span> ofType:<span class="string">@"tnnmodel"</span>];</span><br><span class="line"><span class="built_in">NSString</span> *protoPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"G_8_GRAY2RGB_256"</span> ofType:<span class="string">@"tnnproto"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取模型数据</span></span><br><span class="line">string protoContent = [<span class="built_in">NSString</span> stringWithContentsOfFile:protoPath</span><br><span class="line">                                                encoding:<span class="built_in">NSUTF8StringEncoding</span></span><br><span class="line">                                                   error:<span class="literal">nil</span>].UTF8String;</span><br><span class="line"><span class="built_in">NSData</span> *modelData = [<span class="built_in">NSData</span> dataWithContentsOfFile:modelPath];</span><br><span class="line">string modelContent = [modelData length] &gt; <span class="number">0</span> ? string((<span class="keyword">const</span> <span class="keyword">char</span> *)[modelData bytes], [modelData length]) : <span class="string">""</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建模型配置</span></span><br><span class="line">ModelConfig modelConfig;</span><br><span class="line">modelConfig.model_type = MODEL_TYPE_TNN; <span class="comment">// 指定模型类型</span></span><br><span class="line">modelConfig.params = &#123;protoContent, modelContent&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解析</span></span><br><span class="line">Status status = <span class="keyword">self</span>.network-&gt;Init(modelConfig);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成 TNN 实例</span></span><br><span class="line"><span class="keyword">self</span>.network = new TNN();</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 获取模型路径</span></span><br><span class="line"><span class="built_in">NSString</span> *modelPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@&quot;G_8_GRAY2RGB_256&quot;</span> ofType:<span class="string">@&quot;tnnmodel&quot;</span>];</span><br><span class="line"><span class="built_in">NSString</span> *protoPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@&quot;G_8_GRAY2RGB_256&quot;</span> ofType:<span class="string">@&quot;tnnproto&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取模型数据</span></span><br><span class="line">string protoContent = [<span class="built_in">NSString</span> stringWithContentsOfFile:protoPath</span><br><span class="line">                                                encoding:<span class="built_in">NSUTF8StringEncoding</span></span><br><span class="line">                                                   error:<span class="literal">nil</span>].UTF8String;</span><br><span class="line"><span class="built_in">NSData</span> *modelData = [<span class="built_in">NSData</span> dataWithContentsOfFile:modelPath];</span><br><span class="line">string modelContent = [modelData length] &gt; <span class="number">0</span> ? string((<span class="keyword">const</span> <span class="type">char</span> *)[modelData bytes], [modelData length]) : <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建模型配置</span></span><br><span class="line">ModelConfig modelConfig;</span><br><span class="line">modelConfig.model_type = MODEL_TYPE_TNN; <span class="comment">// 指定模型类型</span></span><br><span class="line">modelConfig.params = &#123;protoContent, modelContent&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解析</span></span><br><span class="line">Status status = <span class="keyword">self</span>.network-&gt;Init(modelConfig);</span><br></pre></td></tr></table></figure>
+
 <h1 id="二、构建网络"><a href="#二、构建网络" class="headerlink" title="二、构建网络"></a>二、构建网络</h1><p>构建网络的步骤：</p>
 <ol>
 <li>创建配置 <code>NetworkConfig</code>，需要指定的参数有 <code>device_type</code> 和 <code>library_path</code>。在移动端上一般用 GPU 来跑模型，所以在 iOS 上 <code>device_type</code> 一般用 <code>DEVICE_METAL</code>。<code>library_path</code> 则指定 <code>tnn.metallib</code> 的路径。</li>
 <li>调用 <code>TNN</code> 的 <code>CreateInst</code> 方法，加载 <code>NetworkConfig</code> 生成网络实例。</li>
 </ol>
 <p>关键代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *bundlePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"tnn"</span> ofType:<span class="string">@"bundle"</span>];</span><br><span class="line"><span class="built_in">NSString</span> *libPath = [bundlePath stringByAppendingPathComponent:<span class="string">@"tnn.metallib"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建网络实例</span></span><br><span class="line">Status status;</span><br><span class="line">NetworkConfig networkConfig;</span><br><span class="line">networkConfig.device_type = DEVICE_METAL;  <span class="comment">// 使用 metal</span></span><br><span class="line">networkConfig.library_path = &#123;libPath.UTF8String&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>.networkInstance = <span class="keyword">self</span>.network-&gt;CreateInst(networkConfig, status);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *bundlePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@&quot;tnn&quot;</span> ofType:<span class="string">@&quot;bundle&quot;</span>];</span><br><span class="line"><span class="built_in">NSString</span> *libPath = [bundlePath stringByAppendingPathComponent:<span class="string">@&quot;tnn.metallib&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建网络实例</span></span><br><span class="line">Status status;</span><br><span class="line">NetworkConfig networkConfig;</span><br><span class="line">networkConfig.device_type = DEVICE_METAL;  <span class="comment">// 使用 metal</span></span><br><span class="line">networkConfig.library_path = &#123;libPath.UTF8String&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>.networkInstance = <span class="keyword">self</span>.network-&gt;CreateInst(networkConfig, status);</span><br></pre></td></tr></table></figure>
+
 <h1 id="三、预处理"><a href="#三、预处理" class="headerlink" title="三、预处理"></a>三、预处理</h1><p>每个模型都有特定的数据输入格式，大部分需要将图像 4 个通道的数据转化到 <code>0 ~ 1</code> 或者 <code>-1 ~ 1</code> 范围。所以在执行网络之前，需要一个预处理步骤。</p>
 <p>在 TNN 中，模型可以理解成封装好的「函数」，我们只需要关心「函数」的输入输出，「函数」的具体实现可以不用管。</p>
 <p>TNN 中模型的输入输出是 <code>Blob</code> 格式，模型可以支持多个 <code>Blob</code> 的输入和多个 <code>Blob</code> 的输出。这个例子的模型是单输入单输出。</p>
 <p>在进行预处理之前，先要获取输入的 <code>Blob</code> :</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BlobMap inputBlobs;</span><br><span class="line">Status status = <span class="keyword">self</span>.networkInstance-&gt;GetAllInputBlobs(inputBlobs);</span><br><span class="line">Blob *networkInput = inputBlobs.begin()-&gt;second;</span><br></pre></td></tr></table></figure>
+
 <p>另外，还需要获取准备输入的图像数据，这里是一个 Metal 的纹理：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">MTKTextureLoader</span> *textureLoader = [[<span class="built_in">MTKTextureLoader</span> alloc] initWithDevice:<span class="built_in">MTLCreateSystemDefaultDevice</span>()];</span><br><span class="line"><span class="built_in">NSDictionary</span> *options = @&#123;</span><br><span class="line">    <span class="built_in">MTKTextureLoaderOptionSRGB</span> : @NO</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLTexture</span>&gt; texture = [textureLoader newTextureWithCGImage:image.CGImage options:options error:<span class="literal">NULL</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">MTKTextureLoader</span> *textureLoader = [[<span class="built_in">MTKTextureLoader</span> alloc] initWithDevice:<span class="built_in">MTLCreateSystemDefaultDevice</span>()];</span><br><span class="line"><span class="built_in">NSDictionary</span> *options = @&#123;</span><br><span class="line">    <span class="built_in">MTKTextureLoaderOptionSRGB</span> : @NO</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLTexture</span>&gt; texture = [textureLoader newTextureWithCGImage:image.CGImage options:options error:<span class="literal">NULL</span>];</span><br></pre></td></tr></table></figure>
+
 <p>然后，可以使用两种方式进行预处理：<strong>默认方式</strong>、<strong>自定义方式</strong> 。</p>
 <h2 id="1、默认方式"><a href="#1、默认方式" class="headerlink" title="1、默认方式"></a>1、默认方式</h2><p>前面说到，预处理的目的大部分是进行数值范围的转化，所以 TNN 提供了一种很方便的转化方式，可以通过 <code>scale</code>、<code>bias</code> 参数来设置转化的范围，还可以通过 <code>reverse_channel</code> 来设置通道转换，例如将 <code>RGB</code> 转成 <code>BGR</code> 。</p>
 <p>参考代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Mat inputMat = &#123;DEVICE_METAL, tnn::N8UC4, (__bridge <span class="keyword">void</span>*)texture&#125;;</span><br><span class="line">shared_ptr&lt;BlobConverter&gt; preprocessor = make_shared&lt;BlobConverter&gt;(networkInput);</span><br><span class="line"></span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line">MatConvertParam input_cvt_param;</span><br><span class="line">input_cvt_param.scale = &#123;<span class="number">2.0</span> / <span class="number">255</span>, <span class="number">2.0</span> / <span class="number">255</span>, <span class="number">2.0</span> / <span class="number">255</span>, <span class="number">0</span>&#125;;</span><br><span class="line">input_cvt_param.bias  = &#123;<span class="number">-1.0</span>, <span class="number">-1.0</span>, <span class="number">-1.0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">input_cvt_param.reverse_channel = <span class="literal">true</span>;</span><br><span class="line">preprocessor-&gt;ConvertFromMatAsync(inputMat, input_cvt_param, (__bridge <span class="keyword">void</span>*)commandQueue);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Mat inputMat = &#123;DEVICE_METAL, tnn::N8UC4, (__bridge <span class="type">void</span>*)texture&#125;;</span><br><span class="line">shared_ptr&lt;BlobConverter&gt; preprocessor = make_shared&lt;BlobConverter&gt;(networkInput);</span><br><span class="line"></span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line">MatConvertParam input_cvt_param;</span><br><span class="line">input_cvt_param.scale = &#123;<span class="number">2.0</span> / <span class="number">255</span>, <span class="number">2.0</span> / <span class="number">255</span>, <span class="number">2.0</span> / <span class="number">255</span>, <span class="number">0</span>&#125;;</span><br><span class="line">input_cvt_param.bias  = &#123;<span class="number">-1.0</span>, <span class="number">-1.0</span>, <span class="number">-1.0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">input_cvt_param.reverse_channel = <span class="literal">true</span>;</span><br><span class="line">preprocessor-&gt;ConvertFromMatAsync(inputMat, input_cvt_param, (__bridge <span class="type">void</span>*)commandQueue);</span><br></pre></td></tr></table></figure>
+
 <p>上面的转化参数可以将 <code>0 ~ 255</code> 的范围转到 <code>-1 ~ 1</code> 。</p>
 <p>设置好转化的参数后，调用 <code>ConvertFromMatAsync</code> 执行预处理。</p>
 <h2 id="2、自定义方式"><a href="#2、自定义方式" class="headerlink" title="2、自定义方式"></a>2、自定义方式</h2><p>如果模型的输入格式比较特异化，只通过 <code>scale</code>、<code>bias</code> 无法进行调整，则需要使用自定义的方式。</p>
 <p>自定义的方式需要先获取输入 <code>Blob</code> 的 <code>MTLBuffer</code> ，然后构造 <code>MTLComputePipelineState</code>，实现自定义的 <code>kernel</code> 函数，将预处理的结果写到 <code>MTLBuffer</code> 中。</p>
 <p>参考代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLCommandBuffer</span>&gt; commandBuffer = [commandQueue commandBuffer];</span><br><span class="line">[commandBuffer enqueue];</span><br><span class="line"></span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt; blobBuffer = (__bridge <span class="keyword">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt;)(<span class="keyword">void</span> *)networkInput-&gt;GetHandle().base;</span><br><span class="line"><span class="built_in">NSUInteger</span> blobOffset = (<span class="built_in">NSUInteger</span>)networkInput-&gt;GetHandle().bytes_offset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLComputeCommandEncoder</span>&gt; encoder = [commandBuffer computeCommandEncoder];</span><br><span class="line"></span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLComputePipelineState</span>&gt; pipelineState = [<span class="keyword">self</span> computePipelineStateWithLibrary:<span class="keyword">self</span>.library functionName:<span class="string">@"test_preprocess"</span>];</span><br><span class="line">[encoder setComputePipelineState:pipelineState];</span><br><span class="line">[encoder setTexture:texture atIndex:<span class="number">0</span>];</span><br><span class="line">[encoder setBuffer:blobBuffer offset:blobOffset atIndex:<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> width = pipelineState.threadExecutionWidth;</span><br><span class="line"><span class="built_in">NSUInteger</span> height = pipelineState.maxTotalThreadsPerThreadgroup / width;</span><br><span class="line"><span class="built_in">MTLSize</span> groupThreads = &#123;width, height, (<span class="built_in">NSUInteger</span>)<span class="number">1</span>&#125;;</span><br><span class="line"><span class="built_in">MTLSize</span> groups = &#123;((texture.width + width - <span class="number">1</span>) / width), ((texture.height + height - <span class="number">1</span>) / height), <span class="number">1</span>&#125;;</span><br><span class="line">[encoder dispatchThreadgroups:groups threadsPerThreadgroup:groupThreads];</span><br><span class="line">[encoder endEncoding];</span><br><span class="line"></span><br><span class="line">[commandBuffer commit];</span><br><span class="line">[commandBuffer waitUntilScheduled];</span><br></pre></td></tr></table></figure>
-<p>这里的 <code>dispatchThreadgroups:threadsPerThreadgroup:</code> 是在设置 GPU 并发处理时的线程组划分和每个线程组的线程数。这是官方比较推荐的写法，详情可以查看 <a href="https://developer.apple.com/documentation/metal/calculating_threadgroup_and_grid_sizes" target="_blank" rel="noopener">官方文档</a> 。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLCommandBuffer</span>&gt; commandBuffer = [commandQueue commandBuffer];</span><br><span class="line">[commandBuffer enqueue];</span><br><span class="line"></span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt; blobBuffer = (__bridge <span class="type">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt;)(<span class="type">void</span> *)networkInput-&gt;GetHandle().base;</span><br><span class="line"><span class="built_in">NSUInteger</span> blobOffset = (<span class="built_in">NSUInteger</span>)networkInput-&gt;GetHandle().bytes_offset;</span><br><span class="line"></span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLComputeCommandEncoder</span>&gt; encoder = [commandBuffer computeCommandEncoder];</span><br><span class="line"></span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLComputePipelineState</span>&gt; pipelineState = [<span class="keyword">self</span> computePipelineStateWithLibrary:<span class="keyword">self</span>.library functionName:<span class="string">@&quot;test_preprocess&quot;</span>];</span><br><span class="line">[encoder setComputePipelineState:pipelineState];</span><br><span class="line">[encoder setTexture:texture atIndex:<span class="number">0</span>];</span><br><span class="line">[encoder setBuffer:blobBuffer offset:blobOffset atIndex:<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> width = pipelineState.threadExecutionWidth;</span><br><span class="line"><span class="built_in">NSUInteger</span> height = pipelineState.maxTotalThreadsPerThreadgroup / width;</span><br><span class="line"><span class="built_in">MTLSize</span> groupThreads = &#123;width, height, (<span class="built_in">NSUInteger</span>)<span class="number">1</span>&#125;;</span><br><span class="line"><span class="built_in">MTLSize</span> groups = &#123;((texture.width + width - <span class="number">1</span>) / width), ((texture.height + height - <span class="number">1</span>) / height), <span class="number">1</span>&#125;;</span><br><span class="line">[encoder dispatchThreadgroups:groups threadsPerThreadgroup:groupThreads];</span><br><span class="line">[encoder endEncoding];</span><br><span class="line"></span><br><span class="line">[commandBuffer commit];</span><br><span class="line">[commandBuffer waitUntilScheduled];</span><br></pre></td></tr></table></figure>
+
+<p>这里的 <code>dispatchThreadgroups:threadsPerThreadgroup:</code> 是在设置 GPU 并发处理时的线程组划分和每个线程组的线程数。这是官方比较推荐的写法，详情可以查看 <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/metal/calculating_threadgroup_and_grid_sizes">官方文档</a> 。</p>
 <p>预处理的 kernel 函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">kernel void test_preprocess(texture2d&lt;half, access::read&gt; inputTexture [[texture(0)]],</span><br><span class="line">                            device half4 *dst [[buffer(<span class="number">0</span>)]],</span><br><span class="line">                            ushort2 gid [[thread_position_in_grid]]) &#123;</span><br><span class="line">    <span class="keyword">int</span> width = inputTexture.get_width();</span><br><span class="line">    <span class="keyword">int</span> height = inputTexture.get_height();</span><br><span class="line">    <span class="keyword">if</span> (any(gid &gt;= ushort2(width, height))) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> half4 in = inputTexture.read(uint2(gid));  <span class="comment">// 这里读出来是 0 ~ 1，所以下面不用再除以 255，只需要转到 -1 ~ 1</span></span><br><span class="line">    <span class="keyword">auto</span> out = dst + (<span class="keyword">int</span>)gid.y * width + (<span class="keyword">int</span>)gid.x;</span><br><span class="line">    </span><br><span class="line">    *out = half4(in.x * <span class="number">2</span> - <span class="number">1</span>,</span><br><span class="line">                 in.y * <span class="number">2</span> - <span class="number">1</span>,</span><br><span class="line">                 in.z * <span class="number">2</span> - <span class="number">1</span>,</span><br><span class="line">                 <span class="number">0.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">kernel <span class="type">void</span> <span class="title">test_preprocess</span><span class="params">(texture2d&lt;half, access::read&gt; inputTexture [[texture(<span class="number">0</span>)]],</span></span></span><br><span class="line"><span class="params"><span class="function">                            device half4 *dst [[buffer(<span class="number">0</span>)]],</span></span></span><br><span class="line"><span class="params"><span class="function">                            ushort2 gid [[thread_position_in_grid]])</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> width = inputTexture.<span class="built_in">get_width</span>();</span><br><span class="line">    <span class="type">int</span> height = inputTexture.<span class="built_in">get_height</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">any</span>(gid &gt;= <span class="built_in">ushort2</span>(width, height))) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> half4 in = inputTexture.<span class="built_in">read</span>(<span class="built_in">uint2</span>(gid));  <span class="comment">// 这里读出来是 0 ~ 1，所以下面不用再除以 255，只需要转到 -1 ~ 1</span></span><br><span class="line">    <span class="keyword">auto</span> out = dst + (<span class="type">int</span>)gid.y * width + (<span class="type">int</span>)gid.x;</span><br><span class="line">    </span><br><span class="line">    *out = <span class="built_in">half4</span>(in.x * <span class="number">2</span> - <span class="number">1</span>,</span><br><span class="line">                 in.y * <span class="number">2</span> - <span class="number">1</span>,</span><br><span class="line">                 in.z * <span class="number">2</span> - <span class="number">1</span>,</span><br><span class="line">                 <span class="number">0.0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这里做的事情是从 <code>inputTexture</code> 中读取数据，然后写到 <code>dst</code> 中。</p>
 <h1 id="四、执行网络"><a href="#四、执行网络" class="headerlink" title="四、执行网络"></a>四、执行网络</h1><p>预处理之后，调用 <code>ForwardAsync</code> 来执行网络。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.networkInstance-&gt;ForwardAsync([]&#123;&#125;);</span><br></pre></td></tr></table></figure>
+
 <h1 id="五、后处理"><a href="#五、后处理" class="headerlink" title="五、后处理"></a>五、后处理</h1><p>与预处理类似，网络执行之后输出的数据，一般不能直接拿来使用。比如大部分模型输出的数据是 <code>0 ~ 1</code> 或者 <code>-1 ~ 1</code> 范围，而图像 4 个通道的数据是 <code>0 ~ 255</code>，所以还需要一个后处理步骤。</p>
 <p>后处理与预处理一样，也有 <strong>默认</strong> 和 <strong>自定义</strong> 两种方式。只不过后处理取的是输出的 <code>Blob</code> 。</p>
 <h2 id="1、默认方式-1"><a href="#1、默认方式-1" class="headerlink" title="1、默认方式"></a>1、默认方式</h2><p>预处理是调用 <code>ConvertFromMatAsync</code> 来执行，而后处理是调用 <code>ConvertToMatAsync</code> 来执行。</p>
 <p>参考代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Mat outputMat = &#123;DEVICE_METAL, tnn::N8UC4, (__bridge <span class="keyword">void</span>*)texture&#125;;</span><br><span class="line">shared_ptr&lt;BlobConverter&gt; postprocessor = make_shared&lt;BlobConverter&gt;(networkOutput);</span><br><span class="line"></span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line">MatConvertParam output_cvt_param;</span><br><span class="line">output_cvt_param.scale = &#123;<span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">output_cvt_param.bias  = &#123;<span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span>&#125;;</span><br><span class="line">output_cvt_param.reverse_channel = <span class="literal">true</span>;</span><br><span class="line">postprocessor-&gt;ConvertToMatAsync(outputMat, output_cvt_param, (__bridge <span class="keyword">void</span>*)commandQueue);</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Mat outputMat = &#123;DEVICE_METAL, tnn::N8UC4, (__bridge <span class="type">void</span>*)texture&#125;;</span><br><span class="line">shared_ptr&lt;BlobConverter&gt; postprocessor = make_shared&lt;BlobConverter&gt;(networkOutput);</span><br><span class="line"></span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line">MatConvertParam output_cvt_param;</span><br><span class="line">output_cvt_param.scale = &#123;<span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">output_cvt_param.bias  = &#123;<span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span> / <span class="number">2.0</span>, <span class="number">255</span>&#125;;</span><br><span class="line">output_cvt_param.reverse_channel = <span class="literal">true</span>;</span><br><span class="line">postprocessor-&gt;ConvertToMatAsync(outputMat, output_cvt_param, (__bridge <span class="type">void</span>*)commandQueue);</span><br></pre></td></tr></table></figure>
+
 <h2 id="2、自定义方式-1"><a href="#2、自定义方式-1" class="headerlink" title="2、自定义方式"></a>2、自定义方式</h2><p>使用自定义方式时，后处理的代码与预处理基本相同，只是加载的 kernel 函数不同。</p>
 <p>参考代码：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLCommandBuffer</span>&gt; commandBuffer = [commandQueue commandBuffer];</span><br><span class="line">[commandBuffer enqueue];</span><br><span class="line"></span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt; blobBuffer = (__bridge <span class="keyword">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt;)(<span class="keyword">void</span> *)networkOutput-&gt;GetHandle().base;</span><br><span class="line"><span class="built_in">NSUInteger</span> blobOffset = (<span class="built_in">NSUInteger</span>)networkOutput-&gt;GetHandle().bytes_offset;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLComputeCommandEncoder</span>&gt; encoder = [commandBuffer computeCommandEncoder];</span><br><span class="line"></span><br><span class="line"><span class="keyword">id</span>&lt;<span class="built_in">MTLComputePipelineState</span>&gt; pipelineState = [<span class="keyword">self</span> computePipelineStateWithLibrary:<span class="keyword">self</span>.library functionName:<span class="string">@"test_postprocess"</span>];</span><br><span class="line">[encoder setComputePipelineState:pipelineState];</span><br><span class="line">[encoder setTexture:texture atIndex:<span class="number">0</span>];</span><br><span class="line">[encoder setBuffer:blobBuffer offset:blobOffset atIndex:<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> width = pipelineState.threadExecutionWidth;</span><br><span class="line"><span class="built_in">NSUInteger</span> height = pipelineState.maxTotalThreadsPerThreadgroup / width;</span><br><span class="line"><span class="built_in">MTLSize</span> groupThreads = &#123;width, height, (<span class="built_in">NSUInteger</span>)<span class="number">1</span>&#125;;</span><br><span class="line"><span class="built_in">MTLSize</span> groups = &#123;((texture.width + width - <span class="number">1</span>) / width), ((texture.height + height - <span class="number">1</span>) / height), <span class="number">1</span>&#125;;</span><br><span class="line">[encoder dispatchThreadgroups:groups threadsPerThreadgroup:groupThreads];</span><br><span class="line">[encoder endEncoding];</span><br><span class="line"></span><br><span class="line">[commandBuffer commit];</span><br><span class="line">[commandBuffer waitUntilScheduled];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLCommandQueue</span>&gt; commandQueue = [<span class="keyword">self</span> fetchCommandQueue];</span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLCommandBuffer</span>&gt; commandBuffer = [commandQueue commandBuffer];</span><br><span class="line">[commandBuffer enqueue];</span><br><span class="line"></span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt; blobBuffer = (__bridge <span class="type">id</span>&lt;<span class="built_in">MTLBuffer</span>&gt;)(<span class="type">void</span> *)networkOutput-&gt;GetHandle().base;</span><br><span class="line"><span class="built_in">NSUInteger</span> blobOffset = (<span class="built_in">NSUInteger</span>)networkOutput-&gt;GetHandle().bytes_offset;</span><br><span class="line">    </span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLComputeCommandEncoder</span>&gt; encoder = [commandBuffer computeCommandEncoder];</span><br><span class="line"></span><br><span class="line"><span class="type">id</span>&lt;<span class="built_in">MTLComputePipelineState</span>&gt; pipelineState = [<span class="keyword">self</span> computePipelineStateWithLibrary:<span class="keyword">self</span>.library functionName:<span class="string">@&quot;test_postprocess&quot;</span>];</span><br><span class="line">[encoder setComputePipelineState:pipelineState];</span><br><span class="line">[encoder setTexture:texture atIndex:<span class="number">0</span>];</span><br><span class="line">[encoder setBuffer:blobBuffer offset:blobOffset atIndex:<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> width = pipelineState.threadExecutionWidth;</span><br><span class="line"><span class="built_in">NSUInteger</span> height = pipelineState.maxTotalThreadsPerThreadgroup / width;</span><br><span class="line"><span class="built_in">MTLSize</span> groupThreads = &#123;width, height, (<span class="built_in">NSUInteger</span>)<span class="number">1</span>&#125;;</span><br><span class="line"><span class="built_in">MTLSize</span> groups = &#123;((texture.width + width - <span class="number">1</span>) / width), ((texture.height + height - <span class="number">1</span>) / height), <span class="number">1</span>&#125;;</span><br><span class="line">[encoder dispatchThreadgroups:groups threadsPerThreadgroup:groupThreads];</span><br><span class="line">[encoder endEncoding];</span><br><span class="line"></span><br><span class="line">[commandBuffer commit];</span><br><span class="line">[commandBuffer waitUntilScheduled];</span><br></pre></td></tr></table></figure>
+
 <p>对应的 kernel 函数实现如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">kernel void test_postprocess(texture2d&lt;half, access::write&gt; outputTexture [[texture(0)]],</span><br><span class="line">                             <span class="keyword">const</span> device half4 *src0 [[buffer(<span class="number">0</span>)]],</span><br><span class="line">                             uint2 gid [[thread_position_in_grid]]) &#123;</span><br><span class="line">    <span class="keyword">int</span> width = outputTexture.get_width();</span><br><span class="line">    <span class="keyword">int</span> height = outputTexture.get_height();</span><br><span class="line">    <span class="keyword">if</span> (any(gid &gt;= uint2(width, height))) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">    half4 in = src0[(<span class="keyword">int</span>)gid.y * width + (<span class="keyword">int</span>)gid.x];</span><br><span class="line">    in.x = (in.x + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">    in.y = (in.y + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">    in.z = (in.z + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">    in.w = <span class="number">1</span>;</span><br><span class="line">    outputTexture.write(in, uint2(gid));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">kernel <span class="type">void</span> <span class="title">test_postprocess</span><span class="params">(texture2d&lt;half, access::write&gt; outputTexture [[texture(<span class="number">0</span>)]],</span></span></span><br><span class="line"><span class="params"><span class="function">                             <span class="type">const</span> device half4 *src0 [[buffer(<span class="number">0</span>)]],</span></span></span><br><span class="line"><span class="params"><span class="function">                             uint2 gid [[thread_position_in_grid]])</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> width = outputTexture.<span class="built_in">get_width</span>();</span><br><span class="line">    <span class="type">int</span> height = outputTexture.<span class="built_in">get_height</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">any</span>(gid &gt;= <span class="built_in">uint2</span>(width, height))) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">    half4 in = src0[(<span class="type">int</span>)gid.y * width + (<span class="type">int</span>)gid.x];</span><br><span class="line">    in.x = (in.x + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">    in.y = (in.y + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">    in.z = (in.z + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">    in.w = <span class="number">1</span>;</span><br><span class="line">    outputTexture.<span class="built_in">write</span>(in, <span class="built_in">uint2</span>(gid));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这里做的事情是从 <code>src0</code> 中读取数据，然后写到 <code>outputTexture</code> 中。</p>
 <p>最后看一下效果：</p>
-<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/tnn-tutorial-ios-image-1.jpg" alt=""></p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a href="https://github.com/lmf12/blog-demo/tree/master/testTNN_iOS" target="_blank" rel="noopener">GitHub</a> 上查看完整代码。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/tnn-tutorial-ios-image-1.jpg"></p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p>请到 <a target="_blank" rel="noopener" href="https://github.com/lmf12/blog-demo/tree/master/testTNN_iOS">GitHub</a> 上查看完整代码。</p>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2020/03/21/ios-opengles-panorama/" rel="next" title="使用 OpenGL ES 实现全景播放器">
-                <i class="fa fa-chevron-left"></i> 使用 OpenGL ES 实现全景播放器
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/05/01/review-2020/" rel="prev" title="写在 2020 年末">
-                写在 2020 年末 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
+</article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.jpg"
-                alt="Lyman Li" />
-            
-              <p class="site-author-name" itemprop="name">Lyman Li</p>
-              <p class="site-description motion-element" itemprop="description">来跳个舞吧</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives">
-                
-                    <span class="site-state-item-count">27</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">8</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/lmf12" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="https://www.douban.com/people/lymanli" target="_blank" title="豆瓣"><i class="fa fa-fw fa-leaf"></i>豆瓣</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#〇、引入-SDK"><span class="nav-text">〇、引入 SDK</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、模型解析"><span class="nav-text">一、模型解析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、构建网络"><span class="nav-text">二、构建网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、预处理"><span class="nav-text">三、预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、默认方式"><span class="nav-text">1、默认方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、自定义方式"><span class="nav-text">2、自定义方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、执行网络"><span class="nav-text">四、执行网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、后处理"><span class="nav-text">五、后处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、默认方式-1"><span class="nav-text">1、默认方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、自定义方式-1"><span class="nav-text">2、自定义方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-text">源码</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
 
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%87%E3%80%81%E5%BC%95%E5%85%A5-SDK"><span class="toc-number">1.</span> <span class="toc-text">〇、引入 SDK</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A8%A1%E5%9E%8B%E8%A7%A3%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">一、模型解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%9E%84%E5%BB%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">3.</span> <span class="toc-text">二、构建网络</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">三、预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E9%BB%98%E8%AE%A4%E6%96%B9%E5%BC%8F"><span class="toc-number">4.1.</span> <span class="toc-text">1、默认方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F"><span class="toc-number">4.2.</span> <span class="toc-text">2、自定义方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%89%A7%E8%A1%8C%E7%BD%91%E7%BB%9C"><span class="toc-number">5.</span> <span class="toc-text">四、执行网络</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%90%8E%E5%A4%84%E7%90%86"><span class="toc-number">6.</span> <span class="toc-text">五、后处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E9%BB%98%E8%AE%A4%E6%96%B9%E5%BC%8F-1"><span class="toc-number">6.1.</span> <span class="toc-text">1、默认方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F-1"><span class="toc-number">6.2.</span> <span class="toc-text">2、自定义方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">7.</span> <span class="toc-text">源码</span></a></li></ol>
       </div>
-    </main>
+    
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
 
-  &nbsp;
-
-  <span class="author" itemprop="copyrightHolder">Lyman Li</span>
-
-  
-
-  
+  </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
     
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
-
-    
-
+    2016-2024
+    Lyman Li
   </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
   
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
-
-
-
-  
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-  <script src="http://www.lymanli.com/av-core-mini.js"></script>
-  <script>AV.initialize("PCTCblrlpdJ41alrViDjBR2K-gzGzoHsz", "6Dxrsutiit9dF4bt71A80eUA");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
   </script>
 
 
+<script src="/js/main.js"></script>
 
-  
+<!-- search -->
 
-  
+<!-- Baidu Analytics -->
 
-  
+<!-- Cloudflare Analytics -->
 
-  
-  
+<!-- Disqus Comments -->
 
-  
-
-  
-
-  
-
-  
+<!-- utterances Comments -->
 
 </body>
 </html>
