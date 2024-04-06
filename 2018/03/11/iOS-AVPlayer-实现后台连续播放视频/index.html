@@ -9,7 +9,7 @@
     <meta name="description" content="最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。 前言当 App 退到后台时，会进入 suspend 状态，若此时在播放视频，则会自动暂停。我们需要实现的效果是，当 App 退到后台时，视频中的声音还能继续播放。另外，我们还同时实现视频的连续播放功能，和在锁屏界面控制视频播放的功能。具体怎么做，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS AVPlayer 实现后台连续播放视频">
-<meta property="og:url" content="http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/">
+<meta property="og:url" content="http://www.lymanli.com/2018/03/11/iOS-AVPlayer-%E5%AE%9E%E7%8E%B0%E5%90%8E%E5%8F%B0%E8%BF%9E%E7%BB%AD%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91/index.html">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="最近接到一个需求，需要做一个在后台播放视频的功能。折腾了一下，最后总算完成了。因此写一篇文章，介绍下具体的实现步骤，也说说自己遇到的坑，算是总结和记录。 前言当 App 退到后台时，会进入 suspend 状态，若此时在播放视频，则会自动暂停。我们需要实现的效果是，当 App 退到后台时，视频中的声音还能继续播放。另外，我们还同时实现视频的连续播放功能，和在锁屏界面控制视频播放的功能。具体怎么做，">
 <meta property="og:locale" content="zh_CN">
