@@ -6,11 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Lyman&#39;s Blog">
-<meta property="og:url" content="https://www.lymanli.com/archives/2022/03/">
+    <meta name="description" content="function getURLParam(paramName) {         const urlParams &#x3D; new URLSearchParams(window.location.search);         return urlParams.get(paramName);     }     const imageName &#x3D; getURLParam(&#39;name&#39;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="&lt;像素画&gt;">
+<meta property="og:url" content="https://www.lymanli.com/pixelart/display/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
+<meta property="og:description" content="function getURLParam(paramName) {         const urlParams &#x3D; new URLSearchParams(window.location.search);         return urlParams.get(paramName);     }     const imageName &#x3D; getURLParam(&#39;name&#39;">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-02T10:00:00.000Z">
+<meta property="article:modified_time" content="2025-02-03T04:20:23.463Z">
 <meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
     
@@ -32,7 +36,7 @@
       
     
     <!-- title -->
-    <title>归档: 2022/3</title>
+    <title>&lt;像素画&gt;</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -100,42 +104,34 @@
 </header>
 
         
-        <div id="archive">
-  <ul class="post-list">
-    
-    
-    
-    
-      
-      
-      
-      
-        <li class="post-year"><h2>2022</h2></li>
-      
-      <li class="post-item">
-        
-    <div class="meta">
-      
-        
-          <time datetime="2022-03-26T12:30:35.000Z" class="dt-published" itemprop="datePublished">2022-03-26</time>
-        
-      
-    </div>
-
-
-        <span>
-    
-        <a class="" href="/2022/03/26/UE4-function-sample/">UE4 的一些功能实现</a>
-    
-
-
-</span>
-      </li>
-    
-  </ul>
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   
 
+  <div class="content" itemprop="articleBody">
+      
+          <div id="image-container">
 </div>
+
+<script>
+    function getURLParam(paramName) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(paramName);
+    }
+    const imageName = getURLParam('name');
+
+    if (imageName) {
+        const imgElement = document.createElement('img');
+        imgElement.src = 'https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/' + imageName;
+
+        const imageContainer = document.getElementById('image-container');
+        imageContainer.appendChild(imgElement);
+    } else {
+        console.log('No image name found in the URL');
+    }
+</script>
+        
+  </div>
+</article>
 
         
         <footer id="footer">
