@@ -6,17 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="function getURLParam(paramName) {         const urlParams &#x3D; new URLSearchParams(window.location.search);         return urlParams.get(paramName);     }     const imageName &#x3D; getURLParam(&#39;name&#39;">
+    <meta name="description" content="#banner-container {         width: calc(100% - 15px);         max-width: calc(1000px - 15px);         margin: 0 auto 20px auto;     }      #banner-container img {         width: 100%;         hei">
 <meta property="og:type" content="website">
 <meta property="og:title" content="&lt;像素画&gt;">
 <meta property="og:url" content="https://www.lymanli.com/pixelart/display/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="function getURLParam(paramName) {         const urlParams &#x3D; new URLSearchParams(window.location.search);         return urlParams.get(paramName);     }     const imageName &#x3D; getURLParam(&#39;name&#39;">
+<meta property="og:description" content="#banner-container {         width: calc(100% - 15px);         max-width: calc(1000px - 15px);         margin: 0 auto 20px auto;     }      #banner-container img {         width: 100%;         hei">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/banner.gif">
 <meta property="article:published_time" content="2025-02-02T10:00:00.000Z">
-<meta property="article:modified_time" content="2025-02-03T04:20:23.463Z">
+<meta property="article:modified_time" content="2025-06-29T05:51:30.869Z">
 <meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/banner.gif">
     
     
       
@@ -109,14 +111,47 @@
 
   <div class="content" itemprop="articleBody">
       
-          <div id="image-container">
+          <style>
+    #banner-container {
+        width: calc(100% - 15px);
+        max-width: calc(1000px - 15px);
+        margin: 0 auto 20px auto;
+    }
+
+    #banner-container img {
+        width: 100%;
+        height: auto;
+        border: none;
+    }
+
+    #image-container {
+        max-width: 1000px;
+        width: calc(100% - 15px);
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    #image-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+    }
+</style>
+
+<div id="banner-container">
+    <a href="https://pixelera.art/" target="_blank" rel="noopener">
+        <img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/banner.gif" alt="pixelart">
+    </a>
 </div>
+
+<div id="image-container"></div>
 
 <script>
     function getURLParam(paramName) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(paramName);
     }
+
     const imageName = getURLParam('name');
 
     if (imageName) {
