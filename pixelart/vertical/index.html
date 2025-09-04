@@ -14,7 +14,7 @@
 <meta property="og:description" content="#display-image-container {         break-inside: avoid;         margin-bottom: 15px;         border: 1px solid rgb(205, 205, 205);          padding: 5px;          border-radius: 3px;         back">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-02-02T10:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-03T10:00:03.402Z">
+<meta property="article:modified_time" content="2025-09-04T09:47:32.289Z">
 <meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
     
@@ -243,11 +243,24 @@
             mask.id = "display-image-mask";
 
             const link = document.createElement('a');
-            link.href = `/pixelart/display/?name=${imageName}`;
+            // Convert image name format: 2024_12_21_Winter.gif -> 2024-12-21-winter
+            const pathName = imageName
+                .replace(/\.(gif|png|jpg|jpeg)$/i, '')  // Remove file extension
+                .replace(/_/g, '-')                     // Replace underscores with dashes
+                .toLowerCase();
+            link.href = `/pixelart/display/${pathName}/`;
 
             const img = document.createElement('img');
             img.src = `https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/${imageName}`;
             img.id = "display-image-container-img";
+            
+            // Generate alt text from filename
+            const altText = imageName
+                .replace(/\.(gif|png|jpg|jpeg)$/i, '')  // Remove file extension
+                .replace(/^\d{4}_\d{2}_\d{2}_/, '')     // Remove date prefix
+                .replace(/_/g, ' ')                     // Replace underscores with spaces
+                .toLowerCase();
+            img.alt = `pixel art ${altText}`;
 
             const p = document.createElement('p');
             p.id = "display-image-container-p";
