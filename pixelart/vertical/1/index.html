@@ -9,17 +9,22 @@
     <meta name="description" content="#display-image-container {         break-inside: avoid;         margin-bottom: 15px;         border: 1px solid rgb(205, 205, 205);          padding: 5px;          border-radius: 3px;         back">
 <meta property="og:type" content="website">
 <meta property="og:title" content="像素画-竖屏">
-<meta property="og:url" content="https://www.lymanli.com/pixelart/vertical/">
+<meta property="og:url" content="https://www.lymanli.com/pixelart/vertical/1/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
 <meta property="og:description" content="#display-image-container {         break-inside: avoid;         margin-bottom: 15px;         border: 1px solid rgb(205, 205, 205);          padding: 5px;          border-radius: 3px;         back">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_09_05_damp_afternoon.gif">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_07_26_swing.gif">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_07_05_rain.gif">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_06_21_eve.png">
 <meta property="article:published_time" content="2025-02-02T10:00:00.000Z">
-<meta property="article:modified_time" content="2025-09-04T09:47:32.289Z">
+<meta property="article:modified_time" content="2025-09-06T12:02:07.581Z">
 <meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_09_05_damp_afternoon.gif">
     
     <!-- canonical URL -->
-    <link rel="canonical" href="https://www.lymanli.com/pixelart/vertical/" />
+    <link rel="canonical" href="https://www.lymanli.com/pixelart/vertical/1/" />
     
       
         
@@ -97,7 +102,7 @@
    --><!--
      --><li><a href="/archives/">归档</a></li><!--
    --><!--
-     --><li><a href="/pixelart/horizontal/">像素画</a></li><!--
+     --><li><a href="/pixelart/horizontal/1/">像素画</a></li><!--
    --><!--
      --><li><a href="/about/">关于</a></li><!--
    -->
@@ -189,13 +194,16 @@
         justify-content: center;
     }
 
-    #pagination button {
+    #pagination button,
+    #pagination .page-link {
         padding: 6px 12px;
         border: 1px solid rgb(205, 205, 205);
         border-radius: 4px;
         background: #fff;
         color: rgb(205, 205, 205);
         cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
     }
 
     #pagination button.active {
@@ -206,104 +214,60 @@
 
 <div style="display: flex; flex-direction: column; gap: 25px; align-items: center;">
     <div style="display: flex; flex-direction: row; gap: 5px; width: 200px; align-items: flex-start;">
-        <a href="/pixelart/horizontal" style="background-image: none; color: rgb(170, 170, 170); padding: 5px; width: 100%; text-align: center; white-space: nowrap;">横屏</a>
-        <a href="/pixelart/vertical/" style="background-image: none; font-weight: bold; color: rgb(70, 70, 70); padding: 5px; width: 100%; text-align: center; white-space: nowrap; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px;">竖屏</a>
+        <a href="/pixelart/horizontal/1/" style="background-image: none; color: rgb(170, 170, 170); padding: 5px; width: 100%; text-align: center; white-space: nowrap;">横屏</a>
+        <a href="/pixelart/vertical/1/" style="background-image: none; font-weight: bold; color: rgb(70, 70, 70); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; padding: 5px; width: 100%; text-align: center; white-space: nowrap;">竖屏</a>
     </div>
     <div id="gallery-wrapper">
-        <div id="image-gallery"></div>
+        <div id="image-gallery">
+        <div id="display-image-container">
+            <div id="display-image-mask">
+                <a href="/pixelart/display/2025-09-05-damp-afternoon/">
+                    <img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_09_05_damp_afternoon.gif" 
+                         id="display-image-container-img" 
+                         alt="pixel art damp afternoon">
+                </a>
+            </div>
+            <p id="display-image-container-p">2025.09.05</p>
+        </div>
+        <div id="display-image-container">
+            <div id="display-image-mask">
+                <a href="/pixelart/display/2025-07-26-swing/">
+                    <img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_07_26_swing.gif" 
+                         id="display-image-container-img" 
+                         alt="pixel art swing">
+                </a>
+            </div>
+            <p id="display-image-container-p">2025.07.26</p>
+        </div>
+        <div id="display-image-container">
+            <div id="display-image-mask">
+                <a href="/pixelart/display/2025-07-05-rain/">
+                    <img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_07_05_rain.gif" 
+                         id="display-image-container-img" 
+                         alt="pixel art rain">
+                </a>
+            </div>
+            <p id="display-image-container-p">2025.07.05</p>
+        </div>
+        <div id="display-image-container">
+            <div id="display-image-mask">
+                <a href="/pixelart/display/2025-06-21-eve/">
+                    <img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/2025_06_21_eve.png" 
+                         id="display-image-container-img" 
+                         alt="pixel art eve">
+                </a>
+            </div>
+            <p id="display-image-container-p">2025.06.21</p>
+        </div>
+        </div>
     </div>
-    <div id="pagination"></div>
+    <div id="pagination">
+        <button class="active">1</button>
+        <a href="/pixelart/vertical/2/" class="page-link">2</a>
+        <a href="/pixelart/vertical/3/" class="page-link">3</a>
+    </div>
 </div>
 
-<script>
-    const imageNames = [
-        "2025_07_26_swing.gif",
-        "2025_07_05_rain.gif",
-        "2025_06_21_eve.png",
-        "2025_05_24_eve.gif",
-        "2025_05_18_kangle.png",
-        "2025_05_10_seaside.gif",
-        "2025_01_25_new_year.png",
-        "2025_01_11_mita.png",
-        "2024_10_25_Halloween.png",
-        "2024_10_18_Bar.png",
-    ];
-
-    const imagesPerPage = 4;
-    let currentPage = 1;
-
-    function generateImageGallery(images) {
-        const container = document.getElementById('image-gallery');
-        container.innerHTML = '';
-
-        images.forEach(imageName => {
-            const date = imageName.split('_').slice(0, 3).join('.');
-            const wrapper = document.createElement('div');
-            wrapper.id = "display-image-container";
-
-            const mask = document.createElement('div');
-            mask.id = "display-image-mask";
-
-            const link = document.createElement('a');
-            // Convert image name format: 2024_12_21_Winter.gif -> 2024-12-21-winter
-            const pathName = imageName
-                .replace(/\.(gif|png|jpg|jpeg)$/i, '')  // Remove file extension
-                .replace(/_/g, '-')                     // Replace underscores with dashes
-                .toLowerCase();
-            link.href = `/pixelart/display/${pathName}/`;
-
-            const img = document.createElement('img');
-            img.src = `https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/pixelart/${imageName}`;
-            img.id = "display-image-container-img";
-            
-            // Generate alt text from filename
-            const altText = imageName
-                .replace(/\.(gif|png|jpg|jpeg)$/i, '')  // Remove file extension
-                .replace(/^\d{4}_\d{2}_\d{2}_/, '')     // Remove date prefix
-                .replace(/_/g, ' ')                     // Replace underscores with spaces
-                .toLowerCase();
-            img.alt = `pixel art ${altText}`;
-
-            const p = document.createElement('p');
-            p.id = "display-image-container-p";
-            p.textContent = date;
-
-            link.appendChild(img);
-            mask.appendChild(link);
-            wrapper.appendChild(mask);
-            wrapper.appendChild(p);
-            container.appendChild(wrapper);
-        });
-    }
-
-    function renderPagination(totalPages) {
-        const pagination = document.getElementById('pagination');
-        pagination.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement('button');
-            btn.textContent = i;
-            if (i === currentPage) btn.classList.add('active');
-
-            btn.addEventListener('click', () => {
-                currentPage = i;
-                updatePage();
-            });
-
-            pagination.appendChild(btn);
-        }
-    }
-
-    function updatePage() {
-        const start = (currentPage - 1) * imagesPerPage;
-        const end = start + imagesPerPage;
-        const imagesToShow = imageNames.slice(start, end);
-        generateImageGallery(imagesToShow);
-        renderPagination(Math.ceil(imageNames.length / imagesPerPage));
-    }
-
-    updatePage();
-</script>
         
   </div>
 </article>
