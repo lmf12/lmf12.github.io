@@ -4,16 +4,7 @@
   <url>
     <loc>https://www.lymanli.com/pixelart/vertical/3/</loc>
     
-    <lastmod>2025-09-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.lymanli.com/pixelart/horizontal/4/</loc>
-    
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -22,7 +13,7 @@
   <url>
     <loc>https://www.lymanli.com/pixelart/vertical/2/</loc>
     
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -30,6 +21,24 @@
   
   <url>
     <loc>https://www.lymanli.com/pixelart/vertical/</loc>
+    
+    <lastmod>2025-09-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.lymanli.com/pixelart/display/2025-09-21-the-receding-summer/</loc>
+    
+    <lastmod>2025-09-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.lymanli.com/pixelart/horizontal/4/</loc>
     
     <lastmod>2025-09-09</lastmod>
     
@@ -724,7 +733,7 @@
 
   <url>
     <loc>https://www.lymanli.com/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -734,63 +743,63 @@
   
   <url>
     <loc>https://www.lymanli.com/categories/%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/%E9%87%8D%E6%B8%A9%E6%8E%92%E5%BA%8F/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/GPUImage-%E5%AE%9E%E6%93%8D%E6%89%8B%E5%86%8C/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/%E4%BA%BA%E4%BA%BA%E9%83%BD%E4%BC%9AiOS/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/OpenGL-ES/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/JavaScript-%E4%BB%8E%E6%94%BE%E5%BC%83%E5%88%B0%E5%85%A5%E9%97%A8/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/%E8%AE%B0%E5%BF%86%E7%A2%8E%E7%89%87/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/%E7%8B%AC%E7%AB%8B%E7%BD%91%E7%AB%99%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://www.lymanli.com/categories/TNN-%E6%B0%91%E9%97%B4%E6%95%99%E7%A8%8B/</loc>
-    <lastmod>2025-09-09</lastmod>
+    <lastmod>2025-09-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
