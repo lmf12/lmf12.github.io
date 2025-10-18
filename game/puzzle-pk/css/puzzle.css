@@ -1,59 +1,118 @@
 canvas {
     display: block;
-    margin: 50px auto;
+    margin: 0;
     box-shadow: -2px -2px 2px #efefef, 5px 5px 5px #b9b9b9;
     cursor: pointer;
     background-color: #eeeeee;
 }
 
-.container {
-	display: flex;
+body.max-width {
+    max-width: 70rem;
 }
 
-.item {
-	flex: 1;
+.game-tip {
+    text-align: center;
+    margin: 20px 0;
+    color: #444444;
+}
+
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
+}
+
+.canvas-row,
+.keys-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+}
+
+.canvas-row .item,
+.keys-row .item {
+    display: flex;
+    justify-content: center;
+    flex: 0 0 450px;
+}
+
+.keys-row .item {
+    flex: 0 0 260px;
 }
 
 .box {
-	display: block;
-    margin: auto;
-    width: 170;
-    height: 110;
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(2, 60px);
+    gap: 12px;
+    justify-content: center;
+    align-content: center;
 }
 
 .key {
-	width: 50;
-	height: 50;
-	border-style: solid;
-	border-color: #aaaaaa;
-	border-width: 1px;
-	border-radius: 5px;
-	position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
 }
 
 .key_text {
-	text-align: center;
-	color: #555555;
+    margin: 0;
+    color: #555555;
 }
 
-#key_w, #key_top {
-	margin-left: 60;
+#key_w,
+#key_top {
+    grid-column: 2;
+    grid-row: 1;
 }
 
-#key_a, #key_left {
-	margin-top: 60;
+#key_a,
+#key_left {
+    grid-column: 1;
+    grid-row: 2;
 }
 
-#key_s, #key_bottom {
-	margin-top: 60;
-	margin-left: 60;
+#key_s,
+#key_bottom {
+    grid-column: 2;
+    grid-row: 2;
 }
 
-#key_d, #key_right {
-	margin-top: 60;
-	margin-left: 120;
+#key_d,
+#key_right {
+    grid-column: 3;
+    grid-row: 2;
 }
 
+@media (max-width: 960px) {
+    .canvas-row .item {
+        flex: 1 1 450px;
+    }
 
+    .keys-row .item {
+        flex: 1 1 220px;
+    }
+}
 
+@media (max-width: 640px) {
+    .canvas-row {
+        gap: 16px;
+    }
 
+    .canvas-row .item,
+    .keys-row .item {
+        flex: 1 1 100%;
+    }
+
+    .game-wrapper {
+        gap: 24px;
+    }
+}
