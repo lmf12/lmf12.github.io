@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="一、背景介绍最近正在开发一个 在线小游戏网站，详情可以看 这篇文章。目前还处于不断完善游戏库的阶段。 前文有提到，游戏网站的资源主要有 3 个来源：开源、引用、自研。 在新增游戏的过程中，体会是，开源途径的游戏一般比较老，现在还有热度的数量有限；引用途径的授权过程缓慢，直接引用未授权的游戏存在较大风险，万一源网站变更甚至倒闭，自己的网站也就瘫痪了。 因此，尽管自研游戏的 ROI 不高，为了长远考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我用 AI 缝合了「羊了个羊」和「俄罗斯方块」">
+<meta property="og:url" content="https://www.lymanli.com/2025/11/08/block-sweep/">
+<meta property="og:site_name" content="Lyman&#39;s Blog">
+<meta property="og:description" content="一、背景介绍最近正在开发一个 在线小游戏网站，详情可以看 这篇文章。目前还处于不断完善游戏库的阶段。 前文有提到，游戏网站的资源主要有 3 个来源：开源、引用、自研。 在新增游戏的过程中，体会是，开源途径的游戏一般比较老，现在还有热度的数量有限；引用途径的授权过程缓慢，直接引用未授权的游戏存在较大风险，万一源网站变更甚至倒闭，自己的网站也就瘫痪了。 因此，尽管自研游戏的 ROI 不高，为了长远考">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-1.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-2.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-14.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-3.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-4.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-5.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-6.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-7.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-8.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-9.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-10.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-11.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-12.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-13.jpg">
+<meta property="og:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/wechat.jpg">
+<meta property="article:published_time" content="2025-11-08T01:48:34.000Z">
+<meta property="article:modified_time" content="2025-11-08T13:08:00.076Z">
+<meta property="article:author" content="Lyman Li">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep.jpg">
+    
+    <!-- canonical URL -->
+    <link rel="canonical" href="https://www.lymanli.com/2025/11/08/block-sweep/" />
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>我用 AI 缝合了「羊了个羊」和「俄罗斯方块」</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ8LZ0YJV8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ8LZ0YJV8');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/pixelart/vertical/">像素画</a></li><!--
+     --><!--
+       --><li><a href="/game/">游戏</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+  <span id="menu">
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2025/10/26/build-game-website/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">一、背景介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%8E%A9%E6%B3%95%E6%9E%84%E6%80%9D"><span class="toc-number">2.</span> <span class="toc-text">二、玩法构思</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92%E6%96%87%E6%A1%A3"><span class="toc-number">3.</span> <span class="toc-text">三、游戏策划文档</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%8E%A9%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">四、玩法实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%B3%E5%8D%A1%E8%AE%BE%E8%AE%A1"><span class="toc-number">5.</span> <span class="toc-text">五、关卡设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BC%98%E5%8C%96-UI-%E5%92%8C%E7%BE%8E%E6%9C%AF"><span class="toc-number">6.</span> <span class="toc-text">六、优化 UI 和美术</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E6%94%B6%E5%B0%BE%E5%B7%A5%E4%BD%9C"><span class="toc-number">7.</span> <span class="toc-text">七、收尾工作</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        我用 AI 缝合了「羊了个羊」和「俄罗斯方块」
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Lyman Li</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-11-08T01:48:34.000Z" class="dt-published" itemprop="datePublished">2025-11-08</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/Indie-Dev/">Indie Dev</a>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep.jpg" alt="block-sweep"></p>
+<h1 id="一、背景介绍"><a href="#一、背景介绍" class="headerlink" title="一、背景介绍"></a>一、背景介绍</h1><p>最近正在开发一个 <a target="_blank" rel="noopener" href="https://miniplay.io/">在线小游戏网站</a>，详情可以看 <a href="https://www.lymanli.com/2025/10/26/build-game-website/">这篇文章</a>。目前还处于不断完善游戏库的阶段。</p>
+<p>前文有提到，游戏网站的资源主要有 3 个来源：开源、引用、自研。</p>
+<p>在新增游戏的过程中，体会是，开源途径的游戏一般比较老，现在还有热度的数量有限；引用途径的授权过程缓慢，直接引用未授权的游戏存在较大风险，万一源网站变更甚至倒闭，自己的网站也就瘫痪了。</p>
+<p>因此，尽管自研游戏的 ROI 不高，为了长远考虑，还是得保持一定比例的自研游戏。</p>
+<p>自研游戏的话，又分为两个方向：</p>
+<ol>
+<li>借鉴玩法</li>
+</ol>
+<p>借鉴玩法指的是直接参考经典游戏的玩法，用 AI 重新做一个换皮的游戏。比如贪吃蛇、俄罗斯方块这种经典小游戏，在 AI 的加持下，甚至只要一两句提示词，AI 就能帮你做出来。</p>
+<p>但是缺点也很明显，这种经典游戏早已经满天飞了，没有人会为了这些游戏留在你的网站。</p>
+<p>那么可以调整一下思路，参考一些稍微不那么人尽皆知的玩法，利用 AI 快速实现并上线，用来给网站充一下门面还是不错的。</p>
+<p>比如我记得多年之前，玩过一款考验颜色分辨能力的游戏，具体的玩法是在一堆方块里，找到颜色不同的那个方块。</p>
+<p>虽然我不知道游戏叫什么名字，但是我还记得玩法。所以我完全可以用 AI 重新做一个。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-1.jpg" alt="block-sweep-1"></p>
+<p>游戏地址：<a target="_blank" rel="noopener" href="https://miniplay.io/games/color-sleuth">https://miniplay.io/games/color-sleuth</a></p>
+<p>上面这个游戏，从构思到上线，大概只用了半天的时间。</p>
+<ol start="2">
+<li>自创玩法</li>
+</ol>
+<p>相比借鉴，自创玩法就困难多了。既要保证游戏逻辑没有漏洞，还要保证好玩。</p>
+<p>那为什么还要费劲去做呢？因为自创的玩法是独一无二的，万一火了，只有自己的网站能玩，能吸引大量流量。当然这个概率很低。</p>
+<p>更主要的是，可以把它拿到社交媒体去宣传。如果你完全复刻了一个老游戏，很难说去宣传什么。但自创的玩法就不一样了，可以在社交媒体征求玩法意见，或者从技术的角度，分享实现过程。</p>
+<p>而分享到社交媒体，一可以引流，二可以获取外链，这对网站建设都是非常重要的。</p>
+<h1 id="二、玩法构思"><a href="#二、玩法构思" class="headerlink" title="二、玩法构思"></a>二、玩法构思</h1><p>因为要从头构思游戏的玩法，所以我打算去微信小游戏上，看最近什么小游戏比较火。</p>
+<p>结果我一打开首页，发现「羊了个羊」依然还在。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-2.jpg" alt="block-sweep-2"></p>
+<p>说实话，就算是最火的时候，我也没玩过这个游戏。但是，大家喜欢的就是最好的。那就基于它来做一个微创新吧。</p>
+<p>「羊了个羊」的玩法很简单，就是堆叠和三消结合。堆叠是这个游戏的特色所在，需要观察方块的堆叠情况，来设计消除策略。那么堆叠的元素保留。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-14.jpg" alt="block-sweep-14"></p>
+<p>至于三消，是属于消除类游戏的一种，连连看、消消乐也是消除类游戏。</p>
+<p>那么思路就变成，把三消换成另一种类型的消除，跟堆叠的玩法结合起来。</p>
+<p>那么经典的消除类游戏有哪些呢？答：俄罗斯方块。</p>
+<p>所以最终的玩法构想是，上方堆叠各种形状的方块，把它们依次移动到下面的棋盘内，根据俄罗斯方块的规则，组成整行或整列，则可以消除，清空方块堆则过关。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-3.jpg" alt="block-sweep-3"></p>
+<h1 id="三、游戏策划文档"><a href="#三、游戏策划文档" class="headerlink" title="三、游戏策划文档"></a>三、游戏策划文档</h1><p>整个开发过程主要使用 Claude Code 来实现。但是请记住，即使是用 AI 来做项目，也别忘了先写文档。</p>
+<p>写文档的流程是，先跟 AI 大致描述想法，然后反问 AI 是否有不清楚的细节，然后挨个回答 AI 的问题，这其实也是梳理自己思路的过程。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-4.jpg" alt="block-sweep-4"></p>
+<p>提示词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我想参考「3 tiles」和「Block Puzzle」的玩法，开发一款游戏，从一堆方块里，选取方块，放到指定的棋盘空间，按照俄罗斯方块的规则消除，方块的形状也参考俄罗斯方块里的经典的形状，对这个游戏设计，你有什么问题需要确认吗</span><br></pre></td></tr></table></figure>
+
+<p>反复对话几轮，直到 AI 确认没问题，再让它整理文档。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-5.jpg" alt="block-sweep-5"></p>
+<p>提示词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">好的，按照以上的讨论结果，输出一份详细的游戏策划文档，游戏名叫 Block Sweep，写在 GameDesign 文件夹下，md 格式</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、玩法实现"><a href="#四、玩法实现" class="headerlink" title="四、玩法实现"></a>四、玩法实现</h1><p>有了游戏策划文档后，我一般会重开一个窗口（因为过长的上下文，会让 AI 变笨），让 AI 通过文档来了解项目，并先实现最核心的玩法。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-6.jpg" alt="block-sweep-6"></p>
+<p>提示词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">开始实现游戏的第一个版本，要求：</span><br><span class="line">1.游戏文件放在 games 目录下，用index.html 作为游戏入口</span><br><span class="line">2.包含主页，显示第一个关卡的入口，点击进入第一个关卡</span><br><span class="line">3.先不用实现关卡编辑器，第一个版本先用随机数据，测试玩法</span><br></pre></td></tr></table></figure>
+
+<p>然后第一个版本很快就诞生了。虽然没有做到一遍过，中间让它改了几个 bug，但总体来说，效率非常高。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-7.jpg" alt="block-sweep-7"></p>
+<p>第一版的 UI 不能说很好看，但也还过得去。</p>
+<h1 id="五、关卡设计"><a href="#五、关卡设计" class="headerlink" title="五、关卡设计"></a>五、关卡设计</h1><p>这个游戏是一个解谜类游戏，需要很多不同的关卡，因此需要一个关卡编辑器。</p>
+<p>让 AI 实现关卡编辑器：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-8.jpg" alt="block-sweep-8"></p>
+<p>提示词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">游戏源码在 games 下面的 block-sweep，现在已经实现了第一个版本，现在开始做游戏关卡编辑器，编辑完成后可以导出配置文件，并可以被正常读取</span><br></pre></td></tr></table></figure>
+
+<p>同样不是一遍过，把关卡编辑器跑通大概花了 50 分钟。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-9.jpg" alt="block-sweep-9"></p>
+<h1 id="六、优化-UI-和美术"><a href="#六、优化-UI-和美术" class="headerlink" title="六、优化 UI 和美术"></a>六、优化 UI 和美术</h1><p>现在的 UI 风格 AI 味还是太重了，需要重新设计一下。我的做法是，找到合适的设计样例，让 AI 模仿实现。</p>
+<p>比如这次我在 Pinterest 网站上搜索 “方块游戏设计”，找到了这张图片，感觉偏复古的感觉还不错。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-10.jpg" alt="block-sweep-10"></p>
+<p>于是让 AI 先分析这张图片，再参考实现：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-11.jpg" alt="block-sweep-11"></p>
+<p>分析图片的提示词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">分析 https://i.pinimg.com/736x/61/42/5e/61425eb59ae74cfb8145c8d73d81e067.jpg 这张图片，点评这个游戏 UI 的色调风格</span><br></pre></td></tr></table></figure>
+
+<p>UI 重构的提示词：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">参考这套 UI 风格，重构 block-sweep 游戏的 UI 风格</span><br></pre></td></tr></table></figure>
+
+<p>这里选择让 AI 先分析再实现的原因是，先通过文字，判断 AI 理解的画面是否正确，避免改了一堆代码后再回滚。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-12.jpg" alt="block-sweep-12"></p>
+<p>改完后的结果，风格瞬间统一了很多。</p>
+<h1 id="七、收尾工作"><a href="#七、收尾工作" class="headerlink" title="七、收尾工作"></a>七、收尾工作</h1><p>最后的工作就是细节调整和关卡设计了，做了封面，加了音效和动画效果，设计了 48 个关卡，难度递增。</p>
+<p>最终成品：</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/block-sweep-13.jpg" alt="block-sweep-13"></p>
+<p>现在游戏已经上传：<a target="_blank" rel="noopener" href="https://miniplay.io/games/block-sweep">https://miniplay.io/games/block-sweep</a> ，欢迎体验，期待有人能通关。</p>
+<p>如果有任何玩法上的建议或者开发流程上的疑问，欢迎给我留言。</p>
+<hr>
+<p>本文已同步至微信公众号，欢迎留言讨论。</p>
+<p><img src="https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/blog/wechat.jpg" alt="wechat"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/pixelart/vertical/">像素画</a></li>
+        
+          <li><a href="/game/">游戏</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">一、背景介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%8E%A9%E6%B3%95%E6%9E%84%E6%80%9D"><span class="toc-number">2.</span> <span class="toc-text">二、玩法构思</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92%E6%96%87%E6%A1%A3"><span class="toc-number">3.</span> <span class="toc-text">三、游戏策划文档</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%8E%A9%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">四、玩法实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%B3%E5%8D%A1%E8%AE%BE%E8%AE%A1"><span class="toc-number">5.</span> <span class="toc-text">五、关卡设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BC%98%E5%8C%96-UI-%E5%92%8C%E7%BE%8E%E6%9C%AF"><span class="toc-number">6.</span> <span class="toc-text">六、优化 UI 和美术</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E6%94%B6%E5%B0%BE%E5%B7%A5%E4%BD%9C"><span class="toc-number">7.</span> <span class="toc-text">七、收尾工作</span></a></li></ol>
+      </div>
+    
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Lyman Li
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+</body>
+</html>
