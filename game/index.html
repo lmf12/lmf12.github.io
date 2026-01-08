@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="这是很久很久以前，我在学习 JavaScript 的时候，写的小游戏，点击进入即可游玩：    拼图   拼图对战版   下面是我最近用 AI 写的小游戏：    Color Sleuth   Block Sweep   更多在线小游戏可以访问我维护的 游戏网站 。">
+    <meta name="description" content=".game-cards {   display: grid;   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));   gap: 20px;   margin: 20px 0; }  .game-card {   position: relative;   height: 200px;   border-radius: 1">
 <meta property="og:type" content="website">
 <meta property="og:title" content="游戏">
 <meta property="og:url" content="https://www.lymanli.com/game/">
 <meta property="og:site_name" content="Lyman&#39;s Blog">
-<meta property="og:description" content="这是很久很久以前，我在学习 JavaScript 的时候，写的小游戏，点击进入即可游玩：    拼图   拼图对战版   下面是我最近用 AI 写的小游戏：    Color Sleuth   Block Sweep   更多在线小游戏可以访问我维护的 游戏网站 。">
+<meta property="og:description" content=".game-cards {   display: grid;   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));   gap: 20px;   margin: 20px 0; }  .game-card {   position: relative;   height: 200px;   border-radius: 1">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-11-15T11:59:17.033Z">
-<meta property="article:modified_time" content="2025-11-15T11:59:17.033Z">
+<meta property="article:published_time" content="2026-01-08T11:48:55.762Z">
+<meta property="article:modified_time" content="2026-01-08T11:48:55.752Z">
 <meta property="article:author" content="Lyman Li">
 <meta name="twitter:card" content="summary">
     
@@ -97,6 +97,8 @@
    --><!--
      --><li><a href="/archives/">归档</a></li><!--
    --><!--
+     --><li><a href="/projects/">项目</a></li><!--
+   --><!--
      --><li><a href="/pixelart/vertical/">像素画</a></li><!--
    --><!--
      --><li><a href="/game/">游戏</a></li><!--
@@ -113,17 +115,95 @@
 
   <div class="content" itemprop="articleBody">
       
-          <p>这是很久很久以前，我在学习 JavaScript 的时候，写的小游戏，点击进入即可游玩：</p>
-<ul>
-  <li><a href="/game/puzzle/">拼图</a></li>
-  <li><a href="/game/puzzle-pk/">拼图对战版</a></li>
-</ul>
+          <style>
+.game-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.game-card {
+  position: relative;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.game-card-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.game-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+}
+
+.game-card-title {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  text-decoration: none;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000,
+    -2px 0 0 #000,
+    2px 0 0 #000,
+    0 -2px 0 #000,
+    0 2px 0 #000;
+}
+</style>
+
+<p>这是很久很久以前，我在学习 JavaScript 的时候，写的小游戏，点击进入即可游玩：</p>
+
+<div class="game-cards">
+  <a href="/game/puzzle/" class="game-card">
+    <div class="game-card-bg" style="background-image: url('https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/game/puzzle.jpg');"></div>
+    <div class="game-card-overlay">
+      <div class="game-card-title">拼图</div>
+    </div>
+  </a>
+  <a href="/game/puzzle-pk/" class="game-card">
+    <div class="game-card-bg" style="background-image: url('https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/game/puzzle-pk.jpg');"></div>
+    <div class="game-card-overlay">
+      <div class="game-card-title">拼图对战版</div>
+    </div>
+  </a>
+</div>
 
 <p>下面是我最近用 AI 写的小游戏：</p>
-<ul>
-  <li><a href="https://miniplay.io/games/color-sleuth" target="_blank">Color Sleuth</a></li>
-  <li><a href="https://miniplay.io/games/block-sweep" target="_blank">Block Sweep</a></li>
-</ul>
+
+<div class="game-cards">
+  <a href="https://miniplay.io/games/color-sleuth" target="_blank" class="game-card">
+    <div class="game-card-bg" style="background-image: url('https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/game/color-sleuth.jpg');"></div>
+  </a>
+  <a href="https://miniplay.io/games/block-sweep" target="_blank" class="game-card">
+    <div class="game-card-bg" style="background-image: url('https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/game/block-sweep.jpg');"></div>
+  </a>
+</div>
 
 <p>更多在线小游戏可以访问我维护的 <a target="_blank" rel="noopener" href="https://miniplay.io/">游戏网站</a> 。</p>
         
@@ -136,7 +216,7 @@
     Copyright &copy;
     
     
-    2016-2025
+    2016-2026
     Lyman Li
   </div>
 </footer>
